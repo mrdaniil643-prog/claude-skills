@@ -9,13 +9,15 @@
 
 | Скилл | Для чего | Источник / лицензия |
 |---|---|---|
-| `frontend-design` | Выразительный визуальный дизайн UI | Anthropic, см. `LICENSE.txt` |
 | `mcp-builder` | Создание MCP-серверов (Python / TypeScript) | Anthropic, см. `LICENSE.txt` |
 | `stop-slop` | Убирает «ИИ-шные» обороты из текста | Hardik Pandya, см. `LICENSE` |
 | `theme-factory` | 10 готовых тем (цвета, шрифты) для артефактов и сайтов | Anthropic, см. `LICENSE.txt` |
 | `ui-ux-pro-max` | База стилей, палитр, шрифтов и UX-правил | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
 | `web-artifacts-builder` | Сложные HTML-артефакты на React + Tailwind + shadcn/ui | Anthropic, см. `LICENSE.txt` |
 | `webapp-testing` | Тестирование веб-приложений через Playwright | Anthropic, см. `LICENSE.txt` |
+
+`frontend-design` сюда не входит: он подключается в проектах как официальный плагин
+`frontend-design@claude-plugins-official` через `enabledPlugins` в `.claude/settings.json`.
 
 ## Подключение
 

@@ -1,6 +1,6 @@
 {
   "name": "skills",
   "description": "Personal collection of Claude Code skills: design, frontend, MCP, testing, writing.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": { "name": "mrdaniil643-prog" }
 }
