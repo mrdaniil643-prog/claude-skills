@@ -34,19 +34,14 @@
 
 ```json
 {
-  "extraKnownMarketplaces": {
-    "claude-skills": {
-      "source": { "source": "github", "repo": "mrdaniil643-prog/claude-skills" }
-    }
-  },
-  "enabledPlugins": { "skills@claude-skills": true },
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "d=\"$HOME/.cache/claude-skills\"; if [ -d \"$d/.git\" ]; then git -C \"$d\" pull -q --ff-only; else git clone -q --depth 1 https://github.com/mrdaniil643-prog/claude-skills \"$d\"; fi && \"$d/install.sh\" >/dev/null || true"
+            "command": "d=\"$HOME/.cache/claude-skills\"; if [ -d \"$d/.git\" ]; then git -C \"$d\" pull -q --ff-only; else git clone -q --depth 1 https://github.com/mrdaniil643-prog/claude-skills \"$d\"; fi && \"$d/install.sh\" >/dev/null || true",
+            "timeout": 120
           }
         ]
       }
@@ -55,7 +50,7 @@
 }
 ```
 
-Хук на старте сессии скачивает (или обновляет) репозиторий и копирует скиллы в `~/.claude/skills`, так что они доступны, даже если плагины в окружении не ставятся.
+Хук на старте сессии скачивает (или обновляет) репозиторий и копирует скиллы в `~/.claude/skills`. Работает и в облаке, и локально, без установки плагинов. Плагин из варианта 1 вместе с хуком не включай: каждый скилл появится дважды.
 
 ### Вариант 3. Вручную
 
