@@ -12,7 +12,7 @@
     {
       "name": "video",
       "source": "./packs/video",
-      "description": "Video editing and vertical Reels: auto-cut, jump cuts, motion reels, publishing packs."
+      "description": "Video editing and vertical Reels: auto-cut, jump cuts, motion reels, publishing packs, FFmpeg toolkit."
     },
     {
       "name": "security",
