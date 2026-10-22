@@ -1,0 +1,6 @@
+{
+  "name": "security",
+  "description": "Web security: OWASP checks, vulnerability scanning, blue-team defense, supply chain.",
+  "version": "2.0.0",
+  "author": { "name": "mrdaniil643-prog" }
+}

@@ -1,11 +1,33 @@
 {
   "name": "claude-skills",
-  "owner": { "name": "mrdaniil643-prog" },
+  "owner": {
+    "name": "mrdaniil643-prog"
+  },
   "plugins": [
     {
       "name": "skills",
       "source": "./",
-      "description": "Personal collection of Claude Code skills: design, frontend, MCP, testing, writing."
+      "description": "Core skills: frontend, MCP, testing, writing, requirement grilling."
+    },
+    {
+      "name": "video",
+      "source": "./packs/video",
+      "description": "Video editing and vertical Reels: auto-cut, jump cuts, motion reels, publishing packs."
+    },
+    {
+      "name": "security",
+      "source": "./packs/security",
+      "description": "Web security: OWASP checks, vulnerability scanning, blue-team defense, supply chain."
+    },
+    {
+      "name": "mobile",
+      "source": "./packs/mobile",
+      "description": "Native mobile: SwiftUI, Swift concurrency, iOS tooling, Jetpack Compose, Kotlin, Expo and EAS."
+    },
+    {
+      "name": "3d",
+      "source": "./packs/3d",
+      "description": "3D on the web and Blender: Three.js, React Three Fiber, GLSL shaders, post-FX, WebGPU, glTF, Meshy."
     }
   ]
 }

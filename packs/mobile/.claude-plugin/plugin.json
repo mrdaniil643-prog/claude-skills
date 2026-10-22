@@ -1,0 +1,6 @@
+{
+  "name": "mobile",
+  "description": "Native mobile: SwiftUI, Swift concurrency, iOS tooling, Jetpack Compose, Kotlin, Expo and EAS.",
+  "version": "2.0.0",
+  "author": { "name": "mrdaniil643-prog" }
+}
