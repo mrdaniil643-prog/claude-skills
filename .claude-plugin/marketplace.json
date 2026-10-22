@@ -1,0 +1,11 @@
+{
+  "name": "claude-skills",
+  "owner": { "name": "mrdaniil643-prog" },
+  "plugins": [
+    {
+      "name": "skills",
+      "source": "./",
+      "description": "Personal collection of Claude Code skills: design, frontend, MCP, testing, writing."
+    }
+  ]
+}
