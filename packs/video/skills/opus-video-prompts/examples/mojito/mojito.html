@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мохито за 20 секунд</title>
+<style>
+  html, body { margin: 0; background: #06140f; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; object-fit: contain; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+const W = 1080, H = 1920, DURATION = 20;
+const cv = document.getElementById('c');
+const g = cv.getContext('2d');
+const FONT = '"Montserrat","Helvetica Neue","DejaVu Sans",Arial,sans-serif';
+
+// ---------- helpers ----------
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, s, e) => clamp((t - s) / (e - s));
+const easeOut = k => 1 - Math.pow(1 - k, 3);
+const easeInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const easeBack = k => { const c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
+const bounce = k => {
+  const n = 7.5625, d = 2.75;
+  if (k < 1 / d) return n * k * k;
+  if (k < 2 / d) return n * (k -= 1.5 / d) * k + .75;
+  if (k < 2.5 / d) return n * (k -= 2.25 / d) * k + .9375;
+  return n * (k -= 2.625 / d) * k + .984375;
+};
+function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function hex(c) { return [1, 3, 5].map(i => parseInt(c.slice(i, i + 2), 16)); }
+
+// ---------- palette ----------
+const C = {
+  bg1: '#0f3326', bg2: '#04110c', cream: '#f4f1e6', dim: 'rgba(244,241,230,.55)',
+  lime: '#c6f25a', mint: '#3fae5a', mintDark: '#2a7d40', wood: '#b07a45',
+};
+
+// ---------- glass geometry ----------
+const G = { cx: 540, top: 760, bot: 1420, hwTop: 215, hwBot: 180, wall: 14, base: 30 };
+const innerBot = G.bot - G.base;
+const halfW = y => lerp(G.hwBot, G.hwTop, (G.bot - y) / (G.bot - G.top)) - G.wall;
+const PX_PER_ML = 3.0;
+
+// ---------- recipe timeline ----------
+const STEPS = [
+  { s: 2.0,  e: 4.5,  name: 'Мята',              qty: '8 листьев',      kind: 'mint' },
+  { s: 4.5,  e: 6.5,  name: 'Лайм',              qty: '½ шт. дольками', kind: 'lime' },
+  { s: 6.5,  e: 8.5,  name: 'Сахарный сироп',    qty: '20 мл',          kind: 'pour', vol: 20,  color: '#e9b949', label: 'СИРОП', bottle: '#c98a1b' },
+  { s: 8.5,  e: 10.5, name: 'Подавить мадлером', qty: '5–6 нажатий',    kind: 'muddle' },
+  { s: 10.5, e: 12.5, name: 'Колотый лёд',       qty: 'доверху',        kind: 'ice' },
+  { s: 12.5, e: 15.0, name: 'Белый ром',         qty: '50 мл',          kind: 'pour', vol: 50,  color: '#f3e6c4', label: 'РОМ',     bottle: '#e8dcc0' },
+  { s: 15.0, e: 17.5, name: 'Содовая',           qty: '100 мл',         kind: 'pour', vol: 100, color: '#d6efff', label: 'СОДОВАЯ', bottle: '#5fb3d9' },
+];
+const FINAL = 17.5;
+const CHECKLIST = [
+  { name: 'Мята', qty: '8 листьев', step: 0 },
+  { name: 'Лайм', qty: '½ шт.', step: 1 },
+  { name: 'Сироп', qty: '20 мл', step: 2 },
+  { name: 'Лёд', qty: 'доверху', step: 4 },
+  { name: 'Белый ром', qty: '50 мл', step: 5 },
+  { name: 'Содовая', qty: '100 мл', step: 6 },
+];
+// pour window inside a step: bottle comes in, pours, leaves
+const POUR = { in: .22, start: .25, end: .8, out: .82 };
+const LIME_JUICE = { ml: 15, color: '#c4e46a' };
+
+// volumes poured so far, per ingredient, for level and colour
+function liquids(t) {
+  const out = [];
+  for (const st of STEPS) {
+    if (st.kind !== 'pour') continue;
+    const k = prog(t, lerp(st.s, st.e, POUR.start), lerp(st.s, st.e, POUR.end));
+    if (k > 0) out.push({ ml: st.vol * k, color: st.color });
+  }
+  const m = STEPS[3];
+  const jk = prog(t, m.s + .3, m.e - .2);
+  if (jk > 0) out.push({ ml: LIME_JUICE.ml * jk, color: LIME_JUICE.color });
+  return out;
+}
+
+// ---------- props ----------
+const R = rng(7);
+const MINT = Array.from({ length: 8 }, (_, i) => ({
+  x: G.cx - 120 + (i % 4) * 80 + (R() - .5) * 30,
+  y: innerBot - 22 - Math.floor(i / 4) * 34 - R() * 10,
+  rot: (R() - .5) * 1.6, delay: i * .17, size: 1 + R() * .25,
+}));
+const LIMES = [
+  { x: G.cx - 70, y: innerBot - 58, rot: -.3, delay: 0 },
+  { x: G.cx + 70, y: innerBot - 52, rot: .4,  delay: .22 },
+  { x: G.cx,      y: innerBot - 92, rot: .1,  delay: .44 },
+];
+const ICE = [];
+for (let row = 0; row < 5; row++) for (let col = 0; col < 3; col++) {
+  const y = innerBot - 62 - row * 100;
+  ICE.push({
+    x: G.cx + (col - 1) * 104 + (R() - .5) * 16, y,
+    rot: (R() - .5) * .5, size: 96 + R() * 10,
+    delay: (row * 3 + col) * .085,
+  });
+}
+const BUBBLES = Array.from({ length: 46 }, () => ({
+  x: R(), speed: 90 + R() * 140, phase: R() * 600, r: 2 + R() * 5, wob: R() * 6,
+}));
+
+// ---------- drawing ----------
+function background(t) {
+  const gr = g.createRadialGradient(540, 1050, 100, 540, 1050, 1200);
+  gr.addColorStop(0, C.bg1);
+  gr.addColorStop(1, C.bg2);
+  g.fillStyle = gr;
+  g.fillRect(0, 0, W, H);
+  // soft spotlight behind the glass
+  const sp = g.createRadialGradient(540, 1100, 40, 540, 1100, 520);
+  sp.addColorStop(0, 'rgba(198,242,90,.10)');
+  sp.addColorStop(1, 'rgba(198,242,90,0)');
+  g.fillStyle = sp;
+  g.fillRect(0, 500, W, 1100);
+  // bar counter
+  g.fillStyle = 'rgba(255,255,255,.04)';
+  g.fillRect(0, G.bot + 6, W, 4);
+}
+
+function glassPath(inset = 0) {
+  g.beginPath();
+  g.moveTo(G.cx - G.hwTop + inset, G.top);
+  g.lineTo(G.cx - G.hwBot + inset, G.bot - (inset ? G.base : 0));
+  g.lineTo(G.cx + G.hwBot - inset, G.bot - (inset ? G.base : 0));
+  g.lineTo(G.cx + G.hwTop - inset, G.top);
+}
+
+function leaf(x, y, rot, s, squash, color) {
+  g.save();
+  g.translate(x, y);
+  g.rotate(rot);
+  g.scale(s, s * (1 - squash * .45));
+  g.fillStyle = color;
+  g.beginPath();
+  g.moveTo(-42, 0);
+  g.bezierCurveTo(-20, -30, 20, -30, 42, 0);
+  g.bezierCurveTo(20, 28, -20, 28, -42, 0);
+  g.fill();
+  g.strokeStyle = 'rgba(255,255,255,.35)';
+  g.lineWidth = 2.5;
+  g.beginPath();
+  g.moveTo(-36, 0);
+  g.lineTo(36, 0);
+  for (let i = -2; i <= 2; i++) { g.moveTo(i * 12, 0); g.lineTo(i * 12 + 10, i % 2 ? -12 : 12); }
+  g.stroke();
+  g.restore();
+}
+
+function limeWedge(x, y, rot, s, squash) {
+  g.save();
+  g.translate(x, y);
+  g.rotate(rot);
+  g.scale(s, s * (1 - squash * .35));
+  g.fillStyle = '#5c9e1f';
+  g.beginPath(); g.arc(0, 0, 52, Math.PI, 0); g.closePath(); g.fill();
+  g.fillStyle = '#eaf7c8';
+  g.beginPath(); g.arc(0, 0, 46, Math.PI, 0); g.closePath(); g.fill();
+  g.fillStyle = '#b5e14a';
+  for (let i = 0; i < 5; i++) {
+    const a0 = Math.PI + i * Math.PI / 5 + .06, a1 = Math.PI + (i + 1) * Math.PI / 5 - .06;
+    g.beginPath(); g.moveTo(0, -3); g.arc(0, -3, 40, a0, a1); g.closePath(); g.fill();
+  }
+  g.restore();
+}
+
+function limeWheel(x, y, s) {
+  g.save();
+  g.translate(x, y);
+  g.scale(s, s);
+  g.fillStyle = '#5c9e1f';
+  g.beginPath(); g.arc(0, 0, 58, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#eaf7c8';
+  g.beginPath(); g.arc(0, 0, 51, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#b5e14a';
+  for (let i = 0; i < 8; i++) {
+    const a0 = i * Math.PI / 4 + .07, a1 = (i + 1) * Math.PI / 4 - .07;
+    g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, 45, a0, a1); g.closePath(); g.fill();
+  }
+  g.restore();
+}
+
+function iceCube(x, y, s, rot, alpha) {
+  g.save();
+  g.translate(x, y);
+  g.rotate(rot);
+  g.globalAlpha = alpha;
+  const h = s / 2, r = 16;
+  g.beginPath();
+  g.roundRect(-h, -h, s, s, r);
+  g.fillStyle = 'rgba(225,245,255,.28)';
+  g.fill();
+  g.lineWidth = 3;
+  g.strokeStyle = 'rgba(255,255,255,.55)';
+  g.stroke();
+  g.fillStyle = 'rgba(255,255,255,.45)';
+  g.beginPath(); g.roundRect(-h + 12, -h + 12, s * .32, 10, 5); g.fill();
+  g.beginPath(); g.roundRect(-h + 12, -h + 28, 10, s * .22, 5); g.fill();
+  g.restore();
+}
+
+function contents(t) {
+  g.save();
+  glassPath(G.wall);
+  g.closePath();
+  g.clip();
+
+  const muddle = STEPS[3];
+  const squash = easeOut(prog(t, muddle.s + .3, muddle.e - .3));
+
+  // mint leaves
+  const ms = STEPS[0];
+  for (const m of MINT) {
+    const k = prog(t, ms.s + m.delay, ms.s + m.delay + .7);
+    if (k <= 0) continue;
+    const y = lerp(380, m.y, bounce(k));
+    const col = squash > 0 ? mixHex(C.mint, C.mintDark, squash) : C.mint;
+    leaf(m.x, y, m.rot + (1 - k) * 2, m.size, squash, col);
+  }
+  // lime wedges
+  const ls = STEPS[1];
+  for (const l of LIMES) {
+    const k = prog(t, ls.s + l.delay, ls.s + l.delay + .75);
+    if (k <= 0) continue;
+    limeWedge(l.x, lerp(380, l.y, bounce(k)), l.rot + (1 - k) * 3, 1, squash);
+  }
+
+  // liquid
+  const liq = liquids(t);
+  const total = liq.reduce((a, b) => a + b.ml, 0);
+  let surface = innerBot;
+  if (total > .5) {
+    surface = innerBot - total * PX_PER_ML;
+    const rgb = [0, 0, 0];
+    for (const l of liq) hex(l.color).forEach((v, i) => rgb[i] += v * l.ml / total);
+    const col = `rgba(${rgb.map(Math.round).join(',')},`;
+    const wobble = Math.sin(t * 9) * 4 * (1 - prog(t, 17.2, 18.5));
+    const lg = g.createLinearGradient(0, surface, 0, innerBot);
+    lg.addColorStop(0, col + '.42)');
+    lg.addColorStop(1, col + '.62)');
+    g.fillStyle = lg;
+    g.beginPath();
+    g.moveTo(G.cx - 260, surface + wobble);
+    g.quadraticCurveTo(G.cx, surface - wobble, G.cx + 260, surface + wobble);
+    g.lineTo(G.cx + 260, innerBot + 2);
+    g.lineTo(G.cx - 260, innerBot + 2);
+    g.fill();
+    g.strokeStyle = 'rgba(255,255,255,.55)';
+    g.lineWidth = 4;
+    g.beginPath();
+    g.moveTo(G.cx - 260, surface + wobble);
+    g.quadraticCurveTo(G.cx, surface - wobble, G.cx + 260, surface + wobble);
+    g.stroke();
+  }
+
+  // ice
+  const is = STEPS[4];
+  for (const c of ICE) {
+    const k = prog(t, is.s + c.delay, is.s + c.delay + .55);
+    if (k <= 0) continue;
+    const y = lerp(300, c.y, bounce(k));
+    const bob = total > 0 && c.y < surface + 40 ? 0 : Math.sin(t * 2 + c.x) * 2;
+    iceCube(c.x, y + bob, c.size, c.rot + (1 - k) * 1.5, .95);
+  }
+
+  // bubbles once soda is in
+  const soda = STEPS[6];
+  const bk = prog(t, lerp(soda.s, soda.e, POUR.start), lerp(soda.s, soda.e, POUR.start) + .4);
+  if (bk > 0 && total > 0) {
+    const height = innerBot - surface;
+    for (const b of BUBBLES) {
+      const y = innerBot - ((t * b.speed + b.phase) % height);
+      const hw = halfW(y);
+      const x = G.cx - hw + 20 + b.x * (hw * 2 - 40) + Math.sin(t * 3 + b.wob) * 4;
+      g.fillStyle = `rgba(255,255,255,${.55 * bk})`;
+      g.beginPath(); g.arc(x, y, b.r, 0, Math.PI * 2); g.fill();
+    }
+  }
+  g.restore();
+  return surface;
+}
+
+function mixHex(a, b, k) {
+  const A = hex(a), B = hex(b);
+  return `rgb(${A.map((v, i) => Math.round(lerp(v, B[i], k))).join(',')})`;
+}
+
+function glass() {
+  // body highlight
+  g.save();
+  glassPath();
+  g.closePath();
+  g.fillStyle = 'rgba(255,255,255,.035)';
+  g.fill();
+  g.lineWidth = 6;
+  g.strokeStyle = 'rgba(235,250,255,.75)';
+  g.stroke();
+  g.restore();
+  // thick base
+  g.fillStyle = 'rgba(235,250,255,.18)';
+  g.beginPath();
+  g.moveTo(G.cx - G.hwBot + 3, G.bot - G.base);
+  g.lineTo(G.cx + G.hwBot - 3, G.bot - G.base);
+  g.lineTo(G.cx + G.hwBot - 3, G.bot - 3);
+  g.lineTo(G.cx - G.hwBot + 3, G.bot - 3);
+  g.fill();
+  // rim
+  g.strokeStyle = 'rgba(255,255,255,.9)';
+  g.lineWidth = 6;
+  g.beginPath();
+  g.moveTo(G.cx - G.hwTop - 3, G.top);
+  g.lineTo(G.cx + G.hwTop + 3, G.top);
+  g.stroke();
+  // glare stripes
+  g.strokeStyle = 'rgba(255,255,255,.22)';
+  g.lineWidth = 14;
+  g.lineCap = 'round';
+  g.beginPath();
+  g.moveTo(G.cx - G.hwTop + 50, G.top + 50);
+  g.lineTo(G.cx - G.hwBot + 48, G.bot - 120);
+  g.stroke();
+  g.lineWidth = 6;
+  g.beginPath();
+  g.moveTo(G.cx - G.hwTop + 82, G.top + 70);
+  g.lineTo(G.cx - G.hwTop + 75, G.top + 260);
+  g.stroke();
+  g.lineCap = 'butt';
+}
+
+function bottle(st, t, surface) {
+  const k = prog(t, st.s, st.e);
+  if (k <= 0 || k >= 1) return;
+  const enter = easeInOut(prog(k, 0, POUR.in));
+  const exit = easeInOut(prog(k, POUR.out, 1));
+  const tilt = enter * (1 - exit);
+  const px = lerp(1280, 835, enter) + exit * 445;
+  const py = 600;
+  const ang = -1.94 * tilt;
+
+  // stream from the mouth to the liquid surface
+  const pouring = k > POUR.start - .02 && k < POUR.end + .02;
+  if (pouring) {
+    const len = 160;
+    const mx = px + Math.sin(ang) * -len * -1, my = py - Math.cos(ang) * len;
+    const thin = Math.min(prog(k, POUR.start - .02, POUR.start + .05), 1 - prog(k, POUR.end - .05, POUR.end + .02));
+    g.strokeStyle = st.color;
+    g.globalAlpha = .9;
+    g.lineWidth = 12 * thin + 1;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(mx, my);
+    g.quadraticCurveTo(mx - 50, my + 40, G.cx + 40, surface - 4);
+    g.stroke();
+    g.globalAlpha = 1;
+    g.lineCap = 'butt';
+    // splash ring
+    g.strokeStyle = 'rgba(255,255,255,.5)';
+    g.lineWidth = 3;
+    const sr = 18 + Math.sin(t * 20) * 5;
+    g.beginPath(); g.ellipse(G.cx + 40, surface - 2, sr * 1.8 * thin, sr * .4 * thin, 0, 0, Math.PI * 2); g.stroke();
+  }
+
+  g.save();
+  g.translate(px, py);
+  g.rotate(ang);
+  // body
+  g.fillStyle = st.bottle;
+  g.globalAlpha = .92;
+  g.beginPath(); g.roundRect(-62, -40, 124, 210, 22); g.fill();
+  // shoulders + neck
+  g.beginPath();
+  g.moveTo(-62, -20); g.quadraticCurveTo(-60, -95, -20, -110);
+  g.lineTo(-20, -160); g.lineTo(20, -160); g.lineTo(20, -110);
+  g.quadraticCurveTo(60, -95, 62, -20); g.fill();
+  g.globalAlpha = 1;
+  // cap ring
+  g.fillStyle = 'rgba(0,0,0,.25)';
+  g.fillRect(-22, -160, 44, 14);
+  // label
+  g.fillStyle = C.cream;
+  g.beginPath(); g.roundRect(-50, 20, 100, 110, 10); g.fill();
+  g.save();
+  g.translate(0, 75);
+  g.rotate(Math.PI / 2); // reads upright once the bottle is tilted to pour
+  g.fillStyle = '#123d2c';
+  g.font = `800 ${st.label.length > 4 ? 22 : 30}px ${FONT}`;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText(st.label, 0, 0);
+  g.restore();
+  // glare
+  g.fillStyle = 'rgba(255,255,255,.25)';
+  g.beginPath(); g.roundRect(-50, -30, 14, 180, 7); g.fill();
+  g.restore();
+}
+
+function muddler(t) {
+  const st = STEPS[3];
+  const k = prog(t, st.s, st.e);
+  if (k <= 0 || k >= 1) return;
+  const enter = easeOut(prog(k, 0, .15)), exit = easeInOut(prog(k, .85, 1));
+  const press = prog(k, .15, .85);
+  const pump = (1 - Math.cos(press * Math.PI * 2 * 3)) / 2; // three presses
+  const tipY = lerp(560, innerBot - 115 + pump * 85, enter) - exit * 700;
+  const x = G.cx + 10, len = 640;
+  g.save();
+  g.translate(x, tipY);
+  g.rotate(.06);
+  const wg = g.createLinearGradient(-26, 0, 26, 0);
+  wg.addColorStop(0, '#8a5a2e'); wg.addColorStop(.5, '#c99560'); wg.addColorStop(1, '#7a4e26');
+  g.fillStyle = wg;
+  g.beginPath(); g.roundRect(-24, -len, 48, len, 14); g.fill();
+  g.beginPath(); g.roundRect(-34, -40, 68, 40, 12); g.fill();
+  g.fillStyle = 'rgba(0,0,0,.18)';
+  for (let i = 0; i < 4; i++) g.fillRect(-34, -34 + i * 9, 68, 3);
+  g.restore();
+  // pulse ring at the bottom on each press
+  if (pump > .85 && enter === 1) {
+    g.strokeStyle = `rgba(198,242,90,${(pump - .85) * 4})`;
+    g.lineWidth = 4;
+    g.beginPath(); g.ellipse(G.cx, innerBot - 40, 140, 26, 0, 0, Math.PI * 2); g.stroke();
+  }
+}
+
+function garnish(t, surface) {
+  const k = prog(t, FINAL, FINAL + 1.2);
+  if (k <= 0) return;
+  // straw, slides in diagonally
+  const sk = easeOut(prog(t, FINAL, FINAL + .7));
+  g.save();
+  g.translate(lerp(900, 640, sk), lerp(300, 560, sk));
+  g.rotate(.32);
+  g.globalAlpha = sk;
+  g.fillStyle = '#f4f1e6';
+  g.fillRect(-11, 0, 22, 720);
+  g.fillStyle = C.lime;
+  for (let i = 0; i < 12; i++) g.fillRect(-11, 20 + i * 58, 22, 22);
+  g.restore();
+  // lime wheel on the rim
+  const lk = easeBack(prog(t, FINAL + .25, FINAL + .9));
+  if (lk > 0) {
+    g.save();
+    g.translate(G.cx - G.hwTop + 12, G.top);
+    g.rotate(-.5);
+    limeWheel(0, 0, lk * 1.05);
+    g.restore();
+  }
+  // mint sprig on top
+  const mk = easeOut(prog(t, FINAL + .4, FINAL + 1.1));
+  if (mk > 0) {
+    const y = lerp(380, G.top - 10, mk);
+    g.strokeStyle = C.mintDark;
+    g.lineWidth = 7;
+    g.beginPath(); g.moveTo(G.cx + 20, y + 80); g.quadraticCurveTo(G.cx + 30, y, G.cx + 10, y - 70); g.stroke();
+    leaf(G.cx - 30, y - 40, -.7, 1.05, 0, C.mint);
+    leaf(G.cx + 65, y - 10, .5, 1.1, 0, C.mint);
+    leaf(G.cx - 20, y + 30, -.3, 1.15, 0, '#4cc06a');
+    leaf(G.cx + 40, y - 80, -1.2, .9, 0, '#4cc06a');
+  }
+}
+
+// ---------- typography ----------
+function text(str, x, y, size, weight, color, align = 'left', alpha = 1) {
+  g.globalAlpha = alpha;
+  g.fillStyle = color;
+  g.font = `${weight} ${size}px ${FONT}`;
+  g.textAlign = align;
+  g.textBaseline = 'alphabetic';
+  g.fillText(str, x, y);
+  g.globalAlpha = 1;
+}
+
+function header(t) {
+  // brand line
+  const bk = easeOut(prog(t, 0, .6));
+  text('МОХИТО', 80, 150 - (1 - bk) * 30, 46, 900, C.lime, 'left', bk);
+  text('рецепт за 20 секунд', 80, 200 - (1 - bk) * 30, 34, 500, C.dim, 'left', bk);
+
+  // intro title (0–2s)
+  if (t < 2.2) {
+    const a = easeOut(prog(t, .2, .9)) * (1 - prog(t, 1.75, 2.1));
+    text('Классический', 80, 400 + (1 - a) * 40, 80, 800, C.cream, 'left', a);
+    text('мохито', 80, 510 + (1 - a) * 40, 120, 900, C.lime, 'left', a);
+    return;
+  }
+
+  // active step
+  let idx = -1;
+  STEPS.forEach((s, i) => { if (t >= s.s && t < s.e) idx = i; });
+  if (idx >= 0) {
+    const st = STEPS[idx];
+    const a = easeOut(prog(t, st.s, st.s + .35)) * (1 - prog(t, st.e - .2, st.e));
+    const dy = (1 - a) * 40;
+    text(`ШАГ ${idx + 1} / ${STEPS.length}`, 80, 330 + dy, 34, 700, C.dim, 'left', a);
+    text(st.name, 80, 430 + dy, st.name.length > 14 ? 66 : 80, 800, C.cream, 'left', a);
+    text(st.qty, 80, 540 + dy, 96, 900, C.lime, 'left', a);
+    // step progress bar under the quantity
+    g.fillStyle = 'rgba(255,255,255,.12)';
+    g.fillRect(80, 580, 300, 8);
+    g.fillStyle = C.lime;
+    g.fillRect(80, 580, 300 * prog(t, st.s, st.e), 8);
+  }
+
+  // finale
+  if (t >= FINAL) {
+    const a = easeOut(prog(t, FINAL + .2, FINAL + .8));
+    text('Готово!', 80, 430 + (1 - a) * 40, 110, 900, C.cream, 'left', a);
+    text('Подавать сразу, пока', 80, 510 + (1 - a) * 40, 44, 600, C.dim, 'left', a);
+    text('лёд не растаял', 80, 565 + (1 - a) * 40, 44, 600, C.dim, 'left', a);
+  }
+}
+
+function checklist(t) {
+  const top = 1515, rowH = 100, colX = [80, 570];
+  const a = easeOut(prog(t, .4, 1.2));
+  g.globalAlpha = a;
+  g.fillStyle = 'rgba(255,255,255,.05)';
+  g.beginPath(); g.roundRect(50, top - 60, 980, rowH * 3 + 40, 28); g.fill();
+  g.globalAlpha = 1;
+  CHECKLIST.forEach((it, i) => {
+    const st = STEPS[it.step];
+    const x = colX[i % 2], y = top + Math.floor(i / 2) * rowH;
+    const active = t >= st.s && t < st.e;
+    const done = t >= st.e;
+    const dk = easeBack(prog(t, st.e - .15, st.e + .25));
+    // check circle
+    const cx = x + 26, cy = y - 12;
+    g.globalAlpha = a;
+    g.lineWidth = 4;
+    g.strokeStyle = active || done ? C.lime : 'rgba(255,255,255,.25)';
+    g.beginPath(); g.arc(cx, cy, 24, 0, Math.PI * 2); g.stroke();
+    if (active) {
+      g.beginPath(); g.arc(cx, cy, 24, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * prog(t, st.s, st.e));
+      g.lineWidth = 8; g.stroke();
+    }
+    if (done) {
+      g.fillStyle = C.lime;
+      g.beginPath(); g.arc(cx, cy, 24 * dk, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = '#0b2a1e'; g.lineWidth = 6; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(cx - 11, cy); g.lineTo(cx - 3, cy + 9); g.lineTo(cx + 12, cy - 9);
+      g.globalAlpha = a * clamp(dk); g.stroke(); g.lineCap = 'butt';
+    }
+    g.globalAlpha = 1;
+    const col = done ? C.cream : active ? C.cream : 'rgba(244,241,230,.45)';
+    text(it.name, x + 70, y, 38, 700, col, 'left', a);
+    text(it.qty, x + 70, y + 42, 30, 600, active || done ? C.lime : 'rgba(198,242,90,.4)', 'left', a);
+  });
+  // overall progress
+  g.fillStyle = 'rgba(255,255,255,.1)';
+  g.fillRect(80, 1830, 920, 6);
+  g.fillStyle = C.lime;
+  g.fillRect(80, 1830, 920 * clamp(t / DURATION), 6);
+}
+
+// ---------- frame ----------
+function frame(t) {
+  background(t);
+  header(t);
+  const surface = contents(t);
+  glass();
+  muddler(t);
+  STEPS.forEach(st => st.kind === 'pour' && bottle(st, t, surface));
+  garnish(t, surface);
+  checklist(t);
+}
+
+const fixed = new URLSearchParams(location.search).get('t');
+if (fixed !== null) {
+  frame(Number(fixed));
+} else {
+  const t0 = performance.now();
+  (function loop() {
+    const t = Math.min((performance.now() - t0) / 1000, DURATION);
+    frame(t);
+    if (t < DURATION) requestAnimationFrame(loop);
+  })();
+}
+</script>
+</body>
+</html>
