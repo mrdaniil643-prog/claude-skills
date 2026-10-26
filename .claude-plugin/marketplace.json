@@ -28,6 +28,11 @@
       "name": "3d",
       "source": "./packs/3d",
       "description": "3D on the web and Blender: Three.js, React Three Fiber, GLSL shaders, post-FX, WebGPU, glTF, Meshy."
+    },
+    {
+      "name": "adobe",
+      "source": "./packs/adobe",
+      "description": "Adobe Premiere Pro and Photoshop on your own computer (Windows, macOS) via local MCP servers: setup, editing, layers, export."
     }
   ]
 }

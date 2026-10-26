@@ -14,6 +14,7 @@
 | `security` | `packs/security/skills/` | 4 |
 | `mobile` | `packs/mobile/skills/` | 44 |
 | `3d` | `packs/3d/skills/` | 51 |
+| `adobe` | `packs/adobe/skills/` | 1 |
 
 `frontend-design` сюда не входит: он подключается в проектах как официальный плагин
 `frontend-design@claude-plugins-official` через `enabledPlugins` в `.claude/settings.json`.
@@ -220,6 +221,14 @@ Three.js, React Three Fiber, шейдеры GLSL, постобработка, We
 | `webgpu-threejs-tsl` | Reference WebGPU APIs, TSL syntax, node materials, WGSL integration, compute shaders, and post-processing in Three.js. |
 
 Источники: `threejs-*`, `shader-programming-glsl`: [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) (MIT / CC BY 4.0). `r3f-*`: [EnzeD/r3f-skills](https://github.com/EnzeD/r3f-skills) (MIT). `shader-*`, `postfx-*`, `particles-gpu`: [Bbeierle12/Skill-MCP-Claude](https://github.com/Bbeierle12/Skill-MCP-Claude) (MIT). `webgpu-threejs-tsl`, `meshy`: [tdimino/claude-code-minoan](https://github.com/tdimino/claude-code-minoan) (MIT). `gltf-transform`: [rawwerks/VibeCAD](https://github.com/rawwerks/VibeCAD) (MIT). `scenario-blender-*`: [scenario-labs/skills](https://github.com/scenario-labs/skills) (MIT). `meshy-3d-generation`: [meshy-dev/meshy-3d-agent](https://github.com/meshy-dev/meshy-3d-agent) (MIT).
+
+## Adobe на компьютере (`adobe`)
+
+| Скилл | Описание |
+|---|---|
+| `adobe-desktop` | Управляет установленными на компьютере Adobe Premiere Pro и Photoshop из Claude Code через локальные MCP-серверы на Windo… |
+
+Источники: [leancoderkavy/premiere-pro-mcp](https://github.com/leancoderkavy/premiere-pro-mcp) (MIT) для Premiere и [mikechambers/adb-mcp](https://github.com/mikechambers/adb-mcp) (MIT) для Photoshop; скилл содержит только скрипты установки, сами серверы скачиваются при запуске. Работает в Claude Code на том же компьютере, где стоят программы, не в облачной сессии. Установка: `~/.claude/skills/adobe-desktop/scripts/setup-mac.sh` или `setup-windows.ps1`.
 
 ## Добавить новый скилл
 

@@ -1,0 +1,6 @@
+{
+  "name": "adobe",
+  "description": "Adobe Premiere Pro and Photoshop on your own computer (Windows, macOS) via local MCP servers: setup, editing, layers, export.",
+  "version": "1.0.0",
+  "author": { "name": "mrdaniil643-prog" }
+}
