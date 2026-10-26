@@ -10,7 +10,7 @@
 | Набор | Папка | Скиллов |
 |---|---|---|
 | базовый | `skills/` | 10 |
-| `video` | `packs/video/skills/` | 7 |
+| `video` | `packs/video/skills/` | 8 |
 | `security` | `packs/security/skills/` | 4 |
 | `mobile` | `packs/mobile/skills/` | 44 |
 | `3d` | `packs/3d/skills/` | 51 |
@@ -87,12 +87,13 @@ git clone https://github.com/mrdaniil643-prog/claude-skills
 | `ffmpeg-skill` | Набор из 42 скриптов на локальном FFmpeg: обрезка, склейка, 9:16, субтитры и караоке, громкость, экспорт и проверка под… |
 | `jumpcut` | Убирает из видео паузы, тишину и слова-паразиты, сохраняя смысл и синхрон звука с картинкой: длинная лекция ужимается… |
 | `motion-reel` | Создаёт анимационный Reels/Shorts без камеры из темы, сценария или готовой озвучки в AutoMontage-Agent: script, выбор… |
+| `opus-video-prompts` | Библиотека из 703 промптов для видео, которые Claude пишет кодом (HTML, Canvas, SVG, GSAP, Three.js): поиск, адапт… |
 | `reel-from-donor` | Превращает полезный разговорный Reels, Short или TikTok в авторский Reels с живыми, конкретными карточками: сначала р… |
 | `reel-turnkey` | Собирает ролик под ключ в AutoMontage-Agent: проверяет исходник, транскрибирует речь, готовит один полный пакет ТЗ со… |
 | `reels-autocut` | Режет длинное видео (лекцию, подкаст, стрим, интервью, вебинар) на готовые вертикальные Reels/Shorts/TikTok: локальна… |
 | `reels-publish-pack` | Готовит нарезанные клипы к выкладке: обложки с заголовком, версии под разные площадки (4:5, 1:1, 16:9 из вертикальног… |
 
-Источники: `reel-turnkey`, `motion-reel`, `reel-from-donor`: [mcdenil-skills/AutoMontage-Agent](https://github.com/mcdenil-skills/AutoMontage-Agent) (MIT), им нужен движок, ставится `~/.claude/skills/reel-turnkey/scripts/install-automontage-engine.sh`. `reels-autocut`, `jumpcut`, `reels-publish-pack`: свои, работают на ffmpeg и Python. `ffmpeg-skill`: [kajisho5/ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill) (MIT), только стандартная библиотека Python и ffmpeg; для субтитров по речи нужен локальный распознаватель (faster-whisper, whisper.cpp).
+Источники: `reel-turnkey`, `motion-reel`, `reel-from-donor`: [mcdenil-skills/AutoMontage-Agent](https://github.com/mcdenil-skills/AutoMontage-Agent) (MIT), им нужен движок, ставится `~/.claude/skills/reel-turnkey/scripts/install-automontage-engine.sh`. `reels-autocut`, `jumpcut`, `reels-publish-pack`: свои, работают на ffmpeg и Python. `ffmpeg-skill`: [kajisho5/ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill) (MIT), только стандартная библиотека Python и ffmpeg; для субтитров по речи нужен локальный распознаватель (faster-whisper, whisper.cpp). `opus-video-prompts`: промпты из [yihui-dev/awesome-opus5-5-videos](https://github.com/yihui-dev/awesome-opus5-5-videos) (MIT), запись в MP4 через Playwright и ffmpeg.
 
 ## Безопасность (`security`)
 
