@@ -16,6 +16,7 @@
 // --sizes a,b,c     longest side in px: writes out-<n>.png per size, or packs them into .ico
 // --transparent     keep the background transparent (PNG/ICO)
 // --guides          load the page with ?guides=1 (trim, bleed, safe zones)
+// --query "a=1&b=2"  extra page parameters (e.g. format=story for multi-format templates)
 //
 // The page sees :root { --trim-w; --trim-h; --bleed } (mm designs) and can add
 // guides itself when loaded with ?guides=1. Fonts and images are awaited.
@@ -45,6 +46,7 @@ const quality = Number(opt('--quality', '90'));
 const sizes = opt('--sizes');
 const transparent = flag('--transparent');
 const guides = flag('--guides');
+const query = opt('--query', '');
 const [input, output] = argv;
 if (!input || !output) {
   console.error('usage: node render.cjs <design.html|logo.svg> <out.png|jpg|pdf|ico> [options]; see header');
@@ -65,7 +67,8 @@ function svgSize(file) {
 
 async function open(browser, w, h, dsf) {
   const page = await browser.newPage({ viewport: { width: Math.round(w), height: Math.round(h) }, deviceScaleFactor: dsf });
-  const url = pathToFileURL(path.resolve(input)).href + (guides && !isSvg ? '?guides=1' : '');
+  const params = [guides ? 'guides=1' : '', query].filter(Boolean).join('&');
+  const url = pathToFileURL(path.resolve(input)).href + (params && !isSvg ? `?${params}` : '');
   if (isSvg) {
     // Wrap so the SVG fills the canvas exactly and transparency survives. The
     // wrapper must be a file: an about:blank page may not load file:// images.
@@ -82,6 +85,8 @@ async function open(browser, w, h, dsf) {
   }
   await page.evaluate(async () => {
     await document.fonts.ready;
+    // Templates that adjust themselves (fit text, detect photos) set window.__pending.
+    for (let i = 0; i < 100 && window.__pending; i++) await new Promise((r) => setTimeout(r, 50));
     await Promise.all([...document.images].map((im) => im.complete ? 0 : new Promise((r) => { im.onload = im.onerror = r; })));
   });
   await warnOverflow(page);

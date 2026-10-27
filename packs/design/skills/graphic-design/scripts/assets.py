@@ -5,6 +5,8 @@
   python3 assets.py icon lucide:coffee ph:star-fill --color "#13213C" --out icons
   python3 assets.py photo "coffee beans macro" --n 6 --out photos
   python3 assets.py cutout portrait.jpg portrait-cut.png [--person]
+  uv run --with segno python assets.py qr "https://tickets.example/tour" qr.svg [--dark "#000"] [--light none]
+  uv run --with opencv-python-headless python assets.py qrcheck poster.png   decode the QR in a finished render
 
 Icons come from Iconify (200+ open sets: lucide, tabler, ph, solar, mdi,
 material-symbols, simple-icons for brand logos...). When the API is unreachable
@@ -140,6 +142,38 @@ def cmd_cutout(a):
     print(a.output)
 
 
+def cmd_qr(a):
+    try:
+        import segno
+    except ImportError:
+        sys.exit("нужен segno: uv run --with segno python assets.py qr ...")
+    q = segno.make(a.data, error="m")
+    q.save(a.out, scale=10, border=4, dark=a.dark, light=None if a.light == "none" else a.light)
+    print(f"{a.out}  ({q.version}-{q.error}; печатай ≥ 20 мм, проверь камерой телефона)")
+
+
+def cmd_qrcheck(a):
+    try:
+        import cv2
+    except ImportError:
+        sys.exit("нужен OpenCV: uv run --with opencv-python-headless python assets.py qrcheck ...")
+    img = cv2.imread(a.image)
+    if img is None:
+        sys.exit(f"не открыть {a.image}")
+    det, h, w = cv2.QRCodeDetector(), img.shape[0], img.shape[1]
+    # A phone is pointed at the code; emulate that with zooms and crops of the frame.
+    tries = [img, cv2.resize(img, None, fx=2, fy=2)]
+    for fy in (0, 0.25, 0.5):
+        for fx in (0, 0.25, 0.5):
+            tries.append(img[int(h * fy):int(h * (fy + 0.5)), int(w * fx):int(w * (fx + 0.5))])
+    for im in tries:
+        val = det.detectAndDecode(im)[0]
+        if val:
+            print(f"QR читается: {val}")
+            return
+    sys.exit("QR не найден или не читается: увеличь, добавь светлую рамку (тихую зону), убери текстуру поверх")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -154,6 +188,9 @@ def main():
     p.add_argument("--model", default="isnet-general-use", help="u2net, isnet-general-use, birefnet-general, birefnet-portrait")
     p.add_argument("--alpha-matting", action="store_true", help="мягче край волос/меха, медленнее")
     p.set_defaults(fn=cmd_cutout)
+    p = sub.add_parser("qr"); p.add_argument("data"); p.add_argument("out"); p.add_argument("--dark", default="#000000"); p.add_argument("--light", default="#ffffff")
+    p.set_defaults(fn=cmd_qr)
+    p = sub.add_parser("qrcheck"); p.add_argument("image"); p.set_defaults(fn=cmd_qrcheck)
     a = ap.parse_args()
     a.fn(a)
 

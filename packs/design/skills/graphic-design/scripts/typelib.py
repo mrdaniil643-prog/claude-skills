@@ -25,6 +25,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -47,11 +48,14 @@ def load():
     return cat
 
 
-def by_name(cat, name):
+def by_name(cat, name, strict=True):
     for f in cat["fonts"]:
         if f["name"].lower() == name.lower():
             return f
-    sys.exit(f"нет в каталоге: {name} (typelib.py find ...)")
+    if strict:
+        sys.exit(f"нет в каталоге: {name} (typelib.py find ...)")
+    # Any other Google Fonts family (text faces like Manrope): fetched by name.
+    return {"name": name, "styles": [], "cyrillic": "?", "weights": [400, 500, 700, 800], "axes": [], "path": ""}
 
 
 def flag(f):
@@ -94,7 +98,13 @@ def ensure(f, out=None):
     files = []
     query = urllib.parse.quote(f["name"]) + ":wght@" + ";".join(map(str, weights))
     try:
-        css = fetch(f"https://fonts.googleapis.com/css2?family={query}&display=swap").decode()
+        try:
+            css = fetch(f"https://fonts.googleapis.com/css2?family={query}&display=swap").decode()
+        except urllib.error.HTTPError:
+            if f.get("path"):
+                raise
+            # family outside the catalog without some of these weights: take what it has
+            css = fetch(f"https://fonts.googleapis.com/css2?family={urllib.parse.quote(f['name'])}:wght@400;700&display=swap").decode()
         for block in re.findall(r"@font-face\s*{[^}]+}", css):
             w = re.search(r"font-weight:\s*(\d+)", block).group(1)
             if re.search(r"font-style:\s*italic", block):
@@ -180,7 +190,7 @@ def cmd_get(a):
             if m:
                 rules[m.group(1)] = line
     for name in a.names:
-        f = by_name(cat, name)
+        f = by_name(cat, name, strict=False)
         for p in ensure(f, out):
             if f.get("user"):
                 shutil.copy(p, out / p.name)
@@ -192,7 +202,7 @@ def cmd_get(a):
             print(p)
         if f.get("cyr_tracking"):
             print(f"  ! {f['name']}: {f['note']}")
-        if f["cyrillic"] != "full":
+        if f["cyrillic"] in ("none", "partial"):
             print(f"  ! {f['name']}: {'кириллица неполная' if f['cyrillic'] == 'partial' else 'нет кириллицы'} — для русского текста возьми замену: typelib.py list {f['styles'][0]} --cyr")
     css_file.write_text("\n".join(rules[k] for k in sorted(rules)) + "\n", encoding="utf-8")
     print(css_file)
