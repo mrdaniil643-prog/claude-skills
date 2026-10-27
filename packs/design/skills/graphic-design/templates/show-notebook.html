@@ -28,8 +28,9 @@ const SHOW = {
   venue: "Loona",
   age: "16+",
   note: "отвлекался весь урок!",       // teacher's remark in red, or "" for none
+  lineup: [],                            // other artists, written under the headliner: ["ИМЯ", …]
   support: "при поддержке",
-  partners: [],                          // [{ img: "logo.svg" } | { text: "LABEL" }] — empty hides the row
+  partners: [],                          // [{ img: "logo.png" } | { text: "LABEL" }] — stuck on as stickers in the corner; empty hides it
   photo: "photo.png",
   tapes: [[0.5, -0.01, -4]],           // [x, y, angle] as fractions of the photo box; each should cross the cut edge
   page: "page.png",
@@ -64,33 +65,39 @@ const SHOW = {
   .title .t1 { transform: translate(.012em, -.01em) rotate(.4deg); filter: url(#shake1); }
   .title .t2 { transform: translate(-.015em, .012em) rotate(-.5deg); filter: url(#shake2); }
 
-  .photo { left: 50%; bottom: 12.5%; height: 51%; transform: translateX(-50%) rotate(-2deg); filter: url(#cut); }
+  .photo { left: 50%; bottom: 17.5%; height: 47%; transform: translateX(-50%) rotate(-2deg); filter: url(#cut); }
   .tape { width: calc(15 * var(--u)); height: calc(4.2 * var(--u)); background: rgba(226, 212, 170, .78);
           box-shadow: 0 1px 2px rgba(0,0,0,.18); filter: url(#tape); }
 
   /* a side note with an arrow to the name: sits on the paper, never on the photo */
-  .kicker { left: 6%; top: 70%; width: calc(22 * var(--u)); color: var(--pen); font: 700 calc(4.6 * var(--u)) / .95 var(--hand); transform: rotate(-7deg); text-align: center; }
+  .kicker { left: 6%; top: 67%; width: calc(22 * var(--u)); color: var(--pen); font: 700 calc(4.6 * var(--u)) / .95 var(--hand); transform: rotate(-7deg); text-align: center; }
   .kicker svg { display: block; width: 60%; height: calc(7 * var(--u)); margin: calc(.4 * var(--u)) 0 0 35%; overflow: visible; }
-  .name { left: 0; right: 0; top: 80.5%; text-align: center; }
+  .name { left: 0; right: 0; top: 76%; text-align: center; }
   .name b { position: relative; display: inline-block; font: 900 calc(13 * var(--u)) / .9 var(--heavy); color: var(--ink); letter-spacing: -.04em; padding: 0 .12em; }
   .name b::before { content: ""; position: absolute; left: -.05em; right: -.08em; top: .02em; bottom: .02em; z-index: -1;
                     background: var(--hl); mix-blend-mode: multiply; transform: rotate(-1.6deg) skewX(-8deg); filter: url(#marker); }
   .name { isolation: isolate; }
   .note { right: 6%; top: 63%; width: calc(22 * var(--u)); color: var(--red); font: 400 calc(3.4 * var(--u)) / 1.05 var(--teacher);
           transform: rotate(-9deg); text-align: center; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .18em; }
-  .support { left: 10%; right: 10%; bottom: 4.8%; display: flex; justify-content: center; align-items: center; gap: calc(3 * var(--u));
-             color: var(--pen); font: 700 calc(3.4 * var(--u)) / 1 var(--hand); }
-  .support img { height: calc(5 * var(--u)); }
+  /* more artists: "+ NAME" under the headliner, pen-underlined */
+  .also { left: 0; right: 0; top: 89%; text-align: center; color: var(--pen); font: 700 calc(6.4 * var(--u)) / 1 var(--hand); }   /* top is set under the name by the script */
+  .also b { font: 900 calc(5.6 * var(--u)) / 1 var(--heavy); color: var(--ink); letter-spacing: -.02em; margin-left: .15em;
+            text-decoration: underline wavy var(--pen); text-decoration-thickness: 2px; text-underline-offset: .2em; }
+  /* partners: logos stuck on like stickers in the bottom-right corner, a pen note above */
+  .support { right: 5%; bottom: 4.5%; display: flex; flex-direction: column; align-items: center; gap: calc(.8 * var(--u)); }
+  .support .lbl { color: var(--pen); font: 700 calc(3.3 * var(--u)) / 1 var(--hand); transform: rotate(-6deg); }
+  .support .logos { display: flex; gap: calc(1.5 * var(--u)); align-items: center; }
+  .support img { height: calc(13 * var(--u)); transform: rotate(7deg); filter: url(#cut); }
   .support .plain { font: 900 calc(3.6 * var(--u)) / 1 var(--heavy); color: var(--ink); }
 
-  .post .title { top: 13%; font-size: calc(31 * var(--u)); } .post .photo { height: 52%; bottom: 13.5%; }
-  .post .kicker { top: 72%; } .post .name { top: 82.8%; } .post .note { top: 66%; }
+  .post .title { top: 13%; font-size: calc(31 * var(--u)); } .post .photo { height: 49%; bottom: 18%; }
+  .post .kicker { top: 69%; } .post .name { top: 78.6%; } .post .note { top: 63%; }
   /* story: interface bars cover the top ~12 % and the bottom ~20 % */
   .story .date { top: 12.5%; } .story .age { top: 13.6%; right: 6%; }
   .story .title { top: 20%; font-size: calc(32 * var(--u)); }
-  .story .photo { bottom: 25%; height: 40%; }
-  .story .kicker { top: 63%; } .story .name { top: 73%; } .story .note { top: 57%; right: 15%; }
-  .story .support { bottom: 21%; }
+  .story .photo { bottom: 31.5%; height: 36%; }
+  .story .kicker { top: 57%; } .story .name { top: 66%; } .story .note { top: 52%; right: 15%; }
+  .story .support { right: auto; left: 9%; bottom: 21.5%; } .story .support img { height: calc(15 * var(--u)); }
 </style>
 </head>
 <body>
@@ -137,7 +144,8 @@ const photo = S.photo ? add(`<img class="photo" src="${S.photo}" alt="">`) : nul
 if (S.note) add(`<div class="note pen">${esc(S.note)}</div>`);
 add(`<div class="kicker pen">${esc(S.kicker)}<svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="M4 4 C 20 40, 60 46, 92 40 M80 30 L94 40 L80 48" fill="none" stroke="var(--pen)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>`);
 const name = add(`<div class="name"><b>${esc(S.headliner)}</b></div>`);
-if (S.partners && S.partners.length) add(`<div class="support"><span class="pen">${esc(S.support)}</span>${S.partners.map((x) => x.img ? `<img src="${x.img}">` : `<span class="plain">${esc(x.text)}</span>`).join('')}</div>`);
+if (S.lineup && S.lineup.length) add(`<div class="also pen">+${S.lineup.map((n) => `<b>${esc(n)}</b>`).join(' + ')}</div>`);
+if (S.partners && S.partners.length) add(`<div class="support"><span class="lbl pen">${esc(S.support)}</span><div class="logos">${S.partners.map((x) => x.img ? `<img src="${x.img}" alt="">` : `<span class="plain">${esc(x.text)}</span>`).join('')}</div></div>`);
 
 Promise.all([document.fonts.ready, photo && !photo.complete ? new Promise((r) => { photo.onload = photo.onerror = r; }) : 0]).then(() => {
   // the title spans the page; shrink if a long name would overflow
@@ -146,6 +154,8 @@ Promise.all([document.fonts.ready, photo && !photo.complete ? new Promise((r) =>
   for (let i = 0; i < 40 && title.getBoundingClientRect().width > P.clientWidth * 0.94; i++) { fs *= 0.96; title.style.fontSize = fs + 'px'; }
   const nb = name.querySelector('b'); let ns = parseFloat(getComputedStyle(nb).fontSize);
   for (let i = 0; i < 40 && nb.getBoundingClientRect().width > P.clientWidth * 0.8; i++) { ns *= 0.96; nb.style.fontSize = ns + 'px'; }
+  const also = P.querySelector('.also');
+  if (also) also.style.top = (nb.getBoundingClientRect().bottom - P.getBoundingClientRect().top + P.clientHeight * 0.012) + 'px';
   // two strips of tape over the top corners of the cut-out
   if (photo && photo.naturalWidth) {
     const r = photo.getBoundingClientRect(), pr = P.getBoundingClientRect();
