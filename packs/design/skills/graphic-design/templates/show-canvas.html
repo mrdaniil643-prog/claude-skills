@@ -26,8 +26,10 @@ const SHOW = {
   date: "18.07",
   venue: "Клуб Pipl",
   age: "14+",
+  title: "",                     // event name, set between the city and the age in the top row ("" = none)
   kicker: "на сцене играет",
   headliner: "АРТИСТ",
+  nameFont: "",                  // font for the headliner, e.g. "Rubik" for round lowercase ("" = the grotesque)
   support: "при поддержке",
   photo: "photo.png",
   cloth: "canvas.png",
@@ -60,8 +62,10 @@ const SHOW = {
   .print { position: absolute; inset: 0; mix-blend-mode: multiply; filter: url(#ink); }
   .print > * { position: absolute; }
   .over { position: absolute; inset: 0; }          /* stickers sit on top of the cloth, not in it */
+  .over .banner, .over .tab { filter: url(#edge); }
   .over > * { position: absolute; }
 
+  .top .event { font: 900 calc(4.4 * var(--u)) / .8 var(--grotesk); letter-spacing: -.03em; }
   .top { left: 8%; right: 8%; top: 6.2%; display: flex; justify-content: space-between; align-items: baseline;
          font: 800 calc(2.5 * var(--u)) / 1 var(--wide); color: var(--ink); letter-spacing: .02em; text-transform: uppercase; }
   .city .cap { font: 400 calc(6 * var(--u)) / 0 var(--swash); text-transform: none; margin-right: -.12em; position: relative; top: .08em; }
@@ -73,7 +77,7 @@ const SHOW = {
             padding: calc(1.6 * var(--u)) calc(2 * var(--u)) calc(1.2 * var(--u)); box-sizing: border-box; }
   .kicker { font: 400 calc(3.3 * var(--u)) / 1 var(--script); letter-spacing: .02em; }
   .kicker::before, .kicker::after { content: "◦"; font: 400 .8em/1 var(--grotesk); margin: 0 .5em; position: relative; top: -.1em; }
-  .name { display: inline-block; font: 900 calc(13 * var(--u)) / .86 var(--grotesk); letter-spacing: -.035em; text-transform: none; white-space: nowrap; margin-top: calc(.6 * var(--u)); }
+  .name { display: inline-block; font: 900 calc(13 * var(--u)) / .86 var(--name-font, var(--grotesk)); letter-spacing: -.035em; text-transform: none; white-space: nowrap; margin-top: calc(.6 * var(--u)); }
   .tab { left: 50%; transform: translateX(-50%); background: var(--ink); padding: 0 calc(.9 * var(--u)) calc(.9 * var(--u)); }
   .tab span { display: flex; align-items: center; gap: calc(1.4 * var(--u)); background: var(--cloth); color: var(--ink);
               font: 400 calc(3.2 * var(--u)) / 1 var(--script); padding: calc(.6 * var(--u)) calc(2.2 * var(--u)) calc(1 * var(--u)); white-space: nowrap; }
@@ -83,7 +87,7 @@ const SHOW = {
   .partners { left: 10%; right: 10%; bottom: 5.5%; display: flex; justify-content: space-between; align-items: center; gap: calc(2 * var(--u)); }
   .partners .skull { height: calc(7 * var(--u)); }
   .partners .logos { display: flex; gap: calc(4 * var(--u)); align-items: center; justify-content: center; flex: 1; }
-  .partners .logos img { height: calc(5 * var(--u)); max-width: calc(22 * var(--u)); object-fit: contain; }
+  .partners .logos img { height: calc(9 * var(--u)); max-width: calc(22 * var(--u)); object-fit: contain; }
   .plain { font: 900 calc(4 * var(--u)) / 1 var(--grotesk); letter-spacing: -.03em; color: var(--ink); }
 
   /* label mashup: compressed grotesque crowded into itself + a calligraphic ghost of the same word */
@@ -121,9 +125,10 @@ const SHOW = {
 
   /* story: content lives between the top ~12 % and bottom ~20 % */
   .story .top { top: 13%; }
-  .story .photo { top: 17%; height: 34%; } .story .frame { top: 16%; height: 36%; }
-  .story .banner { top: 52%; } .story .emblem { top: 47%; }
+  .story .photo { top: 17.5%; height: 37%; } .story .frame { top: 16.5%; height: 39%; }
+  .story .banner { top: 56%; } .story .emblem { top: 51%; }
   .story .partners { bottom: 21%; }
+  .square .info { left: 8%; right: auto; top: 11.2%; text-align: left; font-size: calc(1.8 * var(--u)); }   /* no room at the bottom: date goes under the city */
   .post .photo { top: 10.5%; height: 44%; } .post .frame { top: 9.6%; height: 45.8%; }
   .post .banner { top: 56%; } .post .emblem { top: 50%; }
 </style>
@@ -135,9 +140,14 @@ const SHOW = {
     <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
     <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="d"/>
     <feTurbulence type="fractalNoise" baseFrequency=".45" numOctaves="3" seed="8" result="s"/>
-    <feColorMatrix in="s" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -24 0 0 0 6.6" result="holes"/>
+    <feColorMatrix in="s" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -30 0 0 0 7.4" result="holes"/>
     <feComposite in="holes" in2="d" operator="in" result="specks"/>
     <feMerge><feMergeNode in="d"/><feMergeNode in="specks"/></feMerge>
+  </filter>
+  <!-- printed edge without lost ink: for solid blocks laid over the cloth -->
+  <filter id="edge" x="-2%" y="-5%" width="104%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="4" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
   </filter>
   <!-- ragged edge for the ink block -->
   <filter id="rag" x="-3%" y="-3%" width="106%" height="106%">
@@ -180,15 +190,17 @@ function sketchRect(w, h, seed) {
 }
 
 const age = `<span>${esc(S.age)}</span>`;
+if (S.nameFont) document.documentElement.style.setProperty('--name-font', `"${S.nameFont}"`);
 const city = String(S.city || '');
 const cityHtml = `<span class="city"><span class="cap">${esc(city[0] || '')}</span>${esc(city.slice(1))}</span>`;
 
 if (layout === 'headliner') {
-  add(P, `<div class="top">${cityHtml}${age}</div>`);
+  add(P, `<div class="top">${cityHtml}${S.title ? `<span class="event">${esc(S.title)}</span>` : ''}${age}</div>`);
   if (S.photo) add(P, `<img class="photo" src="${S.photo}" alt="">`);
   const fr = add(P, `<div class="frame"></div>`);
-  const banner = add(P, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name" id="name">${esc(S.headliner)}</div></div>`);
-  const tab = add(P, `<div class="tab"><span>${S.corner ? `<img src="${S.corner}">` : ''}${esc(S.support)}${S.corner ? `<img src="${S.corner}">` : ''}</span></div>`);
+  // the banner is solid black ink laid over the cloth (a multiplied banner goes grey and the name dull)
+  const banner = add(O, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name" id="name">${esc(S.headliner)}</div></div>`);
+  const tab = add(O, `<div class="tab"><span>${S.corner ? `<img src="${S.corner}">` : ''}${esc(S.support)}${S.corner ? `<img src="${S.corner}">` : ''}</span></div>`);
   const info = (S.date || S.venue) ? add(P, `<div class="info">${esc([S.date, S.venue].filter(Boolean).join(' · '))}</div>`) : null;
   add(P, `<div class="partners">${S.skull ? `<img class="skull" src="${S.skull}">` : '<i></i>'}<div class="logos">${(S.partners || []).map(logo).join('')}</div>${S.skull ? `<img class="skull" src="${S.skull}" style="transform:scaleX(-1)">` : '<i></i>'}</div>`);
   if (S.emblem) { add(O, `<img class="emblem l" src="${S.emblem}">`); add(O, `<img class="emblem r" src="${S.emblem}">`); }
@@ -202,7 +214,7 @@ if (layout === 'headliner') {
     for (let i = 0; i < 40 && name.getBoundingClientRect().width > inner; i++) { fs *= 0.96; name.style.fontSize = fs + 'px'; }
     const bb = banner.getBoundingClientRect(), pb = P.getBoundingClientRect();
     tab.style.top = (bb.bottom - pb.top - 1) + 'px';
-    if (info) info.style.top = (tab.getBoundingClientRect().bottom - pb.top + pb.height * 0.018) + 'px';
+    if (info && fmt !== 'square') info.style.top = (tab.getBoundingClientRect().bottom - pb.top + pb.height * 0.018) + 'px';
     window.__pending = false;
   });
 } else {
