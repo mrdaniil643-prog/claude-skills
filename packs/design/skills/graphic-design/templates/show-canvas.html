@@ -30,6 +30,7 @@ const SHOW = {
   kicker: "на сцене играет",
   headliner: "АРТИСТ",
   nameFont: "",                  // font for the headliner, e.g. "Rubik" for round lowercase ("" = the grotesque)
+  nameStyle: "",                 // "embroidered": satin-stitch lettering with a swash (pair with a blackletter, e.g. nameFont "Pirata One")
   // restless mode: nothing sits straight — hand-stitched thread frame, a rubber stamp,
   // misregistered name with a motion echo, a jittered photo, embroidered-patch emblems.
   // null = the calm print. { thread: "#a8141e", stamp: { text, sub, fx: .88, fy: .06, rot: -11, size: 9 }, patch: true }
@@ -90,6 +91,7 @@ const SHOW = {
 
   .partners { left: 10%; right: 10%; bottom: 5.5%; display: flex; justify-content: space-between; align-items: center; gap: calc(2 * var(--u)); }
   .partners .skull { height: calc(7 * var(--u)); }
+  .partners .skull.patch { filter: url(#patch); height: calc(6.4 * var(--u)); }
   .partners .logos { display: flex; gap: calc(4 * var(--u)); align-items: center; justify-content: center; flex: 1; }
   .partners .logos img { height: calc(9 * var(--u)); max-width: calc(22 * var(--u)); object-fit: contain; }
   .plain { font: 900 calc(4 * var(--u)) / 1 var(--grotesk); letter-spacing: -.03em; color: var(--ink); }
@@ -134,10 +136,14 @@ const SHOW = {
   .restless .photo.ghost { opacity: .2; transform: translate(1.8%, -.9%) rotate(-.6deg); }
   .restless .top .city { transform: rotate(-3deg); display: inline-block; }
   .restless .top > span:last-child { transform: rotate(4deg); display: inline-block; }
-  .restless .name { position: relative; isolation: isolate;
-                    text-shadow: .075em 0 0 rgba(228,221,207,.16), .15em 0 0 rgba(228,221,207,.07); }    /* can't sit still: a motion echo */
-  .restless .name::before { content: attr(data-t); position: absolute; left: 0; top: 0; z-index: -1; color: var(--thread, #a8141e);
-                            transform: translate(-.04em, .03em); text-shadow: none; }                                    /* misregistered second colour */
+  /* embroidered headliner: tattoo blackletter in satin stitch with a calligraphic swash under it */
+  .name.emb { position: relative; font-size: calc(16 * var(--u)); font-weight: 400; letter-spacing: .01em; line-height: .92; filter: url(#patch); padding: 0 .12em .2em; margin-top: 0; }
+  .name.emb .swash { position: absolute; left: -4%; width: 108%; bottom: -.04em; height: .36em; overflow: visible; }
+  .emb-layout .photo { top: 10.5%; height: 43%; } .emb-layout .frame { top: 9.5%; height: 45%; }
+  .emb-layout .banner { top: 55%; padding-top: calc(1 * var(--u)); padding-bottom: calc(.8 * var(--u)); } .emb-layout .emblem { top: 48.5%; }
+  .square.emb-layout .partners { bottom: 3.6%; } .square.emb-layout .partners .logos img { height: calc(8 * var(--u)); }
+  .post.emb-layout .photo { top: 10.5%; height: 42%; } .post.emb-layout .frame { top: 9.6%; height: 43.8%; } .post.emb-layout .banner { top: 54%; } .post.emb-layout .emblem { top: 48%; }
+  .story.emb-layout .photo { top: 17.5%; height: 34%; } .story.emb-layout .frame { top: 16.5%; height: 36%; } .story.emb-layout .banner { top: 53.5%; } .story.emb-layout .emblem { top: 48.5%; }
   .stitch { overflow: visible; pointer-events: none; filter: drop-shadow(1px 2px 1.2px rgba(0,0,0,.4)); }
   .stamp { mix-blend-mode: multiply; color: var(--thread, #a8141e); text-align: center; filter: url(#stamp);
            border: .09em solid currentColor; border-radius: .08em; padding: .02em .16em .06em; line-height: 1; white-space: nowrap; }
@@ -275,10 +281,15 @@ function stitchRect(w, h, seed, color) {
   return `<svg class="stitch" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="overflow:visible">${hl}${out.join('')}</svg>`;
 }
 
+// calligraphic swash under an embroidered name: a tapered ribbon, a curl at the end, a diamond at the start
+const SWASH = `<svg class="swash" viewBox="0 0 1000 80" preserveAspectRatio="none" aria-hidden="true"><g fill="#efe8d8">
+  <path d="M40,30 C 280,78 700,80 960,18 C 700,68 282,64 40,30 Z"/><path d="M18,30 L31,20 L44,30 L31,40 Z"/></g>
+  <path d="M958,19 c 16,-7 20,-19 5,-19 c -13,0 -13,13 -2,15" fill="none" stroke="#efe8d8" stroke-width="5" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
 const R = S.restless;
 if (R) { document.getElementById('p').classList.add('restless'); if (R.thread) document.documentElement.style.setProperty('--thread', R.thread); }
 const age = `<span>${esc(S.age)}</span>`;
 if (S.nameFont) document.documentElement.style.setProperty('--name-font', `"${S.nameFont}"`);
+if (S.nameStyle === 'embroidered') document.getElementById('p').classList.add('emb-layout');
 const city = String(S.city || '');
 const cityHtml = `<span class="city"><span class="cap">${esc(city[0] || '')}</span>${esc(city.slice(1))}</span>`;
 
@@ -288,10 +299,14 @@ if (layout === 'headliner') {
   if (S.photo) add(P, `<img class="photo" src="${S.photo}" alt="">`);
   const fr = add(R && R.thread ? O : P, `<div class="frame"></div>`);   // thread sits on the cloth, pen is printed into it
   // the banner is solid black ink laid over the cloth (a multiplied banner goes grey and the name dull)
-  const banner = add(O, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name" id="name" data-t="${esc(S.headliner)}">${esc(S.headliner)}</div></div>`);
+  const banner = add(O, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name${S.nameStyle === 'embroidered' ? ' emb' : ''}" id="name">${esc(S.headliner)}${S.nameStyle === 'embroidered' ? SWASH : ''}</div></div>`);
   const tab = add(O, `<div class="tab"><span>${S.corner ? `<img src="${S.corner}">` : ''}${esc(S.support)}${S.corner ? `<img src="${S.corner}">` : ''}</span></div>`);
   const info = (S.date || S.venue) ? add(P, `<div class="info">${esc([S.date, S.venue].filter(Boolean).join(' · '))}</div>`) : null;
-  add(P, `<div class="partners">${S.skull ? `<img class="skull" src="${S.skull}">` : '<i></i>'}<div class="logos">${(S.partners || []).map(logo).join('')}</div>${S.skull ? `<img class="skull" src="${S.skull}" style="transform:scaleX(-1)">` : '<i></i>'}</div>`);
+  // skulls: printed, or embroidered patches like the emblems (patches sit on the cloth, so a separate row in the top layer)
+  const skull = (flip) => `<img class="skull${R && R.patch ? ' patch' : ''}" src="${S.skull}"${flip && !(R && R.patch) ? ' style="transform:scaleX(-1)"' : ''}>`;
+  const row = (inner) => `<div class="partners">${S.skull ? skull(false) : '<i></i>'}<div class="logos">${inner}</div>${S.skull ? skull(true) : '<i></i>'}</div>`;
+  if (R && R.patch) { add(O, row('')).querySelector('.logos').remove(); add(P, `<div class="partners"><i></i><div class="logos">${(S.partners || []).map(logo).join('')}</div><i></i></div>`); }
+  else add(P, row((S.partners || []).map(logo).join('')));
   const pc = R && R.patch ? ' patch' : '';
   // patch lighting breaks on a CSS-mirrored element, so the right patch is a canvas holding the mirrored drawing
   if (S.emblem && pc) {
