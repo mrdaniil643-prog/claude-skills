@@ -5,6 +5,7 @@
   ... --fx "duotone=#0b0b0b,#ff2a2a,halftone=10"   two-colour print with a dot screen
   ... --fx "dream,chroma=4,grain=0.1"              soundcloud haze
   ... --fx "vhs"                                   tape: chroma bleed, scanlines, noise
+  ... --fx "paint=8,paper"                         painted / gouache
   uv run --with pillow --with numpy python phototreat.py --list
 
 Effects (in the order written; numbers optional):
@@ -24,6 +25,15 @@ Effects (in the order written; numbers optional):
   vhs                chroma bleed + scanlines + noise + soft
   vignette[=k]       darken edges
   sharpen[=k]        crisp edges after effects
+  paint[=r]          painted: Kuwahara brush patches           4–12
+  sketch[=k]         pencil drawing of the photo (grey)
+  ink[=thr]          brush-pen line art with solid blacks     0.4–0.6
+  paper[=k]          paper tooth and fibres, slightly warm — put last
+
+Hand-made looks (keep one tool for the whole system, see references/handmade.md):
+  ... --fx "paint=8,paper"                         oil/gouache poster
+  ... --fx "sketch,paper=1.2"                      pencil sketch
+  ... --fx "ink=0.5,paper"                         ink drawing over the photo
 """
 import argparse
 import sys
@@ -172,10 +182,73 @@ def fx_sharpen(a, k=1.0):
     return np.asarray(img, np.float32) / 255
 
 
+def _box(x, r):
+    """Mean over a (2r+1)² window, edge-padded, via an integral image."""
+    p = np.pad(x, ((r + 1, r), (r + 1, r)) + ((0, 0),) * (x.ndim - 2), mode="edge")
+    c = p.cumsum(0).cumsum(1)
+    n = 2 * r + 1
+    return (c[n:, n:] - c[:-n, n:] - c[n:, :-n] + c[:-n, :-n]) / (n * n)
+
+
+def fx_paint(a, r=6):
+    """Kuwahara: each pixel takes the mean of its calmest quadrant -> flat brush patches, sharp edges."""
+    r = max(2, int(r))
+    h, w = a.shape[:2]
+    l = lum(a)
+    m, m2, ml = _box(a, r // 2), _box(l * l, r // 2), _box(l, r // 2)
+    var = m2 - ml * ml
+    s = r // 2 + 1
+    vp = np.pad(var, s, mode="edge")
+    mp = np.pad(m, ((s, s), (s, s), (0, 0)), mode="edge")
+    best, out = np.full((h, w), np.inf, np.float32), np.zeros_like(a)
+    for dy in (0, 2 * s):
+        for dx in (0, 2 * s):
+            v = vp[dy:dy + h, dx:dx + w]
+            pick = v < best
+            best = np.where(pick, v, best)
+            out = np.where(pick[..., None], mp[dy:dy + h, dx:dx + w], out)
+    return out
+
+
+def fx_sketch(a, k=1.0):
+    """Pencil drawing: colour-dodge of the inverted blur, slightly darkened lines."""
+    l = lum(np.clip(a, 0, 1))
+    blur = np.asarray(Image.fromarray(((1 - l) * 255).astype(np.uint8)).filter(
+        ImageFilter.GaussianBlur(max(a.shape[:2]) * 0.006 * k)), np.float32) / 255
+    out = np.clip(l / np.maximum(1 - blur, 1e-3), 0, 1) ** 1.6
+    return np.repeat(out[..., None], 3, axis=2)
+
+
+def fx_ink(a, thr=0.5):
+    """Line art from edges (difference of Gaussians), like a brush-pen trace of the photo."""
+    l = (np.clip(lum(a), 0, 1) * 255).astype(np.uint8)
+    s = max(a.shape[:2]) / 1000
+    g1 = np.asarray(Image.fromarray(l).filter(ImageFilter.GaussianBlur(1.0 * s)), np.float32)
+    g2 = np.asarray(Image.fromarray(l).filter(ImageFilter.GaussianBlur(2.2 * s)), np.float32)
+    dog = g1 - g2
+    line = 0.5 + 0.5 * np.tanh((dog + 4 * (1 - thr)) * 0.8)   # dark side of an edge -> 0
+    shade = (g1 / 255) < thr * 0.35                       # solid blacks in the darkest areas
+    out = np.where(shade, 0.05, 0.05 + 0.9 * line)
+    return np.repeat(out[..., None], 3, axis=2).astype(np.float32)
+
+
+def fx_paper(a, k=1.0, rng=None):
+    """Cold-press paper: fibres and tooth multiplied in, ink sits in the valleys."""
+    h, w = a.shape[:2]
+    n = rng.normal(0, 1, (h, w)).astype(np.float32)
+    tooth = _box(n, 1) * 0.6 + _box(n, 4) * 1.4
+    fib = np.asarray(Image.fromarray(((n * 0.5 + 0.5).clip(0, 1) * 255).astype(np.uint8)).filter(
+        ImageFilter.BoxBlur(3)).resize((w // 6 + 1, h)).resize((w, h)), np.float32) / 255 - 0.5
+    tex = 1 + (tooth * 0.06 + fib * 0.08) * k
+    warm = np.array([1.0, 0.985, 0.95], np.float32)
+    return (a * tex[..., None]) * (1 - 0.15 * k * (1 - warm))
+
+
 FX = {"flash": fx_flash, "crush": fx_crush, "grain": fx_grain, "duotone": fx_duotone, "tint": fx_tint, "halftone": fx_halftone,
       "xerox": fx_xerox, "bitmap": fx_bitmap, "chroma": fx_chroma, "motion": fx_motion, "dream": fx_dream, "pixel": fx_pixel,
-      "scanlines": fx_scanlines, "vhs": fx_vhs, "vignette": fx_vignette, "sharpen": fx_sharpen}
-NEEDS_RNG = {"grain", "xerox", "vhs"}
+      "scanlines": fx_scanlines, "vhs": fx_vhs, "vignette": fx_vignette, "sharpen": fx_sharpen,
+      "paint": fx_paint, "sketch": fx_sketch, "ink": fx_ink, "paper": fx_paper}
+NEEDS_RNG = {"grain", "xerox", "vhs", "paper"}
 
 
 def parse_chain(spec):
