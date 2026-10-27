@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Show poster: notebook</title>
+<!-- One show, one city. A squared school-notebook page torn from a spiral pad:
+     the date written by hand as in class ("Двадцать седьмое октября"), the event title
+     in big pen-hatched letters traced over and over, the artist cut out with scissors
+     and taped in, the name under a highlighter, ballpoint doodles in the margins,
+     the age circled in teacher's red pen.
+     Formats: square 1080×1080 (default), post 1080×1350, story 1080×1920.
+       node render.cjs show-notebook.html sq.png --size 1080x1080 --query format=square
+       node render.cjs show-notebook.html story.png --size 1080x1920 --query format=story
+     Assets: page.png — textures.py notebook (same size as the format);
+     photo.png — assets.py cutout (transparent, required for the scissor-cut rim);
+     doodles.svg — handdrawn.py bg --tool ink --ink "#1d3d9c" --clear 0.36 (same size);
+     circle.svg — handdrawn.py circle --tool ink --ink "#c8202c".
+     Fonts: fonts.py "Caveat:600,700" "Rubik Marker Hatch" "Rubik:900" "Bad Script". -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<script>
+window.__pending = true;
+const SHOW = {
+  title: "СДВГ",                        // event name: the hatched, traced-over letters
+  headliner: "tewiq",
+  kicker: "на сцене играет",
+  dateWords: "Двадцать седьмое октября", // written like the date in a school notebook
+  city: "Хабаровск",
+  venue: "Loona",
+  age: "16+",
+  note: "отвлекался весь урок!",       // teacher's remark in red, or "" for none
+  support: "при поддержке",
+  partners: [],                          // [{ img: "logo.svg" } | { text: "LABEL" }] — empty hides the row
+  photo: "photo.png",
+  tapes: [[0.5, -0.01, -4]],           // [x, y, angle] as fractions of the photo box; each should cross the cut edge
+  page: "page.png",
+  doodles: "doodles.svg",
+  circle: "circle.svg",
+};
+</script>
+<style>
+  :root { --pen: #1d3d9c; --red: #b8141f; --ink: #111; --hl: rgba(255, 231, 24, .88);
+          --hand: "Caveat", cursive; --teacher: "Bad Script", "Caveat", cursive;
+          --hatch: "Rubik Marker Hatch", "Rubik", sans-serif; --heavy: "Rubik", "Inter", sans-serif; }
+  html, body { margin: 0; background: #050505; }
+  .p { position: relative; overflow: hidden; background: #050505; }
+  .square { width: 1080px; height: 1080px; --u: 10.8px; }
+  .post   { width: 1080px; height: 1350px; --u: 10.8px; }
+  .story  { width: 1080px; height: 1920px; --u: 10.8px; }
+  .p > * { position: absolute; }
+  .fill { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* everything drawn in pen sinks into the paper */
+  .pen { mix-blend-mode: multiply; filter: url(#pen); }
+
+  .date { left: 12%; right: 16%; top: 5.2%; text-align: center; color: var(--pen); font: 700 calc(5.2 * var(--u)) / 1 var(--hand); }
+  .date small { display: block; font-size: .78em; margin-top: calc(.3 * var(--u)); }
+  .age { right: 5.5%; top: 4.6%; width: calc(14 * var(--u)); height: calc(10 * var(--u)); display: grid; place-items: center;
+         color: var(--red); font: 700 calc(6 * var(--u)) / 1 var(--hand); transform: rotate(-8deg); }
+  .age img { position: absolute; inset: -12% -8%; width: 116%; height: 124%; }
+
+  /* the title: hatched letters, then traced over twice with a shaky pen */
+  .title { left: 3%; right: 3%; top: 13.5%; text-align: center; white-space: nowrap; color: var(--pen);
+           font: 400 calc(30 * var(--u)) / .9 var(--hatch); letter-spacing: -.02em; }
+  .title span { position: absolute; inset: 0; color: transparent; -webkit-text-stroke: .012em var(--pen); }
+  .title .t1 { transform: translate(.012em, -.01em) rotate(.4deg); filter: url(#shake1); }
+  .title .t2 { transform: translate(-.015em, .012em) rotate(-.5deg); filter: url(#shake2); }
+
+  .photo { left: 50%; bottom: 12.5%; height: 51%; transform: translateX(-50%) rotate(-2deg); filter: url(#cut); }
+  .tape { width: calc(15 * var(--u)); height: calc(4.2 * var(--u)); background: rgba(226, 212, 170, .78);
+          box-shadow: 0 1px 2px rgba(0,0,0,.18); filter: url(#tape); }
+
+  /* a side note with an arrow to the name: sits on the paper, never on the photo */
+  .kicker { left: 6%; top: 70%; width: calc(22 * var(--u)); color: var(--pen); font: 700 calc(4.6 * var(--u)) / .95 var(--hand); transform: rotate(-7deg); text-align: center; }
+  .kicker svg { display: block; width: 60%; height: calc(7 * var(--u)); margin: calc(.4 * var(--u)) 0 0 35%; overflow: visible; }
+  .name { left: 0; right: 0; top: 80.5%; text-align: center; }
+  .name b { position: relative; display: inline-block; font: 900 calc(13 * var(--u)) / .9 var(--heavy); color: var(--ink); letter-spacing: -.04em; padding: 0 .12em; }
+  .name b::before { content: ""; position: absolute; left: -.05em; right: -.08em; top: .02em; bottom: .02em; z-index: -1;
+                    background: var(--hl); mix-blend-mode: multiply; transform: rotate(-1.6deg) skewX(-8deg); filter: url(#marker); }
+  .name { isolation: isolate; }
+  .note { right: 6%; top: 63%; width: calc(22 * var(--u)); color: var(--red); font: 400 calc(3.4 * var(--u)) / 1.05 var(--teacher);
+          transform: rotate(-9deg); text-align: center; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .18em; }
+  .support { left: 10%; right: 10%; bottom: 4.8%; display: flex; justify-content: center; align-items: center; gap: calc(3 * var(--u));
+             color: var(--pen); font: 700 calc(3.4 * var(--u)) / 1 var(--hand); }
+  .support img { height: calc(5 * var(--u)); }
+  .support .plain { font: 900 calc(3.6 * var(--u)) / 1 var(--heavy); color: var(--ink); }
+
+  .post .title { top: 13%; font-size: calc(31 * var(--u)); } .post .photo { height: 52%; bottom: 13.5%; }
+  .post .kicker { top: 72%; } .post .name { top: 82.8%; } .post .note { top: 66%; }
+  /* story: interface bars cover the top ~12 % and the bottom ~20 % */
+  .story .date { top: 12.5%; } .story .age { top: 13.6%; right: 6%; }
+  .story .title { top: 20%; font-size: calc(32 * var(--u)); }
+  .story .photo { bottom: 25%; height: 40%; }
+  .story .kicker { top: 63%; } .story .name { top: 73%; } .story .note { top: 57%; right: 15%; }
+  .story .support { bottom: 21%; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="pen"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="2" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="shake1"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="shake2"><feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="2" seed="9" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="11" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="marker" x="-5%" y="-20%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".05 .4" numOctaves="3" seed="6" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <filter id="tape" x="-5%" y="-20%" width="110%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".9 .08" numOctaves="2" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="8" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <!-- scissor cut: uneven white paper rim around the cut-out, soft shadow on the page -->
+  <filter id="cut" x="-15%" y="-15%" width="130%" height="130%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="9" result="fat"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="fat" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G" result="rim"/>
+    <feFlood flood-color="#fbfaf6"/><feComposite in2="rim" operator="in" result="paper"/>
+    <feGaussianBlur in="rim" stdDeviation="5" result="b"/><feOffset in="b" dx="4" dy="6" result="o"/>
+    <feColorMatrix in="o" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .35 0" result="shadow"/>
+    <feMerge><feMergeNode in="shadow"/><feMergeNode in="paper"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</svg>
+<div class="p" id="p">
+  <img class="fill" id="page" alt="">
+  <img class="fill pen" id="doodles" alt="">
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const fmt = q.get('format') || 'square';
+const S = SHOW, P = document.getElementById('p');
+P.classList.add(fmt);
+document.getElementById('page').src = S.page;
+const dd = document.getElementById('doodles'); if (S.doodles) dd.src = S.doodles; else dd.remove();
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const add = (html) => { P.insertAdjacentHTML('beforeend', html); return P.lastElementChild; };
+
+add(`<div class="date pen">${esc(S.dateWords)}<small>${esc([S.city, S.venue].filter(Boolean).join(', '))}</small></div>`);
+add(`<div class="age pen">${S.circle ? `<img src="${S.circle}" alt="">` : ''}${esc(S.age)}</div>`);
+const title = add(`<div class="title pen">${esc(S.title)}<span class="t1">${esc(S.title)}</span><span class="t2">${esc(S.title)}</span></div>`);
+const photo = S.photo ? add(`<img class="photo" src="${S.photo}" alt="">`) : null;
+if (S.note) add(`<div class="note pen">${esc(S.note)}</div>`);
+add(`<div class="kicker pen">${esc(S.kicker)}<svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="M4 4 C 20 40, 60 46, 92 40 M80 30 L94 40 L80 48" fill="none" stroke="var(--pen)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>`);
+const name = add(`<div class="name"><b>${esc(S.headliner)}</b></div>`);
+if (S.partners && S.partners.length) add(`<div class="support"><span class="pen">${esc(S.support)}</span>${S.partners.map((x) => x.img ? `<img src="${x.img}">` : `<span class="plain">${esc(x.text)}</span>`).join('')}</div>`);
+
+Promise.all([document.fonts.ready, photo && !photo.complete ? new Promise((r) => { photo.onload = photo.onerror = r; }) : 0]).then(() => {
+  // the title spans the page; shrink if a long name would overflow
+  let fs = parseFloat(getComputedStyle(title).fontSize);
+  title.style.width = 'max-content'; title.style.left = '50%'; title.style.right = 'auto'; title.style.transform = 'translateX(-50%)';
+  for (let i = 0; i < 40 && title.getBoundingClientRect().width > P.clientWidth * 0.94; i++) { fs *= 0.96; title.style.fontSize = fs + 'px'; }
+  const nb = name.querySelector('b'); let ns = parseFloat(getComputedStyle(nb).fontSize);
+  for (let i = 0; i < 40 && nb.getBoundingClientRect().width > P.clientWidth * 0.8; i++) { ns *= 0.96; nb.style.fontSize = ns + 'px'; }
+  // two strips of tape over the top corners of the cut-out
+  if (photo && photo.naturalWidth) {
+    const r = photo.getBoundingClientRect(), pr = P.getBoundingClientRect();
+    // each strip should cross the cut edge: half on the photo, half on the paper
+    const under = P.querySelector('.note') || P.querySelector('.kicker');   // tape goes under the writing
+    for (const [x, y, a] of S.tapes || []) under.insertAdjacentHTML('beforebegin', `<div class="tape" style="left:${r.left - pr.left + r.width * x}px;top:${r.top - pr.top + r.height * y}px;transform:translate(-50%,-50%) rotate(${a}deg)"></div>`);
+  }
+  window.__pending = false;
+});
+document.querySelectorAll('img').forEach((im) => im.addEventListener('error', () => im.remove()));
+</script>
+</body>
+</html>

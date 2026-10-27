@@ -1,7 +1,8 @@
-"""Material backgrounds for show posters: a frayed canvas patch, crinkled liquid
-metal, and a red membrane network to lay over the metal.
+"""Material backgrounds for show posters: a frayed canvas patch, a notebook page,
+crinkled liquid metal, and a red membrane network to lay over the metal.
 
   uv run --with pillow --with numpy python textures.py canvas --size 1080x1350 --out canvas.png
+  uv run --with pillow --with numpy python textures.py notebook --size 1080x1080 --out page.png
   uv run --with pillow --with numpy python textures.py metal  --size 1080x1440 --out metal.png
   uv run --with shapely python textures.py cells --size 1080x1440 --seed 3 --out cells.svg
 
@@ -9,6 +10,10 @@ canvas   cream cotton canvas: weave, creases, stains, frayed edges with loose
          threads, black outside (or --bg none for transparency).
          --color "#e4ddcf" --fray 1.0 (fringe length) --threads 14 --wrinkle 1.0 --dirt 1.0
          --inset 0.035 (black margin, fraction of the short side)
+notebook squared school-notebook sheet torn out of a spiral pad: 5 mm grid, red
+         margin, ripped punch holes on the left, crumple folds, black outside.
+         --rule grid|lines|blank --cell 34 (px at 1080) --margin right|left|none
+         --crumple 1.0 --age 1.0 (yellowing) --inset 0.035
 metal    crinkled foil / poured silver: blobs of liquid metal over fine creases,
          lit like chrome. --blobs 1.0 --crease 1.0 --tint 0.0–1 (green/amber
          reflections, as on a photographed sheet) --contrast 1.0
@@ -196,6 +201,76 @@ def cmd_canvas(a):
     print(f"saved {a.out} ({W}×{H}, canvas, seed {a.seed})")
 
 
+# ---------------------------------------------------------------- notebook
+def cmd_notebook(a):
+    np = _np()
+    W, H = args_size(a.size)
+    rng = np.random.default_rng(a.seed)
+    k = min(W, H) / 1080
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    m = a.inset * min(W, H)
+
+    # crumple: soft bulges + a few sharp fold lines (paper keeps its creases)
+    fold = noise(rng, H, W, 80 * k) * 5 + noise(rng, H, W, 25 * k) * 1.2 * a.crumple
+    for _ in range(int(3 * a.crumple)):
+        x0, y0, ang = rng.uniform(0, W), rng.uniform(0, H), rng.uniform(0, math.pi)
+        d = (xx - x0) * math.sin(ang) - (yy - y0) * math.cos(ang)
+        fold += rng.uniform(1, 2.5) * np.abs(d) / (200 * k) * -1 + rng.uniform(0.6, 1.4) * np.exp(-(d / (2.5 * k)) ** 2)
+    light, _ = shade(fold, k=0.9)
+    paper = hexrgb(a.color)
+    tone = 0.97 + 0.45 * (light - light.mean()) + 0.02 * noise(rng, H, W, 0.8) + 0.006 * noise(rng, H, W, 6 * k)
+    img = paper[None, None, :] * tone[..., None]
+
+    # ruling: thin printed lines, slightly uneven ink
+    cell = a.cell * k
+    ink = np.zeros((H, W), np.float32)
+    off_x, off_y = rng.uniform(0, cell), rng.uniform(0, cell)
+    def line(c, o):  # 1 on a printed line, fading over ~0.75 px
+        return np.clip(1 - np.abs(((c - o + cell / 2) % cell) - cell / 2) / (0.75 * k), 0, 1)
+    if a.rule == "grid":
+        ink = np.maximum(line(xx, off_x), line(yy, off_y))
+    elif a.rule == "lines":
+        ink = line(yy, off_y)
+    ink *= 0.85 + 0.15 * noise(rng, H, W, 20 * k)
+    grid_col = np.array([0.42, 0.58, 0.74], np.float32)
+    img = img * (1 - ink[..., None] * 0.6) + grid_col * ink[..., None] * 0.6 * tone[..., None]
+    if a.margin != "none":
+        mx = (W - m - 3.5 * cell) if a.margin == "right" else (m + 3.5 * cell + 26 * k)
+        red = np.clip(1.4 - np.abs(xx - mx) / (1.2 * k), 0, 1)
+        img = img * (1 - red[..., None] * 0.7) + np.array([0.86, 0.32, 0.38], np.float32) * red[..., None] * 0.7
+
+    # yellowed, slightly dirty edges
+    dist_edge = np.minimum.reduce([xx - m, yy - m, W - m - xx, H - m - yy])
+    yel = np.clip(1 - dist_edge / (60 * k), 0, 1) ** 2 * 0.08 * a.age + np.clip(noise(rng, H, W, 120 * k) - 1, 0, None) * 0.04 * a.age
+    img = img - yel[..., None] * np.array([0.0, 0.25, 0.9], np.float32)
+
+    # outline: clean cut on three sides; the left edge is ripped off a spiral pad —
+    # a ragged line with bites where the punch holes tore, and a few strip tabs left
+    alpha = ((xx > m) & (xx < W - m) & (yy > m) & (yy < H - m)).astype(np.float32)
+    rip = m + 24 * k + blur(rng.normal(0, 1, (H, 1)).astype(np.float32), 1.5)[:, 0] * 6 * k
+    pitch = 30 * k
+    row = ((yy - m) // pitch).astype(int)
+    hy = ((yy - m) % pitch) - pitch / 2
+    hole_x = m + 13 * k
+    in_hole = (hy ** 2 + (xx - hole_x) ** 2) < (7 * k) ** 2
+    tab_rows = rng.random(int(H / pitch) + 2) < 0.3
+    keep_tab = tab_rows[row] & (xx > m + 3 * k) & ~in_hole
+    bite = (hy ** 2 + (xx - rip[:, None] + 3 * k) ** 2) < (6 * k) ** 2
+    cut = ((xx < rip[:, None]) & ~keep_tab) | (bite & ~tab_rows[row])
+    alpha = np.where(cut, 0, alpha)
+    torn = np.ones_like(xx, bool)
+    # paper fibres on the ripped edge are lighter
+    near = np.clip(1 - np.abs(xx - rip[:, None]) / (3 * k), 0, 1) * alpha * torn
+    img = img * (1 - near[..., None] * 0.15) + near[..., None] * 0.15
+    # cut edges cast a soft shadow on the black surface
+    shadow = blur(alpha, 8 * k)
+    bg = hexrgb(a.bg) if a.bg != "none" else np.zeros(3, np.float32)
+    under = bg * (1 - 0.6 * shadow[..., None])
+    out = img * alpha[..., None] + under * (1 - alpha[..., None])
+    save(out, None if a.bg != "none" else alpha, a.out)
+    print(f"saved {a.out} ({W}×{H}, notebook {a.rule}, seed {a.seed})")
+
+
 # ---------------------------------------------------------------- metal
 def cmd_metal(a):
     np = _np()
@@ -329,6 +404,12 @@ def main():
     p.add_argument("--dirt", type=float, default=1.0); p.add_argument("--inset", type=float, default=0.035)
     p.add_argument("--bg", default="#050505")
     p.set_defaults(fn=cmd_canvas)
+    p = sub.add_parser("notebook")
+    p.add_argument("--color", default="#f4f2ec"); p.add_argument("--rule", default="grid", choices=["grid", "lines", "blank"])
+    p.add_argument("--cell", type=float, default=34); p.add_argument("--margin", default="right", choices=["right", "left", "none"])
+    p.add_argument("--crumple", type=float, default=1.0); p.add_argument("--age", type=float, default=1.0)
+    p.add_argument("--inset", type=float, default=0.035); p.add_argument("--bg", default="#050505")
+    p.set_defaults(fn=cmd_notebook)
     p = sub.add_parser("metal")
     p.add_argument("--blobs", type=float, default=1.0); p.add_argument("--crease", type=float, default=1.0)
     p.add_argument("--tint", type=float, default=0.0); p.add_argument("--contrast", type=float, default=1.0)
