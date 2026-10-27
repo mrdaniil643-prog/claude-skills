@@ -71,7 +71,8 @@ const parseRgb = (s) => (s.match(/[\d.]+/g) || []).map(Number);
     document.querySelectorAll('body *').forEach((el, i) => {
       const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
       const cs = getComputedStyle(el);
-      if (!own || cs.visibility === 'hidden' || cs.display === 'none' || el.closest('.guides')) return;
+      // aria-hidden marks decoration that is meant to be faint (a ghost copy, an echo): not text to read
+      if (!own || cs.visibility === 'hidden' || cs.display === 'none' || el.closest('.guides') || el.closest('[aria-hidden="true"]')) return;
       const cropped = !!el.closest('[data-crop]'); // intentional bleed off the edge
       const range = document.createRange();
       range.selectNodeContents(el);

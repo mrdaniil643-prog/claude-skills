@@ -30,6 +30,10 @@ const SHOW = {
   kicker: "на сцене играет",
   headliner: "АРТИСТ",
   nameFont: "",                  // font for the headliner, e.g. "Rubik" for round lowercase ("" = the grotesque)
+  // restless mode: nothing sits straight — hand-stitched thread frame, a rubber stamp,
+  // misregistered name with a motion echo, a jittered photo, embroidered-patch emblems.
+  // null = the calm print. { thread: "#a8141e", stamp: { text, sub, fx: .88, fy: .06, rot: -11, size: 9 }, patch: true }
+  restless: null,
   support: "при поддержке",
   photo: "photo.png",
   cloth: "canvas.png",
@@ -65,7 +69,7 @@ const SHOW = {
   .over .banner, .over .tab { filter: url(#edge); }
   .over > * { position: absolute; }
 
-  .top .event { font: 900 calc(4.4 * var(--u)) / .8 var(--grotesk); letter-spacing: -.03em; }
+  .top .event { font: 900 calc(3.8 * var(--u)) / .8 var(--grotesk); letter-spacing: -.03em; }
   .top { left: 8%; right: 8%; top: 6.2%; display: flex; justify-content: space-between; align-items: baseline;
          font: 800 calc(2.5 * var(--u)) / 1 var(--wide); color: var(--ink); letter-spacing: .02em; text-transform: uppercase; }
   .city .cap { font: 400 calc(6 * var(--u)) / 0 var(--swash); text-transform: none; margin-right: -.12em; position: relative; top: .08em; }
@@ -123,6 +127,26 @@ const SHOW = {
   .corner-emb { width: 13%; bottom: 2.5%; filter: url(#flash); }
   .corner-emb.l { left: 1.5%; } .corner-emb.r { right: 1.5%; transform: scaleX(-1); }
 
+  /* restless mode */
+  .restless .banner { transform: rotate(-1.6deg); }
+  .restless .tab { transform: translateX(-50%) rotate(1.8deg); }
+  .restless .photo, .restless .frame { transform: rotate(.9deg); }
+  .restless .photo.ghost { opacity: .2; transform: translate(1.8%, -.9%) rotate(-.6deg); }
+  .restless .top .city { transform: rotate(-3deg); display: inline-block; }
+  .restless .top > span:last-child { transform: rotate(4deg); display: inline-block; }
+  .restless .name { position: relative; isolation: isolate;
+                    text-shadow: .075em 0 0 rgba(228,221,207,.16), .15em 0 0 rgba(228,221,207,.07); }    /* can't sit still: a motion echo */
+  .restless .name::before { content: attr(data-t); position: absolute; left: 0; top: 0; z-index: -1; color: var(--thread, #a8141e);
+                            transform: translate(-.04em, .03em); text-shadow: none; }                                    /* misregistered second colour */
+  .stitch { overflow: visible; pointer-events: none; filter: drop-shadow(1px 2px 1.2px rgba(0,0,0,.4)); }
+  .stamp { mix-blend-mode: multiply; color: var(--thread, #a8141e); text-align: center; filter: url(#stamp);
+           border: .09em solid currentColor; border-radius: .08em; padding: .02em .16em .06em; line-height: 1; white-space: nowrap; }
+  .stamp b { display: block; font: 900 1em / .95 var(--grotesk); letter-spacing: -.01em; }
+  .stamp small { display: block; font: 800 .26em / 1 var(--wide); letter-spacing: .32em; text-transform: uppercase; margin: .25em 0 .1em; }
+  .emblem.patch, .corner-emb.patch { filter: url(#patch); }
+  .emblem.rr { right: 2%; }
+  .stamp.twice { opacity: .38; }
+
   /* story: content lives between the top ~12 % and bottom ~20 % */
   .story .top { top: 13%; }
   .story .photo { top: 17.5%; height: 37%; } .story .frame { top: 16.5%; height: 39%; }
@@ -153,6 +177,37 @@ const SHOW = {
   <filter id="rag" x="-3%" y="-3%" width="106%" height="106%">
     <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="4" seed="5" result="n"/>
     <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <!-- rubber stamp: uneven ink, knocked-out blotches, soft bleed -->
+  <filter id="stamp" x="-15%" y="-45%" width="130%" height="190%">
+    <feTurbulence type="fractalNoise" baseFrequency=".6" numOctaves="2" seed="21" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="13" result="b"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="1" seed="5" result="f"/>
+    <feComposite in="b" in2="f" operator="arithmetic" k2=".75" k3=".35" result="bf"/>
+    <feColorMatrix in="bf" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  6 0 0 0 -1.6" result="keep"/>
+    <feComposite in="d" in2="keep" operator="in" result="inked"/>
+    <feGaussianBlur in="inked" stdDeviation=".5"/>
+  </filter>
+  <!-- embroidered patch: satin-stitch fill with puff lighting, black backing shows the
+       drawing's details, a dark merrowed edge, shadow on the cloth -->
+  <filter id="patch" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="a5"/>
+    <feMorphology in="SourceAlpha" operator="dilate" radius="11" result="a11"/>
+    <feTurbulence type="fractalNoise" baseFrequency="1.1 .03" numOctaves="2" seed="11" result="sat"/>
+    <feColorMatrix in="sat" type="matrix" values=".7 0 0 0 .62  .7 0 0 0 .62  .7 0 0 0 .62  0 0 0 0 1" result="satg"/>
+    <feFlood flood-color="#efe8d8"/><feComposite in2="SourceAlpha" operator="in" result="cream"/>
+    <feBlend in="cream" in2="satg" mode="multiply" result="c1"/><feComposite in="c1" in2="SourceAlpha" operator="in" result="c2"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="h"/>
+    <feDiffuseLighting in="h" surfaceScale="4" diffuseConstant="1.1" lighting-color="#fff" result="light"><feDistantLight azimuth="270" elevation="52"/></feDiffuseLighting>
+    <feComposite in="c2" in2="light" operator="arithmetic" k1=".55" k2=".6" result="lit0"/><feComposite in="lit0" in2="SourceAlpha" operator="in" result="lit"/>
+    <feFlood flood-color="#0c0b0a"/><feComposite in2="a5" operator="in" result="back"/>
+    <feComposite in="a11" in2="a5" operator="out" result="ring"/>
+    <feFlood flood-color="#3a332c"/><feComposite in2="ring" operator="in" result="ring0"/>
+    <feBlend in="ring0" in2="satg" mode="multiply" result="ring1"/><feComposite in="ring1" in2="ring" operator="in" result="edge"/>
+    <feGaussianBlur in="a11" stdDeviation="4" result="sb"/><feOffset in="sb" dx="2" dy="5" result="so"/>
+    <feColorMatrix in="so" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .45 0" result="shadow"/>
+    <feMerge><feMergeNode in="shadow"/><feMergeNode in="edge"/><feMergeNode in="back"/><feMergeNode in="lit"/></feMerge>
   </filter>
   <!-- tattoo flash: a cream emblem gets a solid black body behind it, so the cut-out
        details read as black linework and the silhouette as a heavy black outline -->
@@ -189,6 +244,39 @@ function sketchRect(w, h, seed) {
   return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="overflow:visible"><path d="${pass()}${pass()}" fill="none" stroke="#0c0b0a" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`;
 }
 
+// hand-sewn running stitch around a box: two uneven passes, needle holes, a loose tail, a few cross-stitches
+function stitchRect(w, h, seed, color) {
+  let s = seed; const r = () => ((s = (s * 16807) % 2147483647) / 2147483647 - 0.5);
+  const out = [], holes = [];
+  const corners = (j) => [[-j + r() * 8, -j + r() * 8], [w + j + r() * 8, -j + r() * 8], [w + j + r() * 8, h + j + r() * 8], [-j + r() * 8, h + j + r() * 8]];
+  const sew = (pts, from, to, width) => {
+    for (let i = from; i < to; i++) {
+      const [x0, y0] = pts[i % 4], [x1, y1] = pts[(i + 1) % 4], L = Math.hypot(x1 - x0, y1 - y0);
+      let t = r() * 6 + 4;
+      while (t < L - 6) {
+        const len = 13 + r() * 9, gap = 7 + r() * 6, a = t / L, b = Math.min(L, t + len) / L, wob = () => r() * 2.4;
+        const ax = x0 + (x1 - x0) * a + wob(), ay = y0 + (y1 - y0) * a + wob(), bx = x0 + (x1 - x0) * b + wob(), by = y0 + (y1 - y0) * b + wob();
+        out.push(`<path d="M${ax},${ay}L${bx},${by}" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`,
+                 `<path d="M${ax},${ay}L${bx},${by}" stroke="#fff" stroke-opacity=".28" stroke-width="${width * .3}" stroke-linecap="round" transform="translate(-.6,-.8)"/>`);
+        holes.push([ax, ay], [bx, by]);
+        t += len + gap;
+      }
+    }
+  };
+  sew(corners(10), 0, 4, 4.2);
+  sew(corners(17), 1, 3.4, 3.2);                         // re-sewn, not all the way round
+  const [tx, ty] = corners(10)[2];                        // loose tail off the bottom-right corner
+  out.push(`<path d="M${tx},${ty} c 18,10 4,34 26,48 s 30,-2 22,30" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round"/><circle cx="${tx}" cy="${ty}" r="3.2" fill="${color}"/>`);
+  for (const [cx, cy] of [[-34, h * .3], [w + 30, h * .62], [w * .22, -30]]) {   // stray cross-stitches
+    const d = 7 + r() * 3;
+    out.push(`<path d="M${cx - d},${cy - d}L${cx + d},${cy + d}M${cx + d},${cy - d}L${cx - d},${cy + d}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`);
+  }
+  const hl = holes.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.7" fill="#000" fill-opacity=".45"/>`).join('');
+  return `<svg class="stitch" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="overflow:visible">${hl}${out.join('')}</svg>`;
+}
+
+const R = S.restless;
+if (R) { document.getElementById('p').classList.add('restless'); if (R.thread) document.documentElement.style.setProperty('--thread', R.thread); }
 const age = `<span>${esc(S.age)}</span>`;
 if (S.nameFont) document.documentElement.style.setProperty('--name-font', `"${S.nameFont}"`);
 const city = String(S.city || '');
@@ -196,17 +284,36 @@ const cityHtml = `<span class="city"><span class="cap">${esc(city[0] || '')}</sp
 
 if (layout === 'headliner') {
   add(P, `<div class="top">${cityHtml}${S.title ? `<span class="event">${esc(S.title)}</span>` : ''}${age}</div>`);
+  if (S.photo && R) add(P, `<img class="photo ghost" src="${S.photo}" alt="">`);
   if (S.photo) add(P, `<img class="photo" src="${S.photo}" alt="">`);
-  const fr = add(P, `<div class="frame"></div>`);
+  const fr = add(R && R.thread ? O : P, `<div class="frame"></div>`);   // thread sits on the cloth, pen is printed into it
   // the banner is solid black ink laid over the cloth (a multiplied banner goes grey and the name dull)
-  const banner = add(O, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name" id="name">${esc(S.headliner)}</div></div>`);
+  const banner = add(O, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name" id="name" data-t="${esc(S.headliner)}">${esc(S.headliner)}</div></div>`);
   const tab = add(O, `<div class="tab"><span>${S.corner ? `<img src="${S.corner}">` : ''}${esc(S.support)}${S.corner ? `<img src="${S.corner}">` : ''}</span></div>`);
   const info = (S.date || S.venue) ? add(P, `<div class="info">${esc([S.date, S.venue].filter(Boolean).join(' · '))}</div>`) : null;
   add(P, `<div class="partners">${S.skull ? `<img class="skull" src="${S.skull}">` : '<i></i>'}<div class="logos">${(S.partners || []).map(logo).join('')}</div>${S.skull ? `<img class="skull" src="${S.skull}" style="transform:scaleX(-1)">` : '<i></i>'}</div>`);
-  if (S.emblem) { add(O, `<img class="emblem l" src="${S.emblem}">`); add(O, `<img class="emblem r" src="${S.emblem}">`); }
+  const pc = R && R.patch ? ' patch' : '';
+  // patch lighting breaks on a CSS-mirrored element, so the right patch is a canvas holding the mirrored drawing
+  if (S.emblem && pc) {
+    const l = add(O, `<img class="emblem l${pc}" src="${S.emblem}">`), r = add(O, `<canvas class="emblem rr${pc}"></canvas>`);
+    const draw = () => { r.width = l.naturalWidth * 2; r.height = l.naturalHeight * 2; const c = r.getContext('2d'); c.scale(-2, 2); c.drawImage(l, -l.naturalWidth, 0, l.naturalWidth, l.naturalHeight); };
+    if (l.complete) draw(); else l.addEventListener('load', draw);
+  } else if (S.emblem) { add(O, `<img class="emblem l" src="${S.emblem}">`); add(O, `<img class="emblem r" src="${S.emblem}">`); }
+  const stamps = [];
+  if (R && R.stamp) {
+    // stamped twice: a faint first hit, then the real one
+    const st = R.stamp, html = `${st.sub ? `<small>${esc(st.sub)}</small>` : ''}<b>${esc(st.text)}</b>`;
+    // placed on the photo frame (fx, fy = fractions of the frame), so it lands on the same corner in every format
+    var place = (el, dx, dy, dr) => { const f = fr.getBoundingClientRect(), pb = O.getBoundingClientRect();
+      Object.assign(el.style, { left: (f.left - pb.left + f.width * (st.fx ?? .88)) / pb.width * 100 + dx + '%', top: (f.top - pb.top + f.height * (st.fy ?? .06)) / pb.height * 100 + dy + '%',
+        fontSize: `calc(${st.size ?? 9} * var(--u))`, transform: `translate(-50%, 0) rotate(${(st.rot ?? -11) + dr}deg)` }); };
+    if (st.twice !== false) stamps.push([add(O, `<div class="stamp twice" aria-hidden="true">${html}</div>`), -4, 3.5, 9]);
+    stamps.push([add(O, `<div class="stamp">${html}</div>`), 0, 0, 0]);
+  }
   document.fonts.ready.then(() => {
     const b = fr.getBoundingClientRect();
-    fr.innerHTML = sketchRect(b.width, b.height, 7);
+    fr.innerHTML = R && R.thread ? stitchRect(b.width, b.height, 7, R.thread) : sketchRect(b.width, b.height, 7);
+    stamps.forEach(([el, dx, dy, dr]) => place(el, dx, dy, dr));
     // the name must fit between the two emblems, not just inside the banner
     const name = document.getElementById('name'), em = O.querySelectorAll('.emblem');
     const inner = em.length === 2 ? Math.min(banner.clientWidth * 0.92, em[1].getBoundingClientRect().left - em[0].getBoundingClientRect().right - 8) : banner.clientWidth * 0.92;
