@@ -33,6 +33,8 @@ const SHOW = {
   partners: [],                          // [{ img: "logo.png" } | { text: "LABEL" }] — stuck on as stickers in the corner; empty hides it
   photo: "photo.png",
   tapes: [[0.5, -0.01, -4]],           // [x, y, angle] as fractions of the photo box; each should cross the cut edge
+  photoX: 50,                            // centre of the main cut-out, % of the width (move it aside for guests)
+  guests: [],                            // more cut-outs taped in behind: [{ photo, x: 68, scale: .95, rot: 3, tapes: [[.5, -.01, 6]] }]
   page: "page.png",
   doodles: "doodles.svg",
   circle: "circle.svg",
@@ -66,6 +68,8 @@ const SHOW = {
   .title .t2 { transform: translate(-.015em, .012em) rotate(-.5deg); filter: url(#shake2); }
 
   .photo { left: 50%; bottom: 17.5%; height: 47%; transform: translateX(-50%) rotate(-2deg); filter: url(#cut); }
+  .photo.guest { transform: translateX(-50%) rotate(var(--rot, 3deg)); }
+  .note.aside { right: auto; left: 8.5%; top: 45%; transform: rotate(-7deg); }   /* when guests take the right side */
   .tape { width: calc(15 * var(--u)); height: calc(4.2 * var(--u)); background: rgba(226, 212, 170, .78);
           box-shadow: 0 1px 2px rgba(0,0,0,.18); filter: url(#tape); }
 
@@ -96,7 +100,7 @@ const SHOW = {
   .story .date { top: 12.5%; } .story .age { top: 13.6%; right: 6%; }
   .story .title { top: 20%; font-size: calc(32 * var(--u)); }
   .story .photo { bottom: 31.5%; height: 36%; }
-  .story .kicker { top: 57%; } .story .name { top: 66%; } .story .note { top: 52%; right: 15%; }
+  .story .kicker { top: 57%; } .story .name { top: 66%; } .story .note { top: 52%; right: 15%; } .story .note.aside { left: 7%; right: auto; top: 64%; width: calc(20 * var(--u)); font-size: calc(3 * var(--u)); } .post .note.aside { top: 87.5%; left: 6.5%; }
   .story .support { right: auto; left: 9%; bottom: 21.5%; } .story .support img { height: calc(15 * var(--u)); }
 </style>
 </head>
@@ -140,14 +144,20 @@ const add = (html) => { P.insertAdjacentHTML('beforeend', html); return P.lastEl
 add(`<div class="date pen">${esc(S.dateWords)}<small>${esc([S.city, S.venue].filter(Boolean).join(', '))}</small></div>`);
 add(`<div class="age pen">${S.circle ? `<img src="${S.circle}" alt="">` : ''}${esc(S.age)}</div>`);
 const title = add(`<div class="title pen">${esc(S.title)}<span class="t1">${esc(S.title)}</span><span class="t2">${esc(S.title)}</span></div>`);
+// guests first, so the headliner overlaps them
+const guests = (S.guests || []).map((g) => { const el = add(`<img class="photo guest" src="${g.photo}" alt="">`); el.style.left = (g.x ?? 68) + '%'; el.style.setProperty('--rot', (g.rot ?? 3) + 'deg'); el._g = g; return el; });
 const photo = S.photo ? add(`<img class="photo" src="${S.photo}" alt="">`) : null;
-if (S.note) add(`<div class="note pen">${esc(S.note)}</div>`);
+if (photo) photo.style.left = (S.photoX ?? 50) + '%';
+if (S.note) add(`<div class="note pen${guests.length ? ' aside' : ''}">${esc(S.note)}</div>`);
 add(`<div class="kicker pen">${esc(S.kicker)}<svg viewBox="0 0 100 50" preserveAspectRatio="none"><path d="M4 4 C 20 40, 60 46, 92 40 M80 30 L94 40 L80 48" fill="none" stroke="var(--pen)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>`);
 const name = add(`<div class="name"><b>${esc(S.headliner)}</b></div>`);
 if (S.lineup && S.lineup.length) add(`<div class="also pen">+${S.lineup.map((n) => `<b>${esc(n)}</b>`).join(' + ')}</div>`);
 if (S.partners && S.partners.length) add(`<div class="support"><span class="lbl pen">${esc(S.support)}</span><div class="logos">${S.partners.map((x) => x.img ? `<img src="${x.img}" alt="">` : `<span class="plain">${esc(x.text)}</span>`).join('')}</div></div>`);
 
-Promise.all([document.fonts.ready, photo && !photo.complete ? new Promise((r) => { photo.onload = photo.onerror = r; }) : 0]).then(() => {
+const loaded = (im) => !im || im.complete ? 0 : new Promise((r) => { im.onload = im.onerror = r; });
+Promise.all([document.fonts.ready, loaded(photo), ...guests.map(loaded)]).then(() => {
+  // a guest is scaled relative to the headliner's cut-out
+  guests.forEach((el) => { el.style.height = `calc(${getComputedStyle(photo || el).height} * ${el._g.scale ?? 0.95})`; });
   // the title spans the page; shrink if a long name would overflow
   let fs = parseFloat(getComputedStyle(title).fontSize);
   title.style.width = 'max-content'; title.style.left = '50%'; title.style.right = 'auto'; title.style.transform = 'translateX(-50%)';
@@ -157,11 +167,26 @@ Promise.all([document.fonts.ready, photo && !photo.complete ? new Promise((r) =>
   const also = P.querySelector('.also');
   if (also) also.style.top = (nb.getBoundingClientRect().bottom - P.getBoundingClientRect().top + P.clientHeight * 0.012) + 'px';
   // two strips of tape over the top corners of the cut-out
-  if (photo && photo.naturalWidth) {
-    const r = photo.getBoundingClientRect(), pr = P.getBoundingClientRect();
-    // each strip should cross the cut edge: half on the photo, half on the paper
-    const under = P.querySelector('.note') || P.querySelector('.kicker');   // tape goes under the writing
-    for (const [x, y, a] of S.tapes || []) under.insertAdjacentHTML('beforebegin', `<div class="tape" style="left:${r.left - pr.left + r.width * x}px;top:${r.top - pr.top + r.height * y}px;transform:translate(-50%,-50%) rotate(${a}deg)"></div>`);
+  // each strip should cross the cut edge: half on the photo, half on the paper; tape sits over
+  // its own photo but under the writing
+  const tape = (im, list) => {
+    if (!im || !im.naturalWidth) return;
+    const r = im.getBoundingClientRect(), pr = P.getBoundingClientRect();
+    for (const [x, y, a] of list || []) im.insertAdjacentHTML('afterend', `<div class="tape" style="left:${r.left - pr.left + r.width * x}px;top:${r.top - pr.top + r.height * y}px;transform:translate(-50%,-50%) rotate(${a}deg)"></div>`);
+  };
+  guests.forEach((el) => tape(el, el._g.tapes || [[0.5, -0.01, 6]]));
+  tape(photo, S.tapes);
+  // doodles go around the writing, not under it: mask them out behind every text block
+  if (dd) {
+    const pr = P.getBoundingClientRect(), pad = P.clientWidth * 0.012;
+    const holes = [...P.querySelectorAll('.date, .age, .kicker, .note, .also, .support .lbl, .name b')].map((el) => {
+      const r = el.getBoundingClientRect();
+      return `<rect x="${r.left - pr.left - pad}" y="${r.top - pr.top - pad}" width="${r.width + 2 * pad}" height="${r.height + 2 * pad}" rx="${pad * 2}" fill="#000"/>`;
+    }).join('');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${P.clientWidth}" height="${P.clientHeight}"><filter id="f"><feGaussianBlur stdDeviation="${pad / 2}"/></filter><rect width="100%" height="100%" fill="#fff"/><g filter="url(#f)">${holes}</g></svg>`;
+    const url = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+    dd.style.webkitMaskImage = url; dd.style.maskImage = url; dd.style.maskMode = 'luminance';
+    dd.style.webkitMaskSize = dd.style.maskSize = '100% 100%';
   }
   window.__pending = false;
 });
