@@ -5,6 +5,7 @@
 //   node qa.cjs thumb thumb.png sheet.png [--title "Название видео"] [--channel "Канал"]
 //   node qa.cjs cover cover.png sheet.png          (Reels/Shorts/TikTok 9:16 cover)
 //   node qa.cjs poster poster.png sheet.png
+//   node qa.cjs compare a.png b.png c.png sheet.png [--labels "A. Идея,B. Идея,C. Идея"]
 //
 // logo   : colour on light and dark, one-colour black and white, greyscale,
 //          16–128 px ladder, favicon in a browser tab, app icon on a home screen.
@@ -12,6 +13,8 @@
 //          with a timestamp badge over the corner, plus greyscale and a squint blur.
 // cover  : 9:16 frame with the UI overlays, the 3:4 and 1:1 grid crops, small size.
 // poster : full view, greyscale, squint blur, and how it reads from across a room.
+// compare: concepts side by side at the same height, labelled, plus a small row
+//          to compare them at feed size.
 //
 // Open the sheet with the Read tool and judge it; the checklist sits in SKILL.md.
 const { chromium } = require('playwright');
@@ -27,9 +30,11 @@ const opt = (name, def) => {
 };
 const title = opt('--title', 'Как я сделал это за 7 дней — полный разбор без воды');
 const channel = opt('--channel', 'Мой канал');
-const [kind, input, output] = argv;
-if (!['logo', 'thumb', 'cover', 'poster'].includes(kind) || !input || !output) {
-  console.error('usage: node qa.cjs <logo|thumb|cover|poster> <input> <sheet.png> [--title ...] [--channel ...]');
+const labels = opt('--labels', '').split(',').map((s) => s.trim());
+const kind = argv[0];
+const inputs = argv.slice(1, -1), output = argv[argv.length - 1], input = inputs[0];
+if (!['logo', 'thumb', 'cover', 'poster', 'compare'].includes(kind) || !input || !output || output === input) {
+  console.error('usage: node qa.cjs <logo|thumb|cover|poster> <input> <sheet.png> | compare <a> <b> [c...] <sheet.png> [--labels ...]');
   process.exit(1);
 }
 const src = pathToFileURL(path.resolve(input)).href;
@@ -120,7 +125,17 @@ function posterSheet() {
   </div>`;
 }
 
-const html = { logo: logoSheet, thumb: thumbSheet, cover: coverSheet, poster: posterSheet }[kind]();
+function compareSheet() {
+  const urls = inputs.map((f) => pathToFileURL(path.resolve(f)).href);
+  const big = urls.map((u, i) => `<div class="tile"><img src="${u}" style="max-height:${inputs.length > 3 ? 300 : 380}px;max-width:${Math.floor((1180 - 18 * (inputs.length - 1)) / inputs.length)}px;box-shadow:0 2px 10px rgba(0,0,0,.15)">
+    <div class="cap" style="font-size:14px;color:#111;font-weight:600">${esc(labels[i] || String.fromCharCode(65 + i))}</div></div>`).join('');
+  const small = urls.map((u) => `<img src="${u}" style="height:94px;object-fit:contain">`).join('');
+  return `<style>${BASE}</style><h2>Концепции</h2><div class="row">${big}</div>
+    <h2>Мелко, как в ленте</h2><div class="row">${small}</div>
+    <h2>Оттенки серого</h2><div class="row">${urls.map((u) => `<img src="${u}" class="grey" style="height:140px;object-fit:contain">`).join('')}</div>`;
+}
+
+const html = { logo: logoSheet, thumb: thumbSheet, cover: coverSheet, poster: posterSheet, compare: compareSheet }[kind]();
 
 (async () => {
   const browser = await chromium.launch();

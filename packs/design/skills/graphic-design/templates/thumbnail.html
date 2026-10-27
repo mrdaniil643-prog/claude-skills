@@ -32,7 +32,8 @@
 
   .guides { display: none; position: absolute; inset: 0; pointer-events: none; }
   .show-guides .guides { display: block; }
-  .guides .timestamp { position: absolute; right: 0; bottom: 0; width: 15%; height: 12%; background: rgba(255,0,168,.35); }
+  /* Timestamp at the 168 px sidebar size covers ~25 % × 24 % of the frame. */
+  .guides .timestamp { position: absolute; right: 0; bottom: 0; width: 25%; height: 24%; background: rgba(255,0,168,.35); }
   .guides .progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2%; background: rgba(255,0,0,.45); }
 </style>
 </head>

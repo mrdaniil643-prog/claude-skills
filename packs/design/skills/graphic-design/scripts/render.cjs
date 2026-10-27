@@ -99,7 +99,8 @@ async function warnOverflow(page) {
     const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
     for (const el of document.querySelectorAll('body *')) {
       const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
-      if (!own || getComputedStyle(el).visibility === 'hidden' || el.closest('.guides')) continue;
+      // data-crop marks text that is meant to run off the edge (a giant cropped number).
+      if (!own || getComputedStyle(el).visibility === 'hidden' || el.closest('.guides, [data-crop]')) continue;
       const range = document.createRange();
       range.selectNodeContents(el);
       const r = range.getBoundingClientRect();

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Recipes</title>
+<!-- Tested visual techniques. Each .tile is self-contained: copy the CSS block
+     marked with its number and the matching markup. Render the gallery with
+       node render.cjs recipes.html recipes.png --size 1640x1300
+     Fonts: fonts.py "Unbounded:900" "Manrope:800" --out fonts -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  body { margin: 0; padding: 20px; background: #e9e9ec; font-family: Manrope, system-ui, sans-serif; }
+  .grid { display: grid; grid-template-columns: repeat(4, 390px); gap: 16px; }
+  .tile { position: relative; height: 300px; overflow: hidden; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .tile > b.n { position: absolute; left: 8px; top: 6px; z-index: 9; font: 700 12px system-ui; color: #fff; background: rgba(0,0,0,.55); padding: 2px 6px; border-radius: 4px; }
+  .display { font-family: Unbounded, sans-serif; font-weight: 900; text-transform: uppercase; line-height: .9; }
+
+  /* 1 GRAIN: noise over anything; tune opacity .08–.25 */
+  .r1 { background: linear-gradient(135deg, #ff7a3d, #6b2bd9); }
+  .r1 .grain { position: absolute; inset: 0; mix-blend-mode: overlay; opacity: .35; }
+  .r1 span { position: relative; color: #fff; font-size: 64px; }
+
+  /* 2 DUOTONE: any photo -> two brand colours (dark -> shadows, light -> highlights) */
+  .r2 svg { width: 100%; height: 100%; }
+
+  /* 3 HALFTONE: dot screen fading across the frame */
+  .r3 { background: #ffe14d; }
+  .r3::before { content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle, #111 38%, transparent 40%) 0 0 / 14px 14px;
+    -webkit-mask: linear-gradient(115deg, #000 10%, transparent 75%); mask: linear-gradient(115deg, #000 10%, transparent 75%); }
+  .r3 span { position: relative; font-size: 70px; color: #111; background: #ffe14d; padding: 0 10px; }
+
+  /* 4 RISO OFFSET: two inks, misregistered, multiplied */
+  .r4 { background: #f4efe4; }
+  .r4 .ink { position: absolute; font-size: 92px; mix-blend-mode: multiply; }
+  .r4 .ink.a { color: #ff48b0; transform: translate(-4px, -3px); }
+  .r4 .ink.b { color: #0078bf; transform: translate(4px, 3px); }
+
+  /* 5 CHROME: hard-stop metallic gradient clipped to text; glow instead of a
+     stroke (CSS strokes expose overlapping glyph contours in many fonts) */
+  .r5 { background: #0b0b12; }
+  .r5 span { font-size: 78px; letter-spacing: -.02em;
+    background: linear-gradient(180deg, #fff 0%, #cfd6e4 38%, #4b5468 50%, #e9eef8 54%, #8a93a8 75%, #fff 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,.7)) drop-shadow(0 0 18px rgba(140,170,255,.35)); }
+
+  /* 6 EXTRUDED 3D: stacked hard shadows, then one soft */
+  .r6 { background: #2b59ff; }
+  .r6 span { font-size: 84px; color: #ffe14d;
+    text-shadow: 1px 1px 0 #111, 2px 2px 0 #111, 3px 3px 0 #111, 4px 4px 0 #111, 5px 5px 0 #111, 6px 6px 0 #111,
+                 7px 7px 0 #111, 8px 8px 0 #111, 9px 9px 0 #111, 10px 10px 0 #111, 14px 18px 24px rgba(0,0,0,.45); }
+
+  /* 7 NEON: white core, coloured halo in growing radii */
+  .r7 { background: #07060d; }
+  .r7 span { font: 800 72px Manrope, sans-serif; color: #fff4ff;
+    text-shadow: 0 0 4px #fff, 0 0 10px #ff4fd8, 0 0 22px #ff4fd8, 0 0 44px #b31cff, 0 0 80px #b31cff; }
+
+  /* 8 STICKER: thick white outline around a cut-out (text or a rembg PNG) + shadow.
+     The #sticker filter dilates the alpha, so it works on any shape. */
+  .r8 { background: #ff5a36; }
+  .r8 .sticker { filter: url(#sticker) drop-shadow(0 12px 14px rgba(0,0,0,.35)); transform: rotate(-6deg); }
+  .r8 .sticker span { font-size: 80px; color: #111; }
+
+  /* 9 MESH GRADIENT: blurred colour blobs */
+  .r9 { background: #f2efe9; }
+  .r9 i { position: absolute; border-radius: 50%; filter: blur(48px); }
+  .r9 span { position: relative; font: 800 46px/1 Manrope, sans-serif; color: #1b1530; }
+
+  /* 10 TORN PAPER: rough edge from turbulence displacement */
+  .r10 { background: #1d2b28; }
+  .r10 .paper { width: 300px; height: 150px; background: #f6f1e7; filter: url(#torn); display: flex; align-items: center; justify-content: center; transform: rotate(-3deg); }
+  .r10 .paper span { font-size: 40px; color: #1d2b28; }
+
+  /* 11 MARKER: hand highlighter behind words */
+  .r11 { background: #fff; }
+  .r11 p { margin: 0 30px; font: 800 38px/1.25 Manrope, sans-serif; color: #111; }
+  .r11 mark { color: inherit; padding: 0 .12em; border-radius: .2em .5em .3em .45em;
+    background: linear-gradient(100deg, transparent .2em, #ffe14d .4em, #ffd000 92%, transparent); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  /* 12 HAND-DRAWN CIRCLE + ARROW: imperfect strokes for thumbnails */
+  .r12 { background: #20222a; }
+  .r12 .num { font-size: 76px; color: #fff; }
+  .r12 svg { position: absolute; inset: 0; }
+
+  /* 13 GLASS CARD: frosted panel over colour */
+  .r13 { background: radial-gradient(circle at 25% 30%, #ff7a3d 0 18%, transparent 19%), radial-gradient(circle at 75% 70%, #3d7bff 0 22%, transparent 23%), #141824; }
+  .r13 .card { padding: 26px 34px; border-radius: 22px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.35);
+    backdrop-filter: blur(16px) saturate(140%); -webkit-backdrop-filter: blur(16px) saturate(140%); box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+  .r13 .card span { font: 800 40px Manrope, sans-serif; color: #fff; }
+
+  /* 14 LONG SHADOW: 45° flat shadow off the frame */
+  .r14 { background: #19b394; }
+  .r14 span { font-size: 86px; color: #fff; text-shadow: var(--ls); }
+
+  /* 15 OUTLINE STACK: repeated line, outlines into a solid one. Outline via the
+     #outline filter (outer edge only), not -webkit-text-stroke, which draws the
+     overlapping contours inside letters. Filter colour: flood-color. */
+  .r15 { background: #111; flex-direction: column; gap: 0; }
+  .r15 span { font-size: 52px; color: #ffe14d; }
+  .r15 span.line { filter: url(#outline); }
+
+  /* 16 GIANT NUMBER: cropped by the frame, gradient fade, label on top */
+  .r16 { background: #0d1b3d; justify-content: flex-start; }
+  .r16 .big { position: absolute; right: -30px; bottom: -70px; font-size: 330px; line-height: .8;
+    background: linear-gradient(180deg, #ffb400, rgba(255,180,0,0) 85%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .r16 { align-items: flex-start; }
+  .r16 .lbl { position: relative; margin: 34px 0 0 28px; font: 800 34px/1.05 Manrope, sans-serif; color: #fff; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="outline" x="-5%" y="-5%" width="110%" height="110%"><feMorphology in="SourceAlpha" operator="dilate" radius="2" result="fat"/>
+    <feComposite in="fat" in2="SourceAlpha" operator="out" result="ring"/><feFlood flood-color="#ffe14d"/><feComposite in2="ring" operator="in"/></filter>
+  <filter id="sticker" x="-10%" y="-10%" width="120%" height="120%"><feMorphology in="SourceAlpha" operator="dilate" radius="7" result="fat"/>
+    <feFlood flood-color="#fff"/><feComposite in2="fat" operator="in" result="white"/><feMerge><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="torn"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="4" seed="3"/><feDisplacementMap in="SourceGraphic" scale="14"/></filter>
+</svg>
+<div class="grid">
+
+  <div class="tile r1"><b class="n">1 зерно</b><span class="display">Шум</span>
+    <svg class="grain" width="100%" height="100%"><filter id="g1"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#g1)"/></svg></div>
+
+  <div class="tile r2"><b class="n">2 дуотон</b>
+    <!-- Replace the <g> "photo" with <image href="photo.jpg" .../>; the matrix maps luminance to #13213C → #FF8A5B -->
+    <svg viewBox="0 0 390 300" preserveAspectRatio="xMidYMid slice">
+      <filter id="duo" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values=".2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  0 0 0 1 0"/>
+        <feComponentTransfer><feFuncR type="table" tableValues=".075 1"/><feFuncG type="table" tableValues=".129 .541"/><feFuncB type="table" tableValues=".235 .357"/></feComponentTransfer>
+      </filter>
+      <g filter="url(#duo)">
+        <rect width="390" height="300" fill="#9cc7ff"/><circle cx="290" cy="80" r="40" fill="#fff6c9"/>
+        <path d="M0 230 L90 120 L170 210 L250 110 L390 250 V300 H0Z" fill="#3b5d3a"/><path d="M0 300 L0 250 Q195 200 390 270 V300Z" fill="#1d2b1c"/>
+      </g></svg></div>
+
+  <div class="tile r3"><b class="n">3 растр</b><span class="display">Точка</span></div>
+
+  <div class="tile r4"><b class="n">4 риз</b><span class="ink a display">Риз</span><span class="ink b display">Риз</span></div>
+
+  <div class="tile r5"><b class="n">5 хром</b><span class="display">Хром</span></div>
+
+  <div class="tile r6"><b class="n">6 объём</b><span class="display">Бум!</span></div>
+
+  <div class="tile r7"><b class="n">7 неон</b><span>Неон</span></div>
+
+  <div class="tile r8"><b class="n">8 стикер</b><div class="sticker"><span class="display">Вау</span></div></div>
+
+  <div class="tile r9"><b class="n">9 меш-градиент</b>
+    <i style="width:220px;height:220px;left:-40px;top:-30px;background:#ff8a5b"></i>
+    <i style="width:240px;height:240px;right:-50px;top:40px;background:#7a5cff"></i>
+    <i style="width:200px;height:200px;left:110px;bottom:-90px;background:#2ad4b5"></i>
+    <span>Мягкий<br>градиент</span></div>
+
+  <div class="tile r10"><b class="n">10 рваная бумага</b><div class="paper"><span class="display">Анонс</span></div></div>
+
+  <div class="tile r11"><b class="n">11 маркер</b><p>Главное — <mark>выделить мысль</mark>, а не всё подряд</p></div>
+
+  <div class="tile r12"><b class="n">12 обводка от руки</b><span class="num display">−40%</span>
+    <svg viewBox="0 0 390 300"><path d="M64 128 C104 74 300 70 346 124 C376 168 290 214 190 214 C96 214 30 182 48 140 C58 116 92 100 128 94"
+      fill="none" stroke="#ff3b30" stroke-width="7" stroke-linecap="round"/>
+      <path d="M40 280 C58 258 76 244 100 232" fill="none" stroke="#ff3b30" stroke-width="7" stroke-linecap="round"/>
+      <path d="M84 224 L102 231 L92 248" fill="none" stroke="#ff3b30" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <div class="tile r13"><b class="n">13 стекло</b><div class="card"><span>Стекло</span></div></div>
+
+  <div class="tile r14"><b class="n">14 длинная тень</b><span class="display" id="ls">Тень</span></div>
+
+  <div class="tile r15"><b class="n">15 контурный повтор</b><span class="display line">Ритм</span><span class="display line">Ритм</span><span class="display">Ритм</span></div>
+
+  <div class="tile r16"><b class="n">16 гигантская цифра</b><span class="big display" data-crop>7</span><span class="lbl">дней<br>до старта</span></div>
+</div>
+<script>
+  // 14: generate a 45° shadow of N steps (CSS has no loop).
+  document.getElementById('ls').style.setProperty('--ls',
+    Array.from({ length: 60 }, (_, i) => `${i + 1}px ${i + 1}px 0 #138a72`).join(','));
+</script>
+</body>
+</html>
