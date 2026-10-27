@@ -12,7 +12,8 @@ Icons come from Iconify (200+ open sets: lucide, tabler, ph, solar, mdi,
 material-symbols, simple-icons for brand logos...). When the API is unreachable
 the set is fetched once as the npm package @iconify-json/<set> and cached in
 ~/.cache/graphic-design/icons. Check each set's licence before commercial use
-(lucide ISC, tabler MIT, ph MIT, solar CC BY 4.0, mdi Apache 2.0).
+(lucide ISC, tabler MIT, ph MIT, solar CC BY 4.0, mdi Apache 2.0, game-icons CC BY 3.0 —
+heraldry, skulls, daggers, griffins; credit "game-icons.net").
 
 Photos come from Openverse (CC-licensed, commercial use + modification only);
 credits.txt records author, licence and source for each file. Cut-outs run
@@ -30,7 +31,7 @@ import urllib.parse
 import urllib.request
 
 CACHE = pathlib.Path.home() / ".cache" / "graphic-design" / "icons"
-FALLBACK_SETS = ["lucide", "tabler", "ph", "solar"]
+FALLBACK_SETS = ["lucide", "tabler", "ph", "solar", "game-icons"]
 UA = {"User-Agent": "graphic-design-skill/1.0"}
 
 

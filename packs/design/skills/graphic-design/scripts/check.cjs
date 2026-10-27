@@ -6,10 +6,11 @@
 //   node check.cjs cover.html  --kind cover  [--size 1080x1920]
 //   node check.cjs poster.html --kind poster --mm 420x594 --bleed 3 [--safe 12]
 //   node check.cjs page.html   [--size WxH]                (generic checks only)
+//   --query "format=story&layout=lineup"   same query string as render.cjs, for data-driven templates
 //
 // Exit code 1 when anything FAILs, so it can gate delivery. Text that sits on
 // a photo is measured against its 10th-percentile worst background pixel, and an
-// outline (-webkit-text-stroke) or text-shadow counts when it is thick enough.
+// outline (-webkit-text-stroke) or a centred drop-shadow halo counts when it is thick enough.
 const { chromium } = require('playwright');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -25,9 +26,10 @@ const bleed = Number(opt('--bleed', '0'));
 const safeMm = Number(opt('--safe', mmArg && Math.max(...mmArg.split('x').map(Number)) >= 590 ? '12' : '5'));
 const defaults = { thumb: '1280x720', cover: '1080x1920' };
 const sizeArg = opt('--size', defaults[kind]);
+const query = opt('--query', '');
 const [input] = argv;
 if (!input) {
-  console.error('usage: node check.cjs <design.html> [--kind thumb|cover|poster] [--size WxH | --mm WxH --bleed N]');
+  console.error('usage: node check.cjs <design.html> [--kind thumb|cover|poster] [--size WxH | --mm WxH --bleed N] [--query "a=b"]');
   process.exit(1);
 }
 const MM = 96 / 25.4;
@@ -52,12 +54,15 @@ const parseRgb = (s) => (s.match(/[\d.]+/g) || []).map(Number);
 (async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: Math.round(W), height: Math.round(H) } });
-  await page.goto(pathToFileURL(path.resolve(input)).href, { waitUntil: 'networkidle' });
+  await page.goto(pathToFileURL(path.resolve(input)).href + (query ? `?${query.replace(/^\?/, '')}` : ''), { waitUntil: 'networkidle' });
   if (mmArg) {
     const [tw, th] = mmArg.split('x').map(Number);
     await page.addStyleTag({ content: `:root{--trim-w:${tw}mm;--trim-h:${th}mm;--bleed:${bleed}mm}` });
   }
-  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    for (let i = 0; i < 100 && window.__pending; i++) await new Promise((r) => setTimeout(r, 50));
+  });
   await page.addStyleTag({ content: '[data-check-hide] *{color:transparent!important;-webkit-text-stroke-color:transparent!important;text-shadow:none!important}' });
 
   // Every element that owns visible text, with its geometry and paint.
@@ -83,12 +88,22 @@ const parseRgb = (s) => (s.match(/[\d.]+/g) || []).map(Number);
       if (r.bottom - r.top < 1) { r.top = g.top; r.bottom = g.bottom; }
       el.dataset.checkId = String(i);
       const shadow = cs.textShadow !== 'none' ? cs.textShadow : '';
+      // a centred drop-shadow filter on the element or an ancestor acts as a soft outline (halo)
+      let halo = null;
+      for (let a = el; a && a !== document.body && !halo; a = a.parentElement) {
+        const f = getComputedStyle(a).filter || '';
+        for (const m of f.matchAll(/drop-shadow\((rgba?\([^)]*\))\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+([\d.]+)px\)/g)) {
+          const alpha = (m[1].match(/[\d.]+/g) || [])[3];
+          if (Math.abs(+m[2]) < 1 && Math.abs(+m[3]) < 1 && (alpha === undefined || +alpha >= 0.6)) { halo = { color: m[1], blur: +m[4] }; break; }
+        }
+      }
       out.push({
         id: String(i), text: (el.innerText || el.textContent).trim().replace(/\s+/g, ' ').slice(0, 32),
         x: r.left, y: r.top, w: r.right - r.left, h: r.bottom - r.top,
         size: parseFloat(cs.fontSize), color: cs.color, family: cs.fontFamily.split(',')[0].replace(/["']/g, '').trim(),
         weight: cs.fontWeight, stroke: parseFloat(cs.webkitTextStrokeWidth) || 0, strokeColor: cs.webkitTextStrokeColor,
-        shadow, cropped, clipText: cs.webkitBackgroundClip === 'text' || cs.backgroundClip === 'text',
+        shadow, halo, cropped,
+        clipText: (() => { for (let a = el; a && a !== document.body; a = a.parentElement) { const c = getComputedStyle(a); if (c.webkitBackgroundClip === 'text' || c.backgroundClip === 'text') return true; } return false; })(),
       });
     });
     return out;
@@ -139,6 +154,11 @@ const parseRgb = (s) => (s.match(/[\d.]+/g) || []).map(Number);
       const sr = bg.map((p) => ratio(sc, p)).sort((a, b) => a - b)[Math.floor(bg.length * 0.1)];
       const inner = ratio(fg, sc);
       if (Math.min(sr, inner) > worst) { worst = Math.min(Math.max(sr, worst), inner); via = ' (с обводкой)'; }
+    } else if (t.halo && t.halo.blur >= Math.max(1, t.size * 0.03)) {
+      const hc = parseRgb(t.halo.color).slice(0, 3);
+      const hr = bg.map((p) => ratio(hc, p)).sort((a, b) => a - b)[Math.floor(bg.length * 0.1)];
+      const inner = ratio(fg, hc);
+      if (Math.min(hr, inner) > worst) { worst = Math.min(Math.max(hr, worst), inner); via = ' (с ореолом)'; }
     } else if (t.shadow && /\d+px\s+\d+px\s+(\d+)px/.test(t.shadow)) {
       via = ' (тень не учтена)';
     }

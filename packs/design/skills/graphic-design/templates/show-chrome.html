@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Show poster: chrome</title>
+<!-- One show, one city. Crinkled liquid metal, a red membrane network pressed into it,
+     the artist as a cut-out sticker with a white rim and glow, red embossed type,
+     white chrome "special guest", red heraldic emblem.
+       ?layout=headliner  (default) sticker photo + name + lineup underneath
+       ?layout=lineup     no photo: the lineup itself in big chrome letters
+     Formats: 34 1080×1440 (default, as the references), post 1080×1350, story 1080×1920, a3.
+       node render.cjs show-chrome.html a.png --size 1080x1440 --query format=34
+       node render.cjs show-chrome.html b.png --size 1080x1440 --query "format=34&layout=lineup"
+     Assets: metal.png — textures.py metal; cells.svg — textures.py cells (same --size);
+     photo.png — assets.py cutout (transparent PNG is required for the sticker rim);
+     emblem.svg — assets.py icon game-icons:griffin-symbol --color "#e2546a";
+     label.png/svg — label wordmark (optional, otherwise label.text is set as type). -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<script>
+window.__pending = true;
+const SHOW = {
+  date: "1.05",
+  city: "СПБ",
+  venue: "Factory №3",
+  age: "16+",
+  label: { text: "мягкие ткани" },        // { img: "label.png" } or { text }
+  headliner: "АРТИСТ",
+  guest: "special guest",
+  lineup: ["Второй", "CODE80", "PLATOV", "#ХЕШТЕГ", "PLGTHG", "DOPE17"],
+  photo: "photo.png",
+  metal: "metal.png",
+  cells: "cells.svg",
+  emblem: "emblem.svg",
+};
+</script>
+<style>
+  :root { --red: #e2546a; --red-dark: #4c0812; --wide: "Unbounded", sans-serif; --round: "Nunito", "Rubik", sans-serif;
+          --grotesk: "Inter", sans-serif; --swash: "Great Vibes", cursive; --trim-w: 297mm; --trim-h: 420mm; --bleed: 0mm; }
+  html, body { margin: 0; background: #777; }
+  .p { position: relative; overflow: hidden; background: #8a8a8a; }
+  .f34   { width: 1080px; height: 1440px; --u: 10.8px; }
+  .post  { width: 1080px; height: 1350px; --u: 10.8px; }
+  .story { width: 1080px; height: 1920px; --u: 10.8px; }
+  .a3    { width: calc(var(--trim-w) + 2 * var(--bleed)); height: calc(var(--trim-h) + 2 * var(--bleed)); --u: calc((var(--trim-w) + 2 * var(--bleed)) / 100); }
+  .p > * { position: absolute; }
+  .fill { inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  /* metal darker at the top and bottom, where the type sits: red reads on it */
+  .shade { inset: 0; background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.4) 22%, transparent 36%, transparent 52%, rgba(0,0,0,.4) 64%, rgba(0,0,0,.6)); }
+  .cells { opacity: .94; }
+  .cells-tex { mix-blend-mode: soft-light; opacity: .5; }      /* metal texture shows through the red */
+
+  /* red type pressed into the metal: dark rim, light lower lip, slightly see-through */
+  .red { color: var(--red); -webkit-text-stroke: .025em var(--red-dark);
+         text-shadow: 0 .035em 0 rgba(255,255,255,.45), 0 -.02em .02em rgba(0,0,0,.45);
+         filter: drop-shadow(0 0 .05em rgba(255,255,255,.85)) drop-shadow(0 0 .12em rgba(255,255,255,.4)); }   /* light halo keeps red type readable over the red membrane */
+  /* white chrome type: polished gradient, graphite outline, drop shadow + halo */
+  .chrome { color: transparent; background: linear-gradient(180deg, #fff 0%, #f3f3f3 38%, #9c9c9c 50%, #f7f7f7 68%, #cfcfcf 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-stroke: .03em #2b2b2b;
+            filter: drop-shadow(0 .04em .02em rgba(0,0,0,.55)) drop-shadow(0 0 .14em rgba(255,255,255,.55)); }
+
+  .top { left: 6%; right: 6%; top: 3.2%; text-align: center; font: 800 calc(7 * var(--u)) / 1 var(--wide); letter-spacing: .01em; white-space: nowrap; }
+  .venue-top { left: 10%; right: 10%; top: 9.6%; text-align: center; font: 700 calc(2.6 * var(--u)) / 1 var(--wide); text-transform: uppercase; letter-spacing: .12em; }
+  .label { left: 10%; right: 10%; top: 12.4%; text-align: center; }
+  .label img { height: calc(9 * var(--u)); max-width: 100%; object-fit: contain; }
+  /* wordmark mashup in red: compressed grotesque crowded into itself + script ghost */
+  .mash { position: relative; display: inline-block; white-space: nowrap; text-transform: uppercase;
+          font: 900 calc(9 * var(--u)) / 1 var(--grotesk); letter-spacing: -.16em; transform: scaleX(.8); }
+  .mash::after { content: attr(data-t); position: absolute; left: 0; right: 0; top: 22%; text-transform: none; letter-spacing: 0;
+                 font: 400 .9em / 1 var(--swash); color: var(--red-dark); -webkit-text-stroke: 0; text-shadow: none; transform: scaleX(1.2); }
+
+  .photo { left: 50%; top: 21.5%; height: 45%; max-width: 70%; transform: translateX(-50%); object-fit: contain; filter: url(#sticker); }
+  .name { left: 4%; right: 4%; top: 67.5%; text-align: center; font: 900 calc(10 * var(--u)) / 1 var(--wide); letter-spacing: -.01em; white-space: nowrap; text-transform: uppercase; }
+  .guest { left: 4%; right: 4%; top: 75%; text-align: center; font: 900 calc(8 * var(--u)) / 1 var(--round); letter-spacing: -.01em; white-space: nowrap; }
+  .lineup { left: 20%; right: 20%; top: 82.5%; bottom: 2.5%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            font: 700 calc(3.7 * var(--u)) / 1 var(--wide); text-transform: uppercase; white-space: nowrap; }
+  .age { left: 4.5%; bottom: 7%; font: 800 calc(8 * var(--u)) / 1 var(--wide); }
+  .emblem { right: 5%; bottom: 5%; width: 13%; filter: drop-shadow(0 2px 0 rgba(255,255,255,.4)) drop-shadow(0 -1px 1px rgba(0,0,0,.5)); }
+
+  /* lineup layout */
+  .L .label { left: 5%; right: auto; top: 5%; text-align: left; }
+  .L .label .mash { font-size: calc(7.5 * var(--u)); transform-origin: left; }
+  .L .emblem { right: -3%; top: -1%; bottom: auto; width: 46%; }
+  .L .names { left: 6%; right: 6%; top: 36%; bottom: 31%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+              font: 900 calc(10 * var(--u)) / 1 var(--round); white-space: nowrap; }
+  .L .age { bottom: 9%; left: 5%; font-size: calc(10 * var(--u)); }
+  .L .date { right: 5%; bottom: 9%; font: 800 calc(10 * var(--u)) / 1 var(--wide); }
+  .L .venue { left: 10%; right: 10%; bottom: 3.5%; text-align: center; font: 800 calc(5 * var(--u)) / 1 var(--wide); text-transform: uppercase; }
+
+  /* story: keep clear of the top 12 % and bottom 20 % */
+  .story .top { top: 15%; font-size: calc(6 * var(--u)); } .story .venue-top { top: 19.4%; } .story .label { top: 21.4%; }
+  .story .photo { top: 28%; height: 27%; } .story .name { top: 56%; } .story .guest { top: 61.5%; }
+  .story .lineup { top: 67%; bottom: 21%; } .story .age { bottom: 21%; } .story .emblem { bottom: 21%; }
+  .post .photo { top: 21%; height: 44%; } .post .name { top: 66%; } .post .guest { top: 73.5%; } .post .lineup { top: 81.5%; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <!-- cut-out sticker: thick white rim, thin grey bevel line, soft white glow around -->
+  <filter id="sticker" x="-20%" y="-20%" width="140%" height="140%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="11" result="rim"/>
+    <feMorphology in="SourceAlpha" operator="dilate" radius="13" result="edge"/>
+    <feFlood flood-color="#fafafa"/><feComposite in2="rim" operator="in" result="white"/>
+    <feFlood flood-color="#6d6d6d"/><feComposite in2="edge" operator="in" result="grey"/>
+    <feGaussianBlur in="edge" stdDeviation="14" result="g"/>
+    <feColorMatrix in="g" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0" result="glow"/>
+    <feMerge><feMergeNode in="glow"/><feMergeNode in="grey"/><feMergeNode in="white"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</svg>
+<div class="p" id="p">
+  <img class="fill" id="metal" alt="">
+  <div class="shade"></div>
+  <img class="fill cells" id="cells" alt="">
+  <img class="fill cells-tex" id="cells2" alt="">
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const fmt = q.get('format') || '34', layout = q.get('layout') || 'headliner';
+const S = SHOW, P = document.getElementById('p');
+P.classList.add(fmt === '34' ? 'f34' : fmt);
+if (layout === 'lineup') P.classList.add('L');
+document.getElementById('metal').src = S.metal;
+['cells', 'cells2'].forEach((id) => { if (S.cells) document.getElementById(id).src = S.cells; else document.getElementById(id).remove(); });
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const add = (html) => { P.insertAdjacentHTML('beforeend', html); return P.lastElementChild; };
+const label = S.label ? (S.label.img ? `<img src="${S.label.img}" alt="">` : `<span class="mash red" data-t="${esc(S.label.text)}">${esc(S.label.text)}</span>`) : '';
+const fit = [];   // [element, max width] pairs shrunk after fonts load
+
+if (layout === 'headliner') {
+  add(`<div class="top red">${esc(S.date)} | ${esc(S.city)}</div>`);
+  if (label) add(`<div class="label">${label}</div>`);
+  if (S.photo) add(`<img class="photo" src="${S.photo}" alt="">`);
+  fit.push(add(`<div class="name red"><span>${esc(S.headliner)}</span></div>`));
+  if (S.guest) fit.push(add(`<div class="guest chrome"><span>${esc(S.guest)}</span></div>`));
+  add(`<div class="lineup red">${S.lineup.map((n) => `<span>${esc(n)}</span>`).join('')}</div>`);
+  add(`<div class="age red">${esc(S.age)}</div>`);
+  if (S.venue) add(`<div class="venue-top red">${esc(S.venue)}</div>`);
+} else {
+  if (label) add(`<div class="label">${label}</div>`);
+  add(`<div class="names chrome">${S.lineup.map((n) => `<span>${esc(n)}</span>`).join('')}</div>`);
+  add(`<div class="age red">${esc(S.age)}</div>`);
+  add(`<div class="date red">${esc(S.date)}</div>`);
+  add(`<div class="venue red">${esc([S.venue, S.city].filter(Boolean).join(' · '))}</div>`);
+}
+if (S.emblem) add(`<img class="emblem" src="${S.emblem}" alt="">`);
+fit.push(P.querySelector('.top'));
+
+document.fonts.ready.then(() => {
+  const W = P.clientWidth * 0.92;
+  const shrink = (el, max, prop = el) => { let fs = parseFloat(getComputedStyle(prop).fontSize);
+    for (let i = 0; i < 40 && el.scrollWidth > max; i++) { fs *= 0.96; prop.style.fontSize = fs + 'px'; } };
+  fit.filter(Boolean).forEach((el) => { el.style.width = 'max-content'; el.style.left = '50%'; el.style.right = 'auto'; el.style.transform = 'translateX(-50%)'; shrink(el, W); });
+  // lineup lists: one size for all rows, set by the widest row and the available height
+  P.querySelectorAll('.lineup, .names').forEach((box) => {
+    const rows = [...box.children]; let fs = parseFloat(getComputedStyle(box).fontSize);
+    const tooBig = () => rows.some((r) => r.getBoundingClientRect().width > box.clientWidth + 1) || rows.reduce((h, r) => h + r.getBoundingClientRect().height, 0) > box.clientHeight;
+    for (let i = 0; i < 40 && tooBig(); i++) { fs *= 0.96; box.style.fontSize = fs + 'px'; }
+  });
+  window.__pending = false;
+});
+document.querySelectorAll('img').forEach((im) => im.addEventListener('error', () => im.remove()));
+</script>
+</body>
+</html>

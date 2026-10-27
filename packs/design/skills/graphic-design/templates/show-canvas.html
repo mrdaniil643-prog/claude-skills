@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Show poster: canvas</title>
+<!-- One show, one city. Ink printed on a frayed canvas patch: photo in a hand-drawn
+     frame, black banner with the headliner, script lines, tattoo-flash emblems.
+     Two layouts from one SHOW object:
+       ?layout=headliner   (default) photo + name banner — announce a single artist
+       ?layout=lineup      label mark + drawing + full lineup in a dark ink block
+     Formats: square 1080×1080 (default), post 1080×1350, story 1080×1920, a3 (print, 297×420 mm).
+       node render.cjs show-canvas.html post.png --size 1080x1080 --query format=square
+       node render.cjs show-canvas.html lineup.png --size 1080x1350 --query "format=post&layout=lineup"
+       node render.cjs show-canvas.html print.pdf --mm 297x420 --bleed 3 --query "format=a3&layout=lineup"
+     Assets (next to this file): canvas.png — textures.py canvas at the same size as the
+     format; photo.png — phototreat.py "flash,crush,grain=0.12" (any background, it is
+     framed); emblem.svg — assets.py icon game-icons:griffin-symbol --color "#efe9dc" (cream:
+     the #flash filter adds the black body and outline); corner.svg / skull.svg —
+     game-icons:fleur-de-lys, death-skull --color "#0c0b0a"; art.png — drawing for the lineup layout
+     (scan, or phototreat "ink" of a photo, or handdrawn.py); partner logos as images. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<script>
+window.__pending = true;
+const SHOW = {
+  city: "Москва",
+  date: "18.07",
+  venue: "Клуб Pipl",
+  age: "14+",
+  kicker: "на сцене играет",
+  headliner: "АРТИСТ",
+  support: "при поддержке",
+  photo: "photo.png",
+  cloth: "canvas.png",
+  emblem: "emblem.svg",          // flanking creature (mirrored on the right)
+  corner: "corner.svg",          // small mark beside the support line
+  skull: "skull.svg",            // bottom row marks
+  partners: [{ text: "LABEL+" }, { text: "мягкие ткани", style: "mashup" }],   // { img: "logo.svg" } or { text, style }
+  // layout=lineup
+  mark: { text: "R+" },          // big label mark at the top ({ img } or { text })
+  art: "art.png",
+  lineup: [["ГЛАВНЫЙ", "g"], ["second", "s"], ["третий", "g"], ["четвёртый", "g"], ["fifth", "s"], ["шестой", "g"], ["седьмой", "g"], ["восьмой", "g"]],
+  lineupNote: "+ special guests",
+  caption: "действующие лица в рамках мероприятия",
+};
+</script>
+<style>
+  :root { --ink: #0c0b0a; --cloth: #e4ddcf; --bg: #050505;
+          --grotesk: "Inter", "Rubik", sans-serif; --wide: "Unbounded", sans-serif;
+          --script: "Marck Script", "Bad Script", cursive; --swash: "Great Vibes", cursive;
+          --trim-w: 297mm; --trim-h: 420mm; --bleed: 0mm; }
+  html, body { margin: 0; background: var(--bg); }
+  .p { position: relative; overflow: hidden; background: var(--bg); }
+  .square { width: 1080px; height: 1080px; --u: 10.8px; }
+  .post   { width: 1080px; height: 1350px; --u: 10.8px; }
+  .story  { width: 1080px; height: 1920px; --u: 10.8px; }
+  .a3     { width: calc(var(--trim-w) + 2 * var(--bleed)); height: calc(var(--trim-h) + 2 * var(--bleed)); --u: calc((var(--trim-w) + 2 * var(--bleed)) / 100); }
+  .cloth { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* everything printed: multiplied into the weave, edges eaten by the ink filter */
+  .print { position: absolute; inset: 0; mix-blend-mode: multiply; filter: url(#ink); }
+  .print > * { position: absolute; }
+  .over { position: absolute; inset: 0; }          /* stickers sit on top of the cloth, not in it */
+  .over > * { position: absolute; }
+
+  .top { left: 8%; right: 8%; top: 6.2%; display: flex; justify-content: space-between; align-items: baseline;
+         font: 800 calc(2.5 * var(--u)) / 1 var(--wide); color: var(--ink); letter-spacing: .02em; text-transform: uppercase; }
+  .city .cap { font: 400 calc(6 * var(--u)) / 0 var(--swash); text-transform: none; margin-right: -.12em; position: relative; top: .08em; }
+
+  .photo { left: 25%; width: 50%; top: 11%; height: 47%; object-fit: cover; filter: contrast(1.08) saturate(1.05); }
+  .frame { left: 24%; width: 52%; top: 10%; height: 49%; overflow: visible; }
+
+  .banner { left: 16%; width: 68%; top: 59%; background: var(--ink); color: var(--cloth); text-align: center;
+            padding: calc(1.6 * var(--u)) calc(2 * var(--u)) calc(1.2 * var(--u)); box-sizing: border-box; }
+  .kicker { font: 400 calc(3.3 * var(--u)) / 1 var(--script); letter-spacing: .02em; }
+  .kicker::before, .kicker::after { content: "◦"; font: 400 .8em/1 var(--grotesk); margin: 0 .5em; position: relative; top: -.1em; }
+  .name { display: inline-block; font: 900 calc(13 * var(--u)) / .86 var(--grotesk); letter-spacing: -.035em; text-transform: none; white-space: nowrap; margin-top: calc(.6 * var(--u)); }
+  .tab { left: 50%; transform: translateX(-50%); background: var(--ink); padding: 0 calc(.9 * var(--u)) calc(.9 * var(--u)); }
+  .tab span { display: flex; align-items: center; gap: calc(1.4 * var(--u)); background: var(--cloth); color: var(--ink);
+              font: 400 calc(3.2 * var(--u)) / 1 var(--script); padding: calc(.6 * var(--u)) calc(2.2 * var(--u)) calc(1 * var(--u)); white-space: nowrap; }
+  .tab img { height: calc(4 * var(--u)); }
+  .info { left: 8%; right: 8%; text-align: center; font: 800 calc(2 * var(--u)) / 1 var(--wide); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+
+  .partners { left: 10%; right: 10%; bottom: 5.5%; display: flex; justify-content: space-between; align-items: center; gap: calc(2 * var(--u)); }
+  .partners .skull { height: calc(7 * var(--u)); }
+  .partners .logos { display: flex; gap: calc(4 * var(--u)); align-items: center; justify-content: center; flex: 1; }
+  .partners .logos img { height: calc(5 * var(--u)); max-width: calc(22 * var(--u)); object-fit: contain; }
+  .plain { font: 900 calc(4 * var(--u)) / 1 var(--grotesk); letter-spacing: -.03em; color: var(--ink); }
+
+  /* label mashup: compressed grotesque crowded into itself + a calligraphic ghost of the same word */
+  .mashup { position: relative; display: inline-block; white-space: nowrap; color: var(--ink); text-transform: uppercase;
+            font: 900 calc(3.6 * var(--u)) / 1 var(--grotesk); letter-spacing: -.16em; transform: scaleX(.78); transform-origin: left; }
+  .mashup::after { content: attr(data-t); position: absolute; left: -2%; top: 18%; text-transform: none; letter-spacing: 0;
+                   font: 400 1.05em / 1 var(--swash); transform: scaleX(1.25); transform-origin: left; color: inherit; opacity: .9; }
+
+  .emblem { width: 20%; top: 52%; filter: url(#flash); }
+  .emblem.l { left: 2%; }
+  .emblem.r { right: 2%; transform: scaleX(-1); }
+
+  /* lineup layout */
+  .mark { left: 8%; right: 8%; top: 6%; text-align: center; font: 900 calc(17 * var(--u)) / .8 var(--grotesk); color: var(--ink); letter-spacing: -.04em; }
+  .mark img { height: calc(15 * var(--u)); }
+  .art { left: 12%; width: 76%; top: 21%; height: 36%; object-fit: contain; }
+  .sup { left: 8%; right: 8%; top: 58.5%; text-align: center; color: var(--ink); }
+  .sup small { display: block; font: 600 calc(1.6 * var(--u)) / 1 var(--wide); text-transform: lowercase; letter-spacing: .1em; margin-bottom: calc(.8 * var(--u)); }
+  .sup .mashup { font-size: calc(7 * var(--u)); transform-origin: center; }
+  .block { left: 7%; right: 7%; top: 65%; bottom: 17%; isolation: isolate;
+           display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr); gap: 0 calc(3 * var(--u)); padding: calc(2.4 * var(--u)) calc(3 * var(--u)); box-sizing: border-box; }
+  .block::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--ink); opacity: .92; filter: url(#rag); }   /* only the edge is ragged, not the names */
+  .col { display: flex; flex-direction: column; justify-content: space-around; color: var(--cloth); min-width: 0; }
+  .col > span { align-self: flex-start; }
+  .col.r { text-align: right; } .col.r > span { align-self: flex-end; }
+  .col .g { font: 900 calc(5 * var(--u)) / .95 var(--grotesk); letter-spacing: -.035em; white-space: nowrap; }
+  .col .s { font: 400 calc(6.6 * var(--u)) / .8 var(--swash); white-space: nowrap; }
+  .caption { left: 16%; right: 16%; bottom: 10.5%; text-align: center; font: 400 calc(2.4 * var(--u)) / 1 var(--script); color: var(--ink); }
+  .caption::before, .caption::after { content: "◦"; margin: 0 .6em; font-family: var(--grotesk); }
+  .foot { left: 19%; right: 19%; bottom: 4.6%; display: flex; justify-content: space-between; align-items: baseline;
+          font: 800 calc(2.2 * var(--u)) / 1 var(--wide); letter-spacing: .04em; color: var(--ink); }
+  .foot .v { font-size: .8em; font-weight: 600; }
+  .corner-emb { width: 13%; bottom: 2.5%; filter: url(#flash); }
+  .corner-emb.l { left: 1.5%; } .corner-emb.r { right: 1.5%; transform: scaleX(-1); }
+
+  /* story: content lives between the top ~12 % and bottom ~20 % */
+  .story .top { top: 13%; }
+  .story .photo { top: 17%; height: 34%; } .story .frame { top: 16%; height: 36%; }
+  .story .banner { top: 52%; } .story .emblem { top: 47%; }
+  .story .partners { bottom: 21%; }
+  .post .photo { top: 10.5%; height: 44%; } .post .frame { top: 9.6%; height: 45.8%; }
+  .post .banner { top: 56%; } .post .emblem { top: 50%; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <!-- worn print: slight wobble of edges, ink missing in specks -->
+  <filter id="ink" x="-2%" y="-2%" width="104%" height="104%">
+    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".45" numOctaves="3" seed="8" result="s"/>
+    <feColorMatrix in="s" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -24 0 0 0 6.6" result="holes"/>
+    <feComposite in="holes" in2="d" operator="in" result="specks"/>
+    <feMerge><feMergeNode in="d"/><feMergeNode in="specks"/></feMerge>
+  </filter>
+  <!-- ragged edge for the ink block -->
+  <filter id="rag" x="-3%" y="-3%" width="106%" height="106%">
+    <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="4" seed="5" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <!-- tattoo flash: a cream emblem gets a solid black body behind it, so the cut-out
+       details read as black linework and the silhouette as a heavy black outline -->
+  <filter id="flash" x="-20%" y="-20%" width="140%" height="140%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="6" result="fat"/>
+    <feFlood flood-color="#0c0b0a"/><feComposite in2="fat" operator="in" result="body"/>
+    <feGaussianBlur in="fat" stdDeviation="4" result="sb"/><feOffset in="sb" dy="4" result="so"/>
+    <feColorMatrix in="so" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .3 0" result="shadow"/>
+    <feMerge><feMergeNode in="shadow"/><feMergeNode in="body"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</svg>
+<div class="p" id="p">
+  <img class="cloth" id="cloth" alt="">
+  <div class="print" id="print"></div>
+  <div class="over" id="over"></div>
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const fmt = q.get('format') || 'square', layout = q.get('layout') || 'headliner';
+const S = SHOW, P = document.getElementById('print'), O = document.getElementById('over');
+document.getElementById('p').classList.add(fmt);
+document.getElementById('cloth').src = S.cloth;
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const add = (root, html) => { root.insertAdjacentHTML('beforeend', html); return root.lastElementChild; };
+const logo = (x) => x.img ? `<img src="${x.img}" alt="">` : x.style === 'mashup' ? `<span class="mashup" data-t="${esc(x.text)}">${esc(x.text)}</span>` : `<span class="plain">${esc(x.text)}</span>`;
+
+// hand-drawn frame: two loose passes with overshooting corners
+function sketchRect(w, h, seed) {
+  let s = seed; const r = () => ((s = (s * 16807) % 2147483647) / 2147483647 - 0.5);
+  const side = (x0, y0, x1, y1) => { const o = 6 + r() * 6, dx = (x1 - x0), dy = (y1 - y0), L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+    const mx = (x0 + x1) / 2 + r() * 4, my = (y0 + y1) / 2 + r() * 4;
+    return `M${x0 - ux * o + r() * 3},${y0 - uy * o + r() * 3} Q${mx},${my} ${x1 + ux * o + r() * 3},${y1 + uy * o + r() * 3}`; };
+  const pass = () => side(0, 0, w, 0) + side(w, 0, w, h) + side(w, h, 0, h) + side(0, h, 0, 0);
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="overflow:visible"><path d="${pass()}${pass()}" fill="none" stroke="#0c0b0a" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+const age = `<span>${esc(S.age)}</span>`;
+const city = String(S.city || '');
+const cityHtml = `<span class="city"><span class="cap">${esc(city[0] || '')}</span>${esc(city.slice(1))}</span>`;
+
+if (layout === 'headliner') {
+  add(P, `<div class="top">${cityHtml}${age}</div>`);
+  if (S.photo) add(P, `<img class="photo" src="${S.photo}" alt="">`);
+  const fr = add(P, `<div class="frame"></div>`);
+  const banner = add(P, `<div class="banner"><div class="kicker">${esc(S.kicker)}</div><div class="name" id="name">${esc(S.headliner)}</div></div>`);
+  const tab = add(P, `<div class="tab"><span>${S.corner ? `<img src="${S.corner}">` : ''}${esc(S.support)}${S.corner ? `<img src="${S.corner}">` : ''}</span></div>`);
+  const info = (S.date || S.venue) ? add(P, `<div class="info">${esc([S.date, S.venue].filter(Boolean).join(' · '))}</div>`) : null;
+  add(P, `<div class="partners">${S.skull ? `<img class="skull" src="${S.skull}">` : '<i></i>'}<div class="logos">${(S.partners || []).map(logo).join('')}</div>${S.skull ? `<img class="skull" src="${S.skull}" style="transform:scaleX(-1)">` : '<i></i>'}</div>`);
+  if (S.emblem) { add(O, `<img class="emblem l" src="${S.emblem}">`); add(O, `<img class="emblem r" src="${S.emblem}">`); }
+  document.fonts.ready.then(() => {
+    const b = fr.getBoundingClientRect();
+    fr.innerHTML = sketchRect(b.width, b.height, 7);
+    // the name must fit between the two emblems, not just inside the banner
+    const name = document.getElementById('name'), em = O.querySelectorAll('.emblem');
+    const inner = em.length === 2 ? Math.min(banner.clientWidth * 0.92, em[1].getBoundingClientRect().left - em[0].getBoundingClientRect().right - 8) : banner.clientWidth * 0.92;
+    let fs = parseFloat(getComputedStyle(name).fontSize);
+    for (let i = 0; i < 40 && name.getBoundingClientRect().width > inner; i++) { fs *= 0.96; name.style.fontSize = fs + 'px'; }
+    const bb = banner.getBoundingClientRect(), pb = P.getBoundingClientRect();
+    tab.style.top = (bb.bottom - pb.top - 1) + 'px';
+    if (info) info.style.top = (tab.getBoundingClientRect().bottom - pb.top + pb.height * 0.018) + 'px';
+    window.__pending = false;
+  });
+} else {
+  add(P, `<div class="mark">${S.mark.img ? `<img src="${S.mark.img}">` : esc(S.mark.text)}</div>`);
+  if (S.art) add(P, `<img class="art" src="${S.art}" alt="">`);
+  const part = (S.partners || []).find((x) => x.style === 'mashup') || (S.partners || [])[0];
+  add(P, `<div class="sup"><small>${esc(S.support)}</small>${part ? logo(part) : ''}</div>`);
+  const half = Math.ceil(S.lineup.length / 2);
+  const col = (items, cls, extra = '') => `<div class="col ${cls}">${items.map(([n, st]) => `<span class="${st || 'g'}">${esc(n)}</span>`).join('')}${extra}</div>`;
+  const block = add(P, `<div class="block">${col(S.lineup.slice(0, half), 'l')}${col(S.lineup.slice(half), 'r', S.lineupNote ? `<span class="s">${esc(S.lineupNote)}</span>` : '')}</div>`);
+  add(P, `<div class="caption">${esc(S.caption)}</div>`);
+  add(P, `<div class="foot"><span>${esc(S.date)}</span><span class="v">${esc(S.venue)}, ${esc(S.city)}</span><span>${esc(S.age)}</span></div>`);
+  if (S.emblem) { add(O, `<img class="corner-emb l" src="${S.emblem}">`); add(O, `<img class="corner-emb r" src="${S.emblem}">`); }
+  document.fonts.ready.then(() => {
+    // shrink lineup names until each column fits its half of the block
+    // measure the words themselves (script swashes overhang their box, so no scrollWidth)
+    const spans = [...block.querySelectorAll('.col > span')];
+    const over = () => spans.some((el) => el.getBoundingClientRect().width > el.parentElement.clientWidth + 1)
+      || [...block.querySelectorAll('.col')].some((c) => [...c.children].reduce((h, el) => h + el.getBoundingClientRect().height, 0) > c.clientHeight);
+    for (let i = 0; i < 30 && over(); i++) block.querySelectorAll('.col > span').forEach((el) => { el.style.fontSize = parseFloat(getComputedStyle(el).fontSize) * 0.95 + 'px'; });
+    window.__pending = false;
+  });
+}
+document.querySelectorAll('img').forEach((im) => im.addEventListener('error', () => im.remove()));
+</script>
+</body>
+</html>

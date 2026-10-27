@@ -40,10 +40,16 @@
 | Ксерокс / DIY-зин | ч/б фотокопия, скотч, маркер, коллаж, кривой набор | фото: `xerox=0.5,grain=0.25` или `bitmap`; шрифт: Rubik Marker Hatch, Rubik Spray Paint, Special Elite + `rough`, `jitter`; цвет: ч/б + 1 кислотный |
 | Фонк / дрифт | чёрно-красный, VHS, хром-надписи, черепа, скорость | фото: `vhs`, `motion=40,0`; шрифт: Russo One, Stalinist One + `skew`, `rise`; 3D: `chrome`, `lava` |
 | Гранж / металкор | рваные края, ржавчина, колючая проволока, кровь | `rough`, `drip`; 3D: `rust`, `blood`; декор: `barbed`, `chain`, `cross` |
+| Ткань / печать на холсте | кремовый лоскут с бахромой на чёрном, фото в рамке от руки, чёрная плашка с жирным гротеском, пропись, тату-флеш грифоны, лилии, черепа | `show-canvas.html` + `textures.py canvas`; см. `show-poster.md` |
+| Жидкий металл + мембраны | мятое серебро, красная симметричная сеть ячеек, артист-наклейка с белым краем, выдавленный красный широкий гротеск, хром | `show-chrome.html` + `textures.py metal`, `cells`; см. `show-poster.md` |
 | Ручной / живописный (скетчбук, тату-флеш) | фон-эскиз из крестов, звёзд, штриховки; фото как живопись или рисунок; надпись от руки; бумага, всё одним инструментом и одним цветом | `handdrawn.py bg --tool pencil|charcoal|ink`; фото: `paint=8,paper`, `sketch,paper`, `ink=0.5,paper`; шрифт: Caveat, Amatic SC, Ruslan Display + `jitter`/`rough`; пометки от руки `circle`, `underline`, `arrow` — см. `handmade.md` |
 | Лоу-фай интернет / пиксель | пиксели, окна ОС, битмапы, глитч | Press Start 2P, Tiny5, Handjet; фото: `pixel=12,scanlines`; `slice` для глитча; 3D: `neon` |
 
-## 3. Афиша концерта / тура (`templates/tour-poster.html`)
+## 3. Афиша концерта
+
+**Один концерт в одном городе** — основной случай: `show-poster.md`,
+шаблоны `show-canvas.html` (ткань) и `show-chrome.html` (жидкий металл).
+Тур с несколькими датами — только если попросили, тогда `tour-poster.html`:
 
 Данные в одном объекте `TOUR` (имя, подзаголовок, даты-города-площадки, возраст,
 QR, строка партнёров) → три формата из одного файла:
@@ -51,7 +57,7 @@ QR, строка партнёров) → три формата из одного
 node $S/render.cjs tour-poster.html print.pdf --mm 420x594 --bleed 3 --query format=a2
 node $S/render.cjs tour-poster.html post.png  --size 1080x1350 --query format=post
 node $S/render.cjs tour-poster.html story.png --size 1080x1920 --query format=story
-node $S/check.cjs tour-poster.html --kind cover          # сторис: зоны интерфейса, контраст
+node $S/check.cjs tour-poster.html --kind cover --query format=story   # сторис: зоны интерфейса, контраст
 uv run --with opencv-python-headless python $S/assets.py qrcheck post.png
 ```
 Обязательно на афише: имя (главное пятно), дата(ы) и город(а), площадка,
