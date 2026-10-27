@@ -1,0 +1,4071 @@
+{
+ "styles": {
+  "gothic": "Готика, блэклеттер, средневековье",
+  "slavonic": "Древнерусский, церковнославянский, былинный",
+  "horror": "Хоррор, кровь, слизь, разрушение",
+  "metal": "Металл, рок, тяжёлый, брутальный",
+  "y2k": "Y2K, рейв, хром, клубный флаер",
+  "cyber": "Киберпанк, техно, sci-fi, гейминг",
+  "street": "Граффити, улица, маркер, хип-хоп",
+  "pixel": "Пиксель, ретро-игры, 8-бит, терминал",
+  "groovy": "Ретро 60–70-х, грув, диско, мультяшный жирный",
+  "western": "Вестерн, цирк, ярмарка, винтажная вывеска",
+  "script": "Каллиграфия, рукописный, свадебный, кисть",
+  "luxury": "Ар-деко, люкс, мода, элегантная антиква",
+  "soviet": "Советский, конструктивизм, агитплакат",
+  "cute": "Мило, каваий, детское, мягкое",
+  "dimensional": "Объёмные, контурные, тени, инлайн"
+ },
+ "fonts": [
+  {
+   "name": "Abril Fatface",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/abrilfatface/AbrilFatface-Regular.ttf"
+  },
+  {
+   "name": "Akronim",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/akronim/Akronim-Regular.ttf"
+  },
+  {
+   "name": "Aldrich",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/aldrich/Aldrich-Regular.ttf"
+  },
+  {
+   "name": "Alex Brush",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/alexbrush/AlexBrush-Regular.ttf"
+  },
+  {
+   "name": "Alfa Slab One",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/alfaslabone/AlfaSlabOne-Regular.ttf"
+  },
+  {
+   "name": "Almendra Display",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/almendradisplay/AlmendraDisplay-Regular.ttf"
+  },
+  {
+   "name": "Alumni Sans Collegiate One",
+   "styles": [
+    "metal",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/alumnisanscollegiateone/AlumniSansCollegiateOne-Regular.ttf"
+  },
+  {
+   "name": "Amatic SC",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/amaticsc/AmaticSC-Bold.ttf"
+  },
+  {
+   "name": "Audiowide",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/audiowide/Audiowide-Regular.ttf"
+  },
+  {
+   "name": "Bad Script",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/badscript/BadScript-Regular.ttf"
+  },
+  {
+   "name": "Bagel Fat One",
+   "styles": [
+    "y2k",
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bagelfatone/BagelFatOne-Regular.ttf"
+  },
+  {
+   "name": "Balsamiq Sans",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/balsamiqsans/BalsamiqSans-Bold.ttf"
+  },
+  {
+   "name": "Bangers",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bangers/Bangers-Regular.ttf"
+  },
+  {
+   "name": "Bellota",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    300,
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bellota/Bellota-Bold.ttf"
+  },
+  {
+   "name": "Big Shoulders Stencil",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ],
+    [
+     "opsz",
+     10.0,
+     72.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bigshouldersstencil/BigShouldersStencil[opsz,wght].ttf"
+  },
+  {
+   "name": "Black Ops One",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/blackopsone/BlackOpsOne-Regular.ttf"
+  },
+  {
+   "name": "Bodoni Moda",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     900.0
+    ],
+    [
+     "opsz",
+     6.0,
+     96.0
+    ]
+   ],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/bodonimoda/BodoniModa[opsz,wght].ttf"
+  },
+  {
+   "name": "Bruno Ace",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/brunoace/BrunoAce-Regular.ttf"
+  },
+  {
+   "name": "Bruno Ace SC",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/brunoacesc/BrunoAceSC-Regular.ttf"
+  },
+  {
+   "name": "Bungee",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bungee/Bungee-Regular.ttf"
+  },
+  {
+   "name": "Bungee Inline",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bungeeinline/BungeeInline-Regular.ttf"
+  },
+  {
+   "name": "Bungee Outline",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bungeeoutline/BungeeOutline-Regular.ttf"
+  },
+  {
+   "name": "Bungee Shade",
+   "styles": [
+    "metal",
+    "groovy",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bungeeshade/BungeeShade-Regular.ttf"
+  },
+  {
+   "name": "Bungee Spice",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": true,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/bungeespice/BungeeSpice-Regular.ttf"
+  },
+  {
+   "name": "Butcherman",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/butcherman/Butcherman-Regular.ttf"
+  },
+  {
+   "name": "Caveat",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/caveat/Caveat[wght].ttf"
+  },
+  {
+   "name": "Caveat Brush",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/caveatbrush/CaveatBrush-Regular.ttf"
+  },
+  {
+   "name": "Chakra Petch",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    300,
+    400,
+    500,
+    600,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/chakrapetch/ChakraPetch-Bold.ttf"
+  },
+  {
+   "name": "Chango",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/chango/Chango-Regular.ttf"
+  },
+  {
+   "name": "Cherry Bomb One",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/cherrybombone/CherryBombOne-Regular.ttf"
+  },
+  {
+   "name": "Cinzel",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/cinzel/Cinzel[wght].ttf"
+  },
+  {
+   "name": "Cinzel Decorative",
+   "styles": [
+    "gothic",
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400,
+    700,
+    900
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/cinzeldecorative/CinzelDecorative-Black.ttf"
+  },
+  {
+   "name": "Climate Crisis",
+   "styles": [
+    "y2k",
+    "groovy"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "YEAR",
+     1979.0,
+     2050.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/climatecrisis/ClimateCrisis[YEAR].ttf"
+  },
+  {
+   "name": "Codystar",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    300,
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/codystar/Codystar-Light.ttf"
+  },
+  {
+   "name": "Coiny",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/coiny/Coiny-Regular.ttf"
+  },
+  {
+   "name": "Comfortaa",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     300.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/comfortaa/Comfortaa[wght].ttf"
+  },
+  {
+   "name": "Comforter",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/comforter/Comforter-Regular.ttf"
+  },
+  {
+   "name": "Comforter Brush",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/comforterbrush/ComforterBrush-Regular.ttf"
+  },
+  {
+   "name": "Comic Relief",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/comicrelief/ComicRelief-Bold.ttf"
+  },
+  {
+   "name": "Cormorant",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     300.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/cormorant/Cormorant[wght].ttf"
+  },
+  {
+   "name": "Cormorant SC",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    300,
+    400,
+    500,
+    600,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/cormorantsc/CormorantSC-Bold.ttf"
+  },
+  {
+   "name": "Creepster",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/creepster/Creepster-Regular.ttf"
+  },
+  {
+   "name": "Dela Gothic One",
+   "styles": [
+    "metal",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/delagothicone/DelaGothicOne-Regular.ttf"
+  },
+  {
+   "name": "Diplomata",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/diplomata/Diplomata-Regular.ttf"
+  },
+  {
+   "name": "Diplomata SC",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/diplomatasc/DiplomataSC-Regular.ttf"
+  },
+  {
+   "name": "Dongle",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    300,
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/dongle/Dongle-Bold.ttf"
+  },
+  {
+   "name": "DotGothic16",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/dotgothic16/DotGothic16-Regular.ttf",
+   "cyr_tracking": -0.38,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.38em; word-spacing:0.43em"
+  },
+  {
+   "name": "Eater",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/eater/Eater-Regular.ttf"
+  },
+  {
+   "name": "Electrolize",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/electrolize/Electrolize-Regular.ttf"
+  },
+  {
+   "name": "Ewert",
+   "styles": [
+    "horror",
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/ewert/Ewert-Regular.ttf"
+  },
+  {
+   "name": "Exo 2",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/exo2/Exo2[wght].ttf"
+  },
+  {
+   "name": "Fascinate",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/fascinate/Fascinate-Regular.ttf"
+  },
+  {
+   "name": "Fascinate Inline",
+   "styles": [
+    "groovy",
+    "western",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/fascinateinline/FascinateInline-Regular.ttf"
+  },
+  {
+   "name": "Faster One",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/fasterone/FasterOne-Regular.ttf"
+  },
+  {
+   "name": "Federo",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/federo/Federo-Regular.ttf"
+  },
+  {
+   "name": "Finger Paint",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/fingerpaint/FingerPaint-Regular.ttf"
+  },
+  {
+   "name": "Foldit",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ]
+   ],
+   "color": true,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/foldit/Foldit[wght].ttf"
+  },
+  {
+   "name": "Forum",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/forum/Forum-Regular.ttf"
+  },
+  {
+   "name": "Fredoka",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     300.0,
+     700.0
+    ],
+    [
+     "wdth",
+     75.0,
+     125.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/fredoka/Fredoka[wdth,wght].ttf"
+  },
+  {
+   "name": "Frijole",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/frijole/Frijole-Regular.ttf"
+  },
+  {
+   "name": "Fruktur",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/fruktur/Fruktur-Regular.ttf"
+  },
+  {
+   "name": "Gajraj One",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/gajrajone/GajrajOne-Regular.ttf"
+  },
+  {
+   "name": "Germania One",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/germaniaone/GermaniaOne-Regular.ttf"
+  },
+  {
+   "name": "Gochi Hand",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/gochihand/GochiHand-Regular.ttf"
+  },
+  {
+   "name": "Graduate",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/graduate/Graduate-Regular.ttf"
+  },
+  {
+   "name": "Great Vibes",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/greatvibes/GreatVibes-Regular.ttf"
+  },
+  {
+   "name": "Grenze",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/grenze/Grenze[wght].ttf"
+  },
+  {
+   "name": "Grenze Gotisch",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/grenzegotisch/GrenzeGotisch[wght].ttf"
+  },
+  {
+   "name": "Griffy",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/griffy/Griffy-Regular.ttf"
+  },
+  {
+   "name": "Hachi Maru Pop",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/hachimarupop/HachiMaruPop-Regular.ttf",
+   "cyr_tracking": -0.24,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.24em; word-spacing:0.29em"
+  },
+  {
+   "name": "Handjet",
+   "styles": [
+    "cyber",
+    "pixel"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ],
+    [
+     "ELGR",
+     1.0,
+     2.0
+    ],
+    [
+     "ELSH",
+     0.0,
+     16.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/handjet/Handjet[ELGR,ELSH,wght].ttf"
+  },
+  {
+   "name": "Henny Penny",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/hennypenny/HennyPenny-Regular.ttf"
+  },
+  {
+   "name": "Holtwood One SC",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/holtwoodonesc/HoltwoodOneSC-Regular.ttf"
+  },
+  {
+   "name": "Honk",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "MORF",
+     0.0,
+     45.0
+    ],
+    [
+     "SHLN",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": true,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/honk/Honk[MORF,SHLN].ttf"
+  },
+  {
+   "name": "Iceland",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/iceland/Iceland-Regular.ttf"
+  },
+  {
+   "name": "Italiana",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/italiana/Italiana-Regular.ttf"
+  },
+  {
+   "name": "Jacquard 12",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/jacquard12/Jacquard12-Regular.ttf"
+  },
+  {
+   "name": "Jacquard 24",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/jacquard24/Jacquard24-Regular.ttf"
+  },
+  {
+   "name": "Jacquarda Bastarda 9",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/jacquardabastarda9/JacquardaBastarda9-Regular.ttf"
+  },
+  {
+   "name": "Jersey 10",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/jersey10/Jersey10-Regular.ttf"
+  },
+  {
+   "name": "Jersey 15",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/jersey15/Jersey15-Regular.ttf"
+  },
+  {
+   "name": "Jolly Lodger",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/jollylodger/JollyLodger-Regular.ttf"
+  },
+  {
+   "name": "Jura",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     300.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/jura/Jura[wght].ttf"
+  },
+  {
+   "name": "Kablammo",
+   "styles": [
+    "y2k",
+    "street"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "MORF",
+     0.0,
+     60.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/kablammo/Kablammo[MORF].ttf"
+  },
+  {
+   "name": "Kaushan Script",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/kaushanscript/KaushanScript-Regular.ttf"
+  },
+  {
+   "name": "Kelly Slab",
+   "styles": [
+    "gothic",
+    "western",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/kellyslab/KellySlab-Regular.ttf"
+  },
+  {
+   "name": "Klee One",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    600
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/kleeone/KleeOne-Regular.ttf",
+   "cyr_tracking": -0.35,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.35em; word-spacing:0.4em"
+  },
+  {
+   "name": "Knewave",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/knewave/Knewave-Regular.ttf"
+  },
+  {
+   "name": "Kode Mono",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     700.0
+    ],
+    [
+     "wdth",
+     75.0,
+     125.0
+    ],
+    [
+     "ROND",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/kodemono/KodeMono[ROND,wdth,wght].ttf"
+  },
+  {
+   "name": "Kosugi Maru",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "apache",
+   "path": "apache/kosugimaru/KosugiMaru-Regular.ttf",
+   "cyr_tracking": -0.38,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.38em; word-spacing:0.43em"
+  },
+  {
+   "name": "Krona One",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/kronaone/KronaOne-Regular.ttf"
+  },
+  {
+   "name": "Kurale",
+   "styles": [
+    "slavonic",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/kurale/Kurale-Regular.ttf"
+  },
+  {
+   "name": "Libertinus Serif Display",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/libertinusserifdisplay/LibertinusSerifDisplay-Regular.ttf"
+  },
+  {
+   "name": "Lilita One",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/lilitaone/LilitaOne-Regular.ttf"
+  },
+  {
+   "name": "Limelight",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/limelight/Limelight-Regular.ttf"
+  },
+  {
+   "name": "Lobster",
+   "styles": [
+    "groovy",
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/lobster/Lobster-Regular.ttf"
+  },
+  {
+   "name": "Londrina Outline",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/londrinaoutline/LondrinaOutline-Regular.ttf"
+  },
+  {
+   "name": "Londrina Shadow",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/londrinashadow/LondrinaShadow-Regular.ttf"
+  },
+  {
+   "name": "Londrina Sketch",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/londrinasketch/LondrinaSketch-Regular.ttf"
+  },
+  {
+   "name": "Major Mono Display",
+   "styles": [
+    "y2k",
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "monospace",
+   "license": "ofl",
+   "path": "ofl/majormonodisplay/MajorMonoDisplay-Regular.ttf"
+  },
+  {
+   "name": "Marcellus",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/marcellus/Marcellus-Regular.ttf"
+  },
+  {
+   "name": "Marck Script",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/marckscript/MarckScript-Regular.ttf"
+  },
+  {
+   "name": "MedievalSharp",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/medievalsharp/MedievalSharp.ttf"
+  },
+  {
+   "name": "Metal Mania",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/metalmania/MetalMania-Regular.ttf"
+  },
+  {
+   "name": "Metamorphous",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/metamorphous/Metamorphous-Regular.ttf"
+  },
+  {
+   "name": "Michroma",
+   "styles": [
+    "y2k",
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/michroma/Michroma-Regular.ttf"
+  },
+  {
+   "name": "Micro 5",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/micro5/Micro5-Regular.ttf"
+  },
+  {
+   "name": "Mochiy Pop One",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/mochiypopone/MochiyPopOne-Regular.ttf"
+  },
+  {
+   "name": "Modak",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/modak/Modak-Regular.ttf"
+  },
+  {
+   "name": "Monomakh",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/monomakh/Monomakh-Regular.ttf"
+  },
+  {
+   "name": "Monoton",
+   "styles": [
+    "y2k",
+    "groovy",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/monoton/Monoton-Regular.ttf"
+  },
+  {
+   "name": "Mrs Saint Delafield",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/mrssaintdelafield/MrsSaintDelafield-Regular.ttf"
+  },
+  {
+   "name": "Mystery Quest",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/mysteryquest/MysteryQuest-Regular.ttf"
+  },
+  {
+   "name": "Nabla",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "EDPT",
+     0.0,
+     200.0
+    ],
+    [
+     "EHLT",
+     0.0,
+     24.0
+    ]
+   ],
+   "color": true,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/nabla/Nabla[EDPT,EHLT].ttf"
+  },
+  {
+   "name": "Neucha",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/neucha/Neucha.ttf"
+  },
+  {
+   "name": "New Rocker",
+   "styles": [
+    "gothic",
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/newrocker/NewRocker-Regular.ttf"
+  },
+  {
+   "name": "Nosifer",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/nosifer/Nosifer-Regular.ttf"
+  },
+  {
+   "name": "Nova Cut",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/novacut/NovaCut.ttf"
+  },
+  {
+   "name": "Nova Square",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/novasquare/NovaSquare.ttf"
+  },
+  {
+   "name": "Oi",
+   "styles": [
+    "street",
+    "groovy"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/oi/Oi-Regular.ttf"
+  },
+  {
+   "name": "Old Standard TT",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/oldstandardtt/OldStandard-Bold.ttf"
+  },
+  {
+   "name": "Oranienbaum",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/oranienbaum/Oranienbaum-Regular.ttf"
+  },
+  {
+   "name": "Orbitron",
+   "styles": [
+    "y2k",
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/orbitron/Orbitron[wght].ttf"
+  },
+  {
+   "name": "Orelega One",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/orelegaone/OrelegaOne-Regular.ttf"
+  },
+  {
+   "name": "Oswald",
+   "styles": [
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     200.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/oswald/Oswald[wght].ttf"
+  },
+  {
+   "name": "Oxanium",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     200.0,
+     800.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/oxanium/Oxanium[wght].ttf"
+  },
+  {
+   "name": "Pacifico",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/pacifico/Pacifico-Regular.ttf"
+  },
+  {
+   "name": "Pangolin",
+   "styles": [
+    "script",
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/pangolin/Pangolin-Regular.ttf"
+  },
+  {
+   "name": "Parisienne",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/parisienne/Parisienne-Regular.ttf"
+  },
+  {
+   "name": "Permanent Marker",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "apache",
+   "path": "apache/permanentmarker/PermanentMarker-Regular.ttf"
+  },
+  {
+   "name": "Philosopher",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/philosopher/Philosopher-Bold.ttf"
+  },
+  {
+   "name": "Pinyon Script",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/pinyonscript/PinyonScript-Regular.ttf"
+  },
+  {
+   "name": "Pirata One",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/pirataone/PirataOne-Regular.ttf"
+  },
+  {
+   "name": "Pixelify Sans",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "partial",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/pixelifysans/PixelifySans[wght].ttf",
+   "note": "нет кириллических О и П"
+  },
+  {
+   "name": "Plaster",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/plaster/Plaster-Regular.ttf"
+  },
+  {
+   "name": "Playfair Display SC",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400,
+    700,
+    900
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/playfairdisplaysc/PlayfairDisplaySC-Black.ttf"
+  },
+  {
+   "name": "Playpen Sans",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     800.0
+    ]
+   ],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/playpensans/PlaypenSans[wght].ttf"
+  },
+  {
+   "name": "Pochaevsk",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/pochaevsk/Pochaevsk-Regular.ttf"
+  },
+  {
+   "name": "Poiret One",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/poiretone/PoiretOne-Regular.ttf"
+  },
+  {
+   "name": "Ponomar",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/ponomar/Ponomar-Regular.ttf"
+  },
+  {
+   "name": "Potta One",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/pottaone/PottaOne-Regular.ttf"
+  },
+  {
+   "name": "Prata",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/prata/Prata-Regular.ttf"
+  },
+  {
+   "name": "Press Start 2P",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/pressstart2p/PressStart2P-Regular.ttf"
+  },
+  {
+   "name": "Prosto One",
+   "styles": [
+    "cyber",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/prostoone/ProstoOne-Regular.ttf"
+  },
+  {
+   "name": "Rammetto One",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rammettoone/RammettoOne-Regular.ttf"
+  },
+  {
+   "name": "Rampart One",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rampartone/RampartOne-Regular.ttf",
+   "cyr_tracking": -0.29,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.29em; word-spacing:0.34em"
+  },
+  {
+   "name": "Reggae One",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/reggaeone/ReggaeOne-Regular.ttf",
+   "cyr_tracking": -0.29,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.29em; word-spacing:0.34em"
+  },
+  {
+   "name": "Righteous",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/righteous/Righteous-Regular.ttf"
+  },
+  {
+   "name": "Rock Salt",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "apache",
+   "path": "apache/rocksalt/RockSalt-Regular.ttf"
+  },
+  {
+   "name": "Rubik 80s Fade",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubik80sfade/Rubik80sFade-Regular.ttf"
+  },
+  {
+   "name": "Rubik Beastly",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikbeastly/RubikBeastly-Regular.ttf"
+  },
+  {
+   "name": "Rubik Broken Fax",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikbrokenfax/RubikBrokenFax-Regular.ttf"
+  },
+  {
+   "name": "Rubik Bubbles",
+   "styles": [
+    "y2k",
+    "groovy",
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikbubbles/RubikBubbles-Regular.ttf"
+  },
+  {
+   "name": "Rubik Burned",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikburned/RubikBurned-Regular.ttf"
+  },
+  {
+   "name": "Rubik Dirt",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikdirt/RubikDirt-Regular.ttf"
+  },
+  {
+   "name": "Rubik Distressed",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikdistressed/RubikDistressed-Regular.ttf"
+  },
+  {
+   "name": "Rubik Doodle Shadow",
+   "styles": [
+    "street",
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikdoodleshadow/RubikDoodleShadow-Regular.ttf"
+  },
+  {
+   "name": "Rubik Doodle Triangles",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikdoodletriangles/RubikDoodleTriangles-Regular.ttf"
+  },
+  {
+   "name": "Rubik Gemstones",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikgemstones/RubikGemstones-Regular.ttf"
+  },
+  {
+   "name": "Rubik Glitch",
+   "styles": [
+    "horror",
+    "y2k"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikglitch/RubikGlitch-Regular.ttf"
+  },
+  {
+   "name": "Rubik Glitch Pop",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikglitchpop/RubikGlitchPop-Regular.ttf"
+  },
+  {
+   "name": "Rubik Iso",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikiso/RubikIso-Regular.ttf"
+  },
+  {
+   "name": "Rubik Lines",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubiklines/RubikLines-Regular.ttf"
+  },
+  {
+   "name": "Rubik Marker Hatch",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikmarkerhatch/RubikMarkerHatch-Regular.ttf"
+  },
+  {
+   "name": "Rubik Maze",
+   "styles": [
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikmaze/RubikMaze-Regular.ttf"
+  },
+  {
+   "name": "Rubik Microbe",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikmicrobe/RubikMicrobe-Regular.ttf"
+  },
+  {
+   "name": "Rubik Mono One",
+   "styles": [
+    "metal",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/rubikmonoone/RubikMonoOne-Regular.ttf"
+  },
+  {
+   "name": "Rubik Moonrocks",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikmoonrocks/RubikMoonrocks-Regular.ttf"
+  },
+  {
+   "name": "Rubik Pixels",
+   "styles": [
+    "cyber",
+    "pixel"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikpixels/RubikPixels-Regular.ttf"
+  },
+  {
+   "name": "Rubik Puddles",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikpuddles/RubikPuddles-Regular.ttf"
+  },
+  {
+   "name": "Rubik Scribble",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikscribble/RubikScribble-Regular.ttf"
+  },
+  {
+   "name": "Rubik Spray Paint",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikspraypaint/RubikSprayPaint-Regular.ttf"
+  },
+  {
+   "name": "Rubik Storm",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikstorm/RubikStorm-Regular.ttf"
+  },
+  {
+   "name": "Rubik Vinyl",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikvinyl/RubikVinyl-Regular.ttf"
+  },
+  {
+   "name": "Rubik Wet Paint",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rubikwetpaint/RubikWetPaint-Regular.ttf"
+  },
+  {
+   "name": "Ruslan Display",
+   "styles": [
+    "gothic",
+    "slavonic",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/ruslandisplay/RuslanDisplay-Regular.ttf"
+  },
+  {
+   "name": "Russo One",
+   "styles": [
+    "metal",
+    "cyber",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/russoone/RussoOne-Regular.ttf"
+  },
+  {
+   "name": "Rye",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/rye/Rye-Regular.ttf"
+  },
+  {
+   "name": "Saira Stencil One",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/sairastencilone/SairaStencilOne-Regular.ttf"
+  },
+  {
+   "name": "Sancreek",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/sancreek/Sancreek-Regular.ttf"
+  },
+  {
+   "name": "Seaweed Script",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/seaweedscript/SeaweedScript-Regular.ttf"
+  },
+  {
+   "name": "Sedgwick Ave",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/sedgwickave/SedgwickAve-Regular.ttf"
+  },
+  {
+   "name": "Sedgwick Ave Display",
+   "styles": [
+    "street"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/sedgwickavedisplay/SedgwickAveDisplay-Regular.ttf"
+  },
+  {
+   "name": "Shafarik",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/shafarik/Shafarik-Regular.ttf"
+  },
+  {
+   "name": "Shantell Sans",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     300.0,
+     800.0
+    ],
+    [
+     "INFM",
+     0.0,
+     100.0
+    ],
+    [
+     "BNCE",
+     -100.0,
+     100.0
+    ],
+    [
+     "SPAC",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/shantellsans/ShantellSans[BNCE,INFM,SPAC,wght].ttf"
+  },
+  {
+   "name": "Share Tech Mono",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "monospace",
+   "license": "ofl",
+   "path": "ofl/sharetechmono/ShareTechMono-Regular.ttf"
+  },
+  {
+   "name": "Shrikhand",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/shrikhand/Shrikhand-Regular.ttf"
+  },
+  {
+   "name": "Silkscreen",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/silkscreen/Silkscreen-Bold.ttf"
+  },
+  {
+   "name": "Sixtyfour",
+   "styles": [
+    "y2k",
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "SCAN",
+     -53.0,
+     100.0
+    ],
+    [
+     "BLED",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": false,
+   "category": "monospace",
+   "license": "ofl",
+   "path": "ofl/sixtyfour/Sixtyfour[BLED,SCAN].ttf"
+  },
+  {
+   "name": "Smokum",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "apache",
+   "path": "apache/smokum/Smokum-Regular.ttf"
+  },
+  {
+   "name": "Sniglet",
+   "styles": [
+    "groovy",
+    "cute"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400,
+    800
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/sniglet/Sniglet-ExtraBold.ttf"
+  },
+  {
+   "name": "Special Elite",
+   "styles": [
+    "horror"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "apache",
+   "path": "apache/specialelite/SpecialElite-Regular.ttf"
+  },
+  {
+   "name": "Squada One",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/squadaone/SquadaOne-Regular.ttf"
+  },
+  {
+   "name": "Staatliches",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/staatliches/Staatliches-Regular.ttf"
+  },
+  {
+   "name": "Stalinist One",
+   "styles": [
+    "metal",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/stalinistone/StalinistOne-Regular.ttf"
+  },
+  {
+   "name": "Syne",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     400.0,
+     800.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/syne/Syne[wght].ttf"
+  },
+  {
+   "name": "Tangerine",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400,
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/tangerine/Tangerine-Bold.ttf"
+  },
+  {
+   "name": "Teko",
+   "styles": [
+    "metal"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     300.0,
+     700.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/teko/Teko[wght].ttf"
+  },
+  {
+   "name": "Tektur",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wdth",
+     75.0,
+     100.0
+    ],
+    [
+     "wght",
+     400.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/tektur/Tektur[wdth,wght].ttf"
+  },
+  {
+   "name": "Tenor Sans",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/tenorsans/TenorSans-Regular.ttf"
+  },
+  {
+   "name": "Texturina",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ],
+    [
+     "opsz",
+     12.0,
+     72.0
+    ]
+   ],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/texturina/Texturina[opsz,wght].ttf"
+  },
+  {
+   "name": "Tilt Neon",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "XROT",
+     -45.0,
+     45.0
+    ],
+    [
+     "YROT",
+     -45.0,
+     45.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/tiltneon/TiltNeon[XROT,YROT].ttf"
+  },
+  {
+   "name": "Tilt Prism",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "XROT",
+     -45.0,
+     45.0
+    ],
+    [
+     "YROT",
+     -45.0,
+     45.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/tiltprism/TiltPrism[XROT,YROT].ttf"
+  },
+  {
+   "name": "Tilt Warp",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "XROT",
+     -45.0,
+     45.0
+    ],
+    [
+     "YROT",
+     -45.0,
+     45.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/tiltwarp/TiltWarp[XROT,YROT].ttf"
+  },
+  {
+   "name": "Tiny5",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ],
+    [
+     "wdth",
+     50.0,
+     200.0
+    ],
+    [
+     "ROND",
+     0.0,
+     100.0
+    ],
+    [
+     "BLED",
+     0.0,
+     100.0
+    ],
+    [
+     "JITT",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/tiny5/Tiny5[BLED,JITT,ROND,wdth,wght].ttf"
+  },
+  {
+   "name": "Tiny5 Duo",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     100.0,
+     900.0
+    ],
+    [
+     "wdth",
+     50.0,
+     200.0
+    ],
+    [
+     "ROND",
+     0.0,
+     100.0
+    ],
+    [
+     "BLED",
+     0.0,
+     100.0
+    ],
+    [
+     "JITT",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/tiny5duo/Tiny5Duo[BLED,JITT,ROND,wdth,wght].ttf"
+  },
+  {
+   "name": "Titan One",
+   "styles": [
+    "groovy"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/titanone/TitanOne-Regular.ttf"
+  },
+  {
+   "name": "Train One",
+   "styles": [
+    "y2k",
+    "dimensional"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/trainone/TrainOne-Regular.ttf",
+   "cyr_tracking": -0.29,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.29em; word-spacing:0.34em"
+  },
+  {
+   "name": "Triodion",
+   "styles": [
+    "slavonic"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/triodion/Triodion-Regular.ttf"
+  },
+  {
+   "name": "Turret Road",
+   "styles": [
+    "cyber"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    200,
+    300,
+    400,
+    500,
+    700,
+    800
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/turretroad/TurretRoad-Bold.ttf"
+  },
+  {
+   "name": "Ultra",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "apache",
+   "path": "apache/ultra/Ultra-Regular.ttf"
+  },
+  {
+   "name": "Unbounded",
+   "styles": [
+    "y2k",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "wght",
+     200.0,
+     900.0
+    ]
+   ],
+   "color": false,
+   "category": "sans_serif",
+   "license": "ofl",
+   "path": "ofl/unbounded/Unbounded[wght].ttf"
+  },
+  {
+   "name": "Uncial Antiqua",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/uncialantiqua/UncialAntiqua-Regular.ttf"
+  },
+  {
+   "name": "Underdog",
+   "styles": [
+    "western",
+    "soviet"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/underdog/Underdog-Regular.ttf"
+  },
+  {
+   "name": "UnifrakturCook",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    700
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/unifrakturcook/UnifrakturCook-Bold.ttf"
+  },
+  {
+   "name": "UnifrakturMaguntia",
+   "styles": [
+    "gothic"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/unifrakturmaguntia/UnifrakturMaguntia-Book.ttf"
+  },
+  {
+   "name": "VT323",
+   "styles": [
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "monospace",
+   "license": "ofl",
+   "path": "ofl/vt323/VT323-Regular.ttf"
+  },
+  {
+   "name": "Vast Shadow",
+   "styles": [
+    "western"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "serif",
+   "license": "ofl",
+   "path": "ofl/vastshadow/VastShadow-Regular.ttf"
+  },
+  {
+   "name": "Viaoda Libre",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/viaodalibre/ViaodaLibre-Regular.ttf"
+  },
+  {
+   "name": "Wallpoet",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/wallpoet/Wallpoet-Regular.ttf"
+  },
+  {
+   "name": "Workbench",
+   "styles": [
+    "y2k",
+    "pixel"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [
+    [
+     "SCAN",
+     -53.0,
+     100.0
+    ],
+    [
+     "BLED",
+     0.0,
+     100.0
+    ]
+   ],
+   "color": false,
+   "category": "monospace",
+   "license": "ofl",
+   "path": "ofl/workbench/Workbench[BLED,SCAN].ttf"
+  },
+  {
+   "name": "Yeseva One",
+   "styles": [
+    "luxury"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/yesevaone/YesevaOne-Regular.ttf"
+  },
+  {
+   "name": "Yesteryear",
+   "styles": [
+    "script"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/yesteryear/Yesteryear-Regular.ttf"
+  },
+  {
+   "name": "Yomogi",
+   "styles": [
+    "cute"
+   ],
+   "cyrillic": "full",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "handwriting",
+   "license": "ofl",
+   "path": "ofl/yomogi/Yomogi-Regular.ttf",
+   "cyr_tracking": -0.38,
+   "note": "кириллица на ширину иероглифа: для русского текста letter-spacing:-0.38em; word-spacing:0.43em"
+  },
+  {
+   "name": "Zen Dots",
+   "styles": [
+    "y2k"
+   ],
+   "cyrillic": "none",
+   "latin": true,
+   "weights": [
+    400
+   ],
+   "axes": [],
+   "color": false,
+   "category": "display",
+   "license": "ofl",
+   "path": "ofl/zendots/ZenDots-Regular.ttf"
+  }
+ ]
+}

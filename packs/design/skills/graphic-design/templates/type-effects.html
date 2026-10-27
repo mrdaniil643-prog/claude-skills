@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Type effects</title>
+<!-- Text effects for expressive styles, all tested on Cyrillic. Each tile is a
+     self-contained recipe: copy its CSS block (numbered), the markup, the SVG
+     filter it names from <svg id="fx-defs">, and fx.drips() if it uses drips.
+     Render: node render.cjs type-effects.html fx.png --size 1640x2300
+     Fonts:  typelib.py get "Dela Gothic One" "Yeseva One" "Rubik Mono One" "Stalinist One"
+             "Rubik Bubbles" "Unbounded" "Ruslan Display" "Lobster" "Russo One"
+             "Rubik Wet Paint" "Ponomar" "Climate Crisis" "Press Start 2P"
+             "Rubik Spray Paint" "Kelly Slab" --out fonts -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  body { margin: 0; padding: 20px; background: #dcdcdf; font-family: system-ui, sans-serif; }
+  .grid { display: grid; grid-template-columns: repeat(3, 520px); gap: 16px; }
+  .tile { position: relative; height: 360px; overflow: hidden; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .tile > b.n { position: absolute; left: 8px; top: 6px; z-index: 20; font: 700 12px system-ui; color: #fff; background: rgba(0,0,0,.55); padding: 2px 6px; border-radius: 4px; }
+  .fx { position: relative; line-height: 1; }
+
+  /* 1 BLOOD: dark-red glossy fill + drips (fx.drips) + a wet highlight */
+  .t1 { background: #0c0505; }
+  .t1 .fx { font: 400 104px 'Dela Gothic One'; color: #9b0a0a;
+    background: linear-gradient(180deg, #d01414 0%, #8f0606 55%, #4d0202 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 0 #2a0000) drop-shadow(0 0 22px rgba(160,0,0,.35)); }
+
+  /* 2 GOLD: banded metallic gradient, dark rim, warm glow */
+  .t2 { background: radial-gradient(circle at 50% 45%, #2b1d0e, #0b0703 70%); }
+  .t2 .fx { font: 400 92px 'Yeseva One'; letter-spacing: .02em;
+    background: linear-gradient(180deg, #fff6c2 0%, #f2d36b 22%, #b5822a 45%, #7a4f10 52%, #e9c25a 62%, #fff0a8 80%, #a8761f 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 1px 0 #3d2706) drop-shadow(0 -1px 0 #fff3c4) drop-shadow(0 6px 10px rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(242,190,80,.35)); }
+
+  /* 3 HEAVY METAL: steel bands + bevel highlight + hard dark extrusion */
+  .t3 { background: #121417; }
+  .t3 .fx { font: 400 70px 'Rubik Mono One';
+    background: linear-gradient(180deg, #fdfdfd 0%, #b9c0c8 30%, #4a525c 49%, #20252b 51%, #8d96a1 70%, #e8ecf0 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 -1px 0 #fff) drop-shadow(0 1px 0 #000) drop-shadow(2px 2px 0 #050608) drop-shadow(4px 4px 0 #050608) drop-shadow(0 10px 16px rgba(0,0,0,.8)); }
+
+  /* 4 RUST & GRUNGE: rust texture inside the letters, eroded holes (#rust) */
+  .t4 { background: #2a2622; }
+  .t4 .fx { font: 400 42px 'Stalinist One'; color: #a0471c; filter: url(#rust) drop-shadow(0 3px 0 #120f0c); }
+
+  /* 5 Y2K CHROME BUBBLE: inflated chrome with sky reflection and a fat outline */
+  .t5 { background: linear-gradient(180deg, #b9e5ff, #f6d5ff); }
+  .t5 .fx { font: 400 96px 'Rubik Bubbles';
+    background: linear-gradient(180deg, #ffffff 0%, #d9ecff 18%, #6f8fb3 46%, #1f2f4a 52%, #a9c9ec 66%, #ffffff 86%, #c9dcf0 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: url(#outline-navy) drop-shadow(0 10px 0 rgba(31,47,74,.25)) drop-shadow(0 0 18px rgba(255,255,255,.9)); }
+
+  /* 6 HOLOGRAPHIC: pastel iridescent sweep + white rim */
+  .t6 { background: #0d0d14; }
+  .t6 .fx { font: 900 84px 'Unbounded'; letter-spacing: -.02em;
+    background: linear-gradient(100deg, #ffc6f2 0%, #c4b5ff 22%, #9ff3ff 42%, #d8ffb0 60%, #ffe2a8 78%, #ffc6f2 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 16px rgba(196,181,255,.55)); }
+
+  /* 7 GOTHIC INITIAL: red framed drop cap + ornamental rules (Cyrillic-safe) */
+  .t7 { background: #efe6d2; flex-direction: column; gap: 10px; color: #1b130c; }
+  .t7 .line { display: flex; align-items: flex-end; gap: 6px; }
+  .t7 .cap { font: 400 96px/0.8 'Ruslan Display'; color: #f3e9d4; background: #8c1414; padding: 10px 12px 4px;
+    box-shadow: inset 0 0 0 3px #efe6d2, inset 0 0 0 5px #8c1414, 0 0 0 2px #1b130c; }
+  .t7 .rest { font: 400 46px/0.95 'Ruslan Display'; letter-spacing: .02em; max-width: 300px; }
+  .t7 svg { width: 380px; height: 22px; }
+
+  /* 8 NEON SIGN: two tube colours on brick, inner white core */
+  .t8 { background: repeating-linear-gradient(0deg, transparent 0 34px, rgba(0,0,0,.55) 34px 37px),
+        repeating-linear-gradient(90deg, transparent 0 70px, rgba(0,0,0,.4) 70px 73px), radial-gradient(circle at 50% 45%, #4a2228, #1a0d10 75%); flex-direction: column; }
+  .t8 .a { font: 400 104px/1 'Lobster'; color: #fff1fb; text-shadow: 0 0 3px #fff, 0 0 9px #ff3fbf, 0 0 20px #ff3fbf, 0 0 42px #ff1aa8, 0 0 80px #c4007f; }
+  .t8 .b { font: 400 30px 'Russo One'; letter-spacing: .3em; color: #e8fbff; text-shadow: 0 0 3px #fff, 0 0 9px #33e1ff, 0 0 22px #00b7ff, 0 0 44px #0088ff; }
+
+  /* 9 RGB GLITCH: offset red/cyan copies sliced by clip-path */
+  .t9 { background: #050505; }
+  .t9 .fx { font: 900 110px 'Unbounded'; color: #f5f5f5; letter-spacing: -.03em; }
+  .t9 .fx::before, .t9 .fx::after { content: attr(data-text); position: absolute; inset: 0; mix-blend-mode: screen; }
+  .t9 .fx::before { color: #ff1744; transform: translate(-5px, 0); clip-path: polygon(0 8%, 100% 8%, 100% 30%, 0 30%, 0 55%, 100% 55%, 100% 62%, 0 62%); }
+  .t9 .fx::after { color: #00e5ff; transform: translate(6px, 0); clip-path: polygon(0 28%, 100% 28%, 100% 46%, 0 46%, 0 70%, 100% 70%, 100% 90%, 0 90%); }
+
+  /* 10 FIRE: hot gradient fill + flames from a displaced glow layer (#flames) */
+  .t10 { background: #0a0502; }
+  .t10 .fx { font: 400 104px 'Russo One'; z-index: 1;
+    background: linear-gradient(0deg, #ff2a00 0%, #ff8c00 45%, #ffe066 80%, #fffbe0 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .t10 .glow { position: absolute; font: 400 104px 'Russo One'; color: #ff4a00; filter: url(#flames) drop-shadow(0 0 18px #ff2a00); }
+  .t10 .glow.hot { color: #ffd23a; filter: url(#flames2); }
+
+  /* 11 ICE: frosted blue, crisp highlight edge, pointed icicles (fx.drips sharp) */
+  .t11 { background: linear-gradient(180deg, #0b2235, #04101a); }
+  .t11 .fx { font: 400 112px 'Rubik Mono One';
+    background: linear-gradient(180deg, #ffffff 0%, #d6f3ff 35%, #7cc8ef 70%, #3f8fc0 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 -1px 0 #fff) drop-shadow(0 0 14px rgba(160,225,255,.6)); }
+
+  /* 12 TOXIC SLIME: acid green, glossy, gooey drips */
+  .t12 { background: #10140c; }
+  .t12 .fx { font: 400 104px 'Rubik Wet Paint'; color: #8cff1a; text-shadow: 0 0 18px rgba(140,255,26,.45); }
+
+  /* 13 STONE ENGRAVING: letters cut into textured stone (light below, dark above) */
+  .t13 { background: #8f8a80; }
+  .t13::before { content: ""; position: absolute; inset: 0; filter: url(#stone); background: #8f8a80; }
+  .t13 .fx { font: 400 74px 'Ponomar'; color: #6e695f; text-shadow: 0 1px 0 rgba(255,255,255,.45), 0 -1px 0 rgba(0,0,0,.55), 0 -2px 2px rgba(0,0,0,.25); }
+
+  /* 14 70s STACKED OUTLINE: offset colour bands behind a cream fill */
+  .t14 { background: #f6e7c8; }
+  .t14 .fx { font: 400 96px 'Climate Crisis'; color: #fff7e6; letter-spacing: -.01em;
+    text-shadow: 3px 3px 0 #2b1a10, 5px 5px 0 #f2a71b, 8px 8px 0 #2b1a10, 10px 10px 0 #e8601c, 13px 13px 0 #2b1a10, 15px 15px 0 #b7271b, 18px 18px 0 #2b1a10; }
+
+  /* 15 8-BIT: pixel font, stepped hard shadow, CRT scanlines */
+  .t15 { background: #1b1036; }
+  .t15::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 4px); pointer-events: none; }
+  .t15 .fx { font: 400 46px/1.3 'Press Start 2P'; color: #ffe14d; text-align: center;
+    text-shadow: 4px 0 0 #ff4fa3, 0 4px 0 #ff4fa3, 4px 4px 0 #ff4fa3, 8px 8px 0 #4d2cff, 12px 12px 0 #2a1170; }
+
+  /* 16 GRAFFITI: spray font, thick outline (#outline-black), drop shadow, paint drips */
+  .t16 { background: #6d6a66 repeating-linear-gradient(0deg, transparent 0 38px, #57544f 38px 42px); }
+  .t16 .fx { font: 400 96px 'Rubik Spray Paint'; color: #ff3d7f; transform: rotate(-4deg); filter: url(#outline-black) drop-shadow(8px 8px 0 rgba(0,0,0,.55)); }
+</style>
+</head>
+<body>
+<svg id="fx-defs" width="0" height="0" style="position:absolute">
+  <!-- 1px+ outlines that follow only the outer edge (no overlapping-contour lines) -->
+  <filter id="outline-navy" x="-10%" y="-20%" width="120%" height="140%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="fat"/><feFlood flood-color="#1f2f4a"/><feComposite in2="fat" operator="in" result="ring"/>
+    <feMerge><feMergeNode in="ring"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="outline-black" x="-10%" y="-20%" width="120%" height="140%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="5" result="fat"/><feFlood flood-color="#111"/><feComposite in2="fat" operator="in" result="ring"/>
+    <feMerge><feMergeNode in="ring"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <!-- rust: orange/brown mottling inside the glyphs, plus eroded pits -->
+  <filter id="rust" x="-5%" y="-10%" width="110%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".012 .03" numOctaves="3" seed="7" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 .32  0 0 0 0 .12  0 0 0 0 .05  0 0 0 3 -1.1" result="dark"/>
+    <feFlood flood-color="#c8662b"/><feComposite in2="SourceAlpha" operator="in" result="base"/>
+    <feComposite in="dark" in2="SourceAlpha" operator="in" result="mottle"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".35" numOctaves="2" seed="2" result="pits"/>
+    <feColorMatrix in="pits" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -16 10.6" result="holes"/>
+    <feMerge result="m"><feMergeNode in="base"/><feMergeNode in="mottle"/></feMerge>
+    <feComposite in="m" in2="holes" operator="in" result="eroded"/>
+    <feMerge><feMergeNode in="eroded"/></feMerge></filter>
+  <!-- flames: blurred glyph pushed upward by animated-looking turbulence -->
+  <filter id="flames" x="-20%" y="-80%" width="140%" height="200%">
+    <feTurbulence type="fractalNoise" baseFrequency=".02 .09" numOctaves="3" seed="4" result="t"/>
+    <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
+    <feOffset in="b" dy="-22" result="up"/>
+    <feDisplacementMap in="up" in2="t" scale="70" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="1.5"/></filter>
+  <filter id="flames2" x="-20%" y="-80%" width="140%" height="200%">
+    <feTurbulence type="fractalNoise" baseFrequency=".03 .12" numOctaves="3" seed="12" result="t"/>
+    <feOffset in="SourceGraphic" dy="-10" result="up"/>
+    <feDisplacementMap in="up" in2="t" scale="40" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="1"/></filter>
+  <!-- stone texture for engraving backgrounds -->
+  <filter id="stone"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="4" seed="9"/>
+    <feColorMatrix values="0 0 0 0 .56  0 0 0 0 .54  0 0 0 0 .5  0 0 0 .55 0"/><feComposite in2="SourceGraphic" operator="over"/></filter>
+</svg>
+
+<div class="grid">
+  <div class="tile t1"><b class="n">1 кровь</b><div class="fx" data-drips='{"color":"#7a0404","color2":"#c01010","count":7,"seed":3,"max":110}'>КРОВЬ</div></div>
+  <div class="tile t2"><b class="n">2 золото</b><div class="fx">Золото</div></div>
+  <div class="tile t3"><b class="n">3 тяжёлый металл</b><div class="fx">МЕТАЛЛ</div></div>
+  <div class="tile t4"><b class="n">4 ржавчина</b><div class="fx">РЖАВЧИНА</div></div>
+  <div class="tile t5"><b class="n">5 Y2K хром-пузырь</b><div class="fx">ПУЗЫРЬ</div></div>
+  <div class="tile t6"><b class="n">6 голограмма</b><div class="fx">ГЛЯНЕЦ</div></div>
+  <div class="tile t7"><b class="n">7 готический инициал</b>
+    <svg viewBox="0 0 380 22"><path d="M0 11 H160 M220 11 H380" stroke="#1b130c" stroke-width="2"/><path d="M190 1 L200 11 L190 21 L180 11 Z M168 11 h6 M206 11 h6" fill="#8c1414" stroke="#8c1414" stroke-width="2"/></svg>
+    <div class="line"><span class="cap">Т</span><span class="rest">ЁМНЫЙ РЫЦАРЬ</span></div>
+    <svg viewBox="0 0 380 22"><path d="M0 11 H160 M220 11 H380" stroke="#1b130c" stroke-width="2"/><path d="M190 1 L200 11 L190 21 L180 11 Z M168 11 h6 M206 11 h6" fill="#8c1414" stroke="#8c1414" stroke-width="2"/></svg></div>
+  <div class="tile t8"><b class="n">8 неоновая вывеска</b><div class="a">Ночь</div><div class="b">ОТКРЫТО</div></div>
+  <div class="tile t9"><b class="n">9 RGB-глитч</b><div class="fx" data-text="СБОЙ">СБОЙ</div></div>
+  <div class="tile t10"><b class="n">10 огонь</b><div class="glow">ОГОНЬ</div><div class="glow hot">ОГОНЬ</div><div class="fx">ОГОНЬ</div></div>
+  <div class="tile t11"><b class="n">11 лёд и сосульки</b><div class="fx" data-drips='{"color":"#bfe9ff","color2":"#ffffff","count":9,"seed":5,"max":70,"sharp":true}'>ЛЁД</div></div>
+  <div class="tile t12"><b class="n">12 токсичная слизь</b><div class="fx" data-drips='{"color":"#6fd10f","color2":"#b6ff5c","count":8,"seed":11,"max":90}'>СЛИЗЬ</div></div>
+  <div class="tile t13"><b class="n">13 гравировка в камне</b><div class="fx">ЛѢТОПИСЬ</div></div>
+  <div class="tile t14"><b class="n">14 ретро 70-х</b><div class="fx">ГРУВ</div></div>
+  <div class="tile t15"><b class="n">15 8-бит</b><div class="fx">НОВАЯ<br>ИГРА</div></div>
+  <div class="tile t16"><b class="n">16 граффити</b><div class="fx" data-drips='{"color":"#ff3d7f","color2":"#ff86b0","count":6,"seed":8,"max":70}'>УЛИЦА</div></div>
+</div>
+
+<script>
+/* fx.drips(el, opts) — liquid drips under the letters of any text element.
+   Finds each glyph's baseline span and hangs teardrops of random length from it,
+   in an SVG layer that sits under the text. opts: color, color2 (highlight),
+   count, seed, max (px), sharp (icicles). Use via data-drips='{...}' or call it. */
+window.fx = {
+  drips(el, o = {}) {
+    const { color = '#8a0000', color2 = '#d11', count = 6, seed = 1, max = 90, sharp = false } = o;
+    let s = seed * 9301 + 49297;
+    const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+    const host = el.getBoundingClientRect();
+    // Baseline: an empty inline-block aligned to the baseline marks its y.
+    const probe = document.createElement('span');
+    probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+    el.appendChild(probe);
+    const baseline = probe.getBoundingClientRect().top - host.top;
+    probe.remove();
+    // Candidate x positions: centres of letters (from a Range over each character).
+    const xs = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      for (let i = 0; i < n.length; i++) {
+        if (!n.data[i].trim()) continue;
+        const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1);
+        const b = r.getBoundingClientRect();
+        xs.push([b.left - host.left, b.width]);
+      }
+    }
+    const size = parseFloat(getComputedStyle(el).fontSize);
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    const H = baseline + max + 30;
+    svg.setAttribute('width', host.width); svg.setAttribute('height', H);
+    svg.style.cssText = `position:absolute;left:0;top:0;overflow:visible;pointer-events:none;z-index:-1`;
+    let paths = '';
+    for (let k = 0; k < count && xs.length; k++) {
+      const [lx, lw] = xs[Math.floor(rnd() * xs.length)];
+      const x = lx + lw * (0.2 + rnd() * 0.6);
+      const w = size * (sharp ? 0.07 + rnd() * 0.06 : 0.08 + rnd() * 0.08);
+      const len = max * (0.25 + rnd() * 0.75);
+      const top = baseline - size * 0.12;               // start inside the letter
+      const y = top + len;
+      if (sharp) {
+        paths += `<path d="M${x - w} ${top} L${x + w} ${top} L${x + w * 0.15} ${y} Z" fill="url(#dg${seed})"/>`;
+      } else {
+        const r = w * 0.95;
+        paths += `<path d="M${x - w / 2} ${top} L${x - w / 2} ${y - r * 1.2} C${x - w / 2} ${y - r * 0.4} ${x - r} ${y - r * 0.6} ${x - r} ${y}
+          A${r} ${r} 0 0 0 ${x + r} ${y} C${x + r} ${y - r * 0.6} ${x + w / 2} ${y - r * 0.4} ${x + w / 2} ${y - r * 1.2} L${x + w / 2} ${top} Z" fill="url(#dg${seed})"/>
+          <ellipse cx="${x - r * 0.35}" cy="${y - r * 0.15}" rx="${r * 0.22}" ry="${r * 0.38}" fill="${color2}" opacity=".7"/>`;
+        if (rnd() > 0.5) paths += `<circle cx="${x + (rnd() - .5) * w * 3}" cy="${y + r * 2.2 + rnd() * 18}" r="${r * (0.3 + rnd() * 0.3)}" fill="${color}"/>`;
+      }
+    }
+    svg.innerHTML = `<defs><linearGradient id="dg${seed}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${color}"/>
+      <stop offset=".35" stop-color="${color2}"/><stop offset=".6" stop-color="${color}"/><stop offset="1" stop-color="${color}"/></linearGradient></defs>${paths}`;
+    el.style.isolation = 'isolate';
+    el.appendChild(svg);
+  },
+};
+document.fonts.ready.then(() => {
+  document.querySelectorAll('[data-drips]').forEach((el) => fx.drips(el, JSON.parse(el.dataset.drips)));
+});
+</script>
+</body>
+</html>
