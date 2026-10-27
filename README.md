@@ -15,6 +15,7 @@
 | `mobile` | `packs/mobile/skills/` | 44 |
 | `3d` | `packs/3d/skills/` | 51 |
 | `adobe` | `packs/adobe/skills/` | 1 |
+| `design` | `packs/design/skills/` | 1 |
 
 `frontend-design` сюда не входит: он подключается в проектах как официальный плагин
 `frontend-design@claude-plugins-official` через `enabledPlugins` в `.claude/settings.json`.
@@ -229,6 +230,14 @@ Three.js, React Three Fiber, шейдеры GLSL, постобработка, We
 | `adobe-desktop` | Управляет установленными на компьютере Adobe Premiere Pro и Photoshop из Claude Code через локальные MCP-серверы на Windo… |
 
 Источники: [leancoderkavy/premiere-pro-mcp](https://github.com/leancoderkavy/premiere-pro-mcp) (MIT) для Premiere и [mikechambers/adb-mcp](https://github.com/mikechambers/adb-mcp) (MIT) для Photoshop; скилл содержит только скрипты установки, сами серверы скачиваются при запуске. Работает в Claude Code на том же компьютере, где стоят программы, не в облачной сессии. Установка: `~/.claude/skills/adobe-desktop/scripts/setup-mac.sh` или `setup-windows.ps1`.
+
+## Графический дизайн (`design`)
+
+| Скилл | Описание |
+|---|---|
+| `graphic-design` | Дизайн логотипов, превью и обложек (YouTube, VK, Rutube, Reels/Shorts, подкасты), афиш и постеров (печать A4–A1 с вы… |
+
+Свой скилл: справочники по логотипам, превью и афишам, шаблоны, рендер в точные размеры (PNG, JPG, ICO, PDF с вылетами), перевод надписей в кривые с кернингом (harfbuzz), загрузка шрифтов Google Fonts с кириллицей и листы проверки «как увидит зритель» (лента YouTube, фавикон, афиша на стене).
 
 ## Добавить новый скилл
 

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Thumbnail</title>
+<!-- 16:9 preview (YouTube, VK, Rutube). Render:
+       node render.cjs thumbnail.html thumb.jpg --size 1280x720 --quality 90
+     For a 9:16 Reels/Shorts cover set .frame to 1080x1920 and --size 1080x1920.
+     ?guides=1 shows the timestamp corner, progress bar and (9:16) UI overlays. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root { --w: 1280px; --h: 720px; --bg: #0E0F12; --ink: #FFFFFF; --accent: #FFD400; }
+  html, body { margin: 0; background: var(--bg); }
+  .frame { position: relative; width: var(--w); height: var(--h); overflow: hidden; background: var(--bg); color: var(--ink); }
+
+  /* Headline: 1–4 words, cap height ≥ 1/6 of the frame. */
+  .headline {
+    position: absolute; right: 56px; top: 80px; width: 660px;
+    /* Wide display fonts (Unbounded) need ~100px for 6–7 Cyrillic capitals in 660px;
+       render.cjs warns when a line runs past the frame. */
+    font: 900 100px/0.95 "Unbounded", "Montserrat", sans-serif; letter-spacing: -0.01em;
+    text-transform: uppercase;
+    paint-order: stroke fill; -webkit-text-stroke: 14px #000; /* outline that sits outside the fill */
+  }
+  .headline em { font-style: normal; color: var(--accent); }
+
+  /* Cut-out subject: separate it from the background with a halo. */
+  .subject {
+    position: absolute; left: 0; bottom: 0; height: 100%;
+    filter: drop-shadow(0 0 0 #fff) drop-shadow(0 0 8px #fff) drop-shadow(0 18px 30px rgba(0,0,0,.5));
+  }
+
+  .guides { display: none; position: absolute; inset: 0; pointer-events: none; }
+  .show-guides .guides { display: block; }
+  .guides .timestamp { position: absolute; right: 0; bottom: 0; width: 15%; height: 12%; background: rgba(255,0,168,.35); }
+  .guides .progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2%; background: rgba(255,0,0,.45); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <!-- background, subject <img class="subject" src="...">, arrows, circles -->
+  <div class="headline">Главные <em>4 слова</em></div>
+  <div class="guides"><div class="timestamp"></div><div class="progress"></div></div>
+</div>
+<script>
+  if (new URLSearchParams(location.search).has('guides')) document.body.classList.add('show-guides');
+</script>
+</body>
+</html>

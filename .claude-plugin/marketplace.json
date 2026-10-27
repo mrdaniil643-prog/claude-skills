@@ -33,6 +33,11 @@
       "name": "adobe",
       "source": "./packs/adobe",
       "description": "Adobe Premiere Pro and Photoshop on your own computer (Windows, macOS) via local MCP servers: setup, editing, layers, export."
+    },
+    {
+      "name": "design",
+      "source": "./packs/design",
+      "description": "Graphic design: logos, YouTube/Reels thumbnails and covers, print-ready posters with bleed, plus rendering and QA tools."
     }
   ]
 }

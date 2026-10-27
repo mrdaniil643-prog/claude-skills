@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Poster</title>
+<!-- Render: node render.cjs poster.html poster.pdf --mm 420x594 --bleed 3
+     render.cjs injects --trim-w, --trim-h and --bleed; the defaults below are for
+     opening the file directly. Add ?guides=1 to see trim, bleed and safe area. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root {
+    --trim-w: 420mm; --trim-h: 594mm; --bleed: 3mm;
+    --safe: 12mm;             /* text keeps this far inside the trim */
+    --cols: 12; --gutter: 6mm;
+    --bg: #F4F1EA; --ink: #111; --accent: #E3241B;
+  }
+  @page { margin: 0; }
+  html, body { margin: 0; background: var(--bg); }
+  .sheet {
+    position: relative; overflow: hidden;
+    width: calc(var(--trim-w) + 2 * var(--bleed));
+    height: calc(var(--trim-h) + 2 * var(--bleed));
+    background: var(--bg); color: var(--ink);
+  }
+  /* Content box = safe area; anything that bleeds goes in .sheet directly. */
+  .safe {
+    position: absolute;
+    inset: calc(var(--bleed) + var(--safe));
+    display: grid; grid-template-columns: repeat(var(--cols), 1fr); column-gap: var(--gutter);
+    grid-template-rows: auto 1fr auto;
+  }
+
+  /* ---- guides (?guides=1) ---- */
+  .guides { display: none; position: absolute; inset: 0; pointer-events: none; }
+  .show-guides .guides { display: block; }
+  .guides .trim { position: absolute; inset: var(--bleed); outline: 0.4mm solid #00b3ff; }
+  .guides .safe-line { position: absolute; inset: calc(var(--bleed) + var(--safe)); outline: 0.4mm dashed #ff00a8; }
+  .guides .grid { position: absolute; inset: calc(var(--bleed) + var(--safe));
+    display: grid; grid-template-columns: repeat(var(--cols), 1fr); column-gap: var(--gutter); }
+  .guides .grid i { background: rgba(255, 0, 168, .06); }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <!-- full-bleed artwork here -->
+  <div class="safe">
+    <!-- header / hook / details, placed on the 12-column grid -->
+  </div>
+  <div class="guides"><div class="trim"></div><div class="safe-line"></div>
+    <div class="grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+</div>
+<script>
+  if (new URLSearchParams(location.search).has('guides')) document.body.classList.add('show-guides');
+</script>
+</body>
+</html>
