@@ -82,11 +82,16 @@ def ensure(f, out=None):
     dest = pathlib.Path(out) if out else CACHE
     dest.mkdir(parents=True, exist_ok=True)
     base = f["name"].replace(" ", "")
+    weights = f.get("weights") or [400]
+    wght = next((a for a in f.get("axes", []) if a[0] == "wght"), None)
+    if wght:
+        # Variable fonts list one 400 file in the metadata; fetch the useful span.
+        lo, hi = int(wght[1]), int(wght[2])
+        weights = sorted({w for w in (lo, 400, 700, hi) if lo <= w <= hi})
     have = sorted(dest.glob(f"{base}-*.ttf"))
-    if have:
+    if have and all((dest / f"{base}-{w}.ttf").exists() for w in weights):
         return have
     files = []
-    weights = f.get("weights") or [400]
     query = urllib.parse.quote(f["name"]) + ":wght@" + ";".join(map(str, weights))
     try:
         css = fetch(f"https://fonts.googleapis.com/css2?family={query}&display=swap").decode()

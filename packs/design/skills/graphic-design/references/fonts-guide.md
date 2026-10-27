@@ -40,7 +40,12 @@ uv run --with fonttools python $S/typelib.py add ~/Downloads/MyGothic.otf --styl
 ## Стили: что брать
 
 Формат: **лучшее с кириллицей** · только латиница (для английских слов) ·
-текстовая пара · эффекты из `type-effects.html` (№).
+текстовая пара · эффекты: CSS из `type-effects.html` (№). 3D-пресеты `text3d.cjs` по стилям:
+готика → gold, stone, blood; древнерусский → gold, stone; хоррор → blood, slime, rust;
+металл → chrome, steel, rust, lava; Y2K → y2k, chrome, glass, candy; киберпанк → neon,
+chrome, glass; граффити → candy, neon; пиксель → neon, candy; ретро-70 → candy, gold;
+вестерн → gold, rust, stone; каллиграфия → neon, gold; люкс → gold, glass;
+советский → steel, rust, gold, stone; мило → candy, y2k; объём → любой.
 
 | Стиль | Кириллица | Латиница | Пара для текста | Эффекты |
 |---|---|---|---|---|
