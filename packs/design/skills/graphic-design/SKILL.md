@@ -12,7 +12,7 @@ description: >-
   для анонса», даже без слова «дизайн». Для анимации — opus-video-prompts, для
   интерфейсов — frontend-design.
 metadata:
-  compatibility: Node.js + Playwright (chromium); Python 3; uv для text2path (uharfbuzz, fonttools), палитры по картинке (pillow) и вырезки фона (rembg).
+  compatibility: Node.js + Playwright (chromium); Python 3; uv для text2path и letterforms (uharfbuzz, fonttools, shapely, svgelements), палитры по картинке (pillow) и вырезки фона (rembg); text3d ставит three.js через npm.
 ---
 
 # Логотипы, превью, афиши
@@ -31,6 +31,7 @@ metadata:
 | Афиши, постеры, флаеры | `references/poster.md`, `templates/poster.html` |
 | Шрифты с кириллицей, палитры | `references/type-and-color.md` |
 | **Выразительные шрифты по стилям** (готика, древнерусский, хоррор/кровь, металл, Y2K, киберпанк, граффити, пиксель, ретро-70, вестерн, каллиграфия, люкс, советский, мило, объём): 225 шрифтов с проверенной кириллицей, образцы, свои шрифты | `references/fonts-guide.md`, `references/specimens/*.jpg`, `scripts/typelib.py` |
+| **Свои буквы**: изогнуть надпись под композицию (дуга, круг для эмблемы, арка, вздутие, волна, перспектива, рост, наклон, дрожание) и перерисовать буквы и цифры (скругление, вес, контур, инлайн, трафарет, глитч-срез, рваный край, шипы, колючки, подтёки, замена буквы/цифры своим рисунком или иконкой, поворот/масштаб одной буквы) | `references/lettering.md`, `scripts/letterforms.py`, галереи `specimens/letterforms*.jpg` |
 | **3D-надписи** (главный способ для «вау»-заголовков): настоящие объёмные буквы из любого шрифта, кириллица, физические материалы — chrome, gold, steel, rust, blood (капли), slime, ice (сосульки), glass, y2k (перламутровый пузырь), candy, neon (трубки), lava, stone | `scripts/text3d.cjs`, галерея `references/specimens/text3d.jpg` |
 | 16 плоских CSS-эффектов (быстрая замена 3D, анимация, веб): кровь с подтёками, золото, тяжёлый металл, ржавчина, Y2K хром-пузырь, голограмма, готический инициал, неоновая вывеска, RGB-глитч, огонь, лёд с сосульками, слизь, гравировка в камне, ретро-обводки 70-х, 8-бит, граффити | `templates/type-effects.html` (`fx.drips()` для подтёков) |
 | 16 проверенных приёмов (зерно, дуотон, растр, риз, хром, объём, неон, стикер, меш, рваная бумага, маркер, обводка от руки, стекло, длинная тень, контур, гигантская цифра) | `templates/recipes.html` — копируй блок целиком |
@@ -59,6 +60,8 @@ metadata:
 node $S/text3d.cjs --text "КРОВЬ" --font fonts/DelaGothicOne-400.ttf --preset blood --out title.png
 node $S/text3d.cjs --lines "НОЧНОЙ|КЛУБ" --font fonts/Unbounded-900.ttf --preset chrome --bg transparent --size 1600x1000 --out title.png
 ```
+Нужна форма под композицию или свой характер букв — сначала `letterforms.py`
+(`references/lettering.md`), потом `text3d.cjs --svg word.svg`.
 Прозрачный PNG ставь в HTML-макет обычным `<img>`; угол — `--yaw/--tilt`, толщина —
 `--depth`, скругление — `--bevel`, цвет candy/neon/gold/slime — `--color`. Посмотри
 результат (Read) и подкрути: больше `--tilt` даёт больше бликов на гранях, `--bevel 0.1+`
@@ -135,6 +138,7 @@ node $S/qa.cjs compare a.png b.png c.png concepts.png --labels "A. Метафо�
 | `qa.cjs` | листы восприятия: logo, thumb, cover, poster, compare |
 | `text2path.py` | надпись → SVG-кривые с кернингом, лигатурами, OpenType-фичами, осями (`uv run --with uharfbuzz --with fonttools python ...`) |
 | `fonts.py` | Google Fonts → локальные TTF + fonts.css (дописывает, не перезаписывает) |
+| `letterforms.py` | надпись → контуры: операции над буквами, замена символов SVG-рисунком, деформации всей надписи; SVG в кривых (для логотипа, макета или `text3d.cjs --svg`) |
 | `text3d.cjs` | 3D-текст: выдавленные буквы с фаской, PBR-материалы, отражения студии/неба, свечение, капли и сосульки геометрией; PNG, в т. ч. прозрачный для вставки в макет |
 | `typelib.py` | библиотека выразительных шрифтов: стили, поиск, загрузка, образцы с твоим текстом, проверка букв, добавление своих шрифтов |
 | `palette.py` | палитра от цвета (OKLCH, шкала, роли, матрица контраста), из картинки, контраст пары |

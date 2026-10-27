@@ -4,12 +4,14 @@
 //
 //   node text3d.cjs --text "КРОВЬ" --font fonts/DelaGothicOne-400.ttf --preset blood --out blood.png
 //   node text3d.cjs --text "ПУЗЫРЬ" --font fonts/RubikBubbles-400.ttf --preset y2k --bg transparent --out y2k.png
+//   node text3d.cjs --svg word.svg --preset chrome --out word.png   lettering from letterforms.py (or any SVG)
 //   node text3d.cjs --list                                   presets and what they look like
 //
 // --size WxH (1600x900)  --scale N pixel ratio (2)   --bg "#hex" | "a,b" vertical gradient | transparent
 // --yaw deg (-8) --tilt deg (10)  turn the text   --depth em (0.28)  --bevel em (preset)
 // --tracking em (default 0.02 + 2×bevel, so bevels don't touch)  --lines "a|b" for two lines   --seed N (drips)   --drips N   --color "#hex" (tint)
 // --bloom N (preset)    --shadow 0|1 (1)   --html keep the generated page for editing
+// --svg file.svg  extrude prepared lettering instead of --text/--font (filled paths)
 //
 // First run installs three@0.170.0 into ~/.cache/graphic-design/three (npm, ~30 MB).
 // Rendering uses the GPU when present; headless servers fall back to SwiftShader (slower).
@@ -41,14 +43,14 @@ const opt = (name, def) => { const i = argv.indexOf(name); return i >= 0 ? argv.
 const flag = (name) => { const i = argv.indexOf(name); return i >= 0 ? (argv.splice(i, 1), true) : false; };
 if (flag('--list')) { for (const [k, v] of Object.entries(PRESETS)) console.log(`${k.padEnd(7)} ${v}`); process.exit(0); }
 const o = {
-  text: opt('--text'), lines: opt('--lines'), font: opt('--font'), preset: opt('--preset', 'chrome'), out: opt('--out', 'text3d.png'),
+  text: opt('--text'), lines: opt('--lines'), font: opt('--font'), svg: opt('--svg'), preset: opt('--preset', 'chrome'), out: opt('--out', 'text3d.png'),
   size: opt('--size', '1600x900'), scale: Number(opt('--scale', '2')), bg: opt('--bg'), yaw: Number(opt('--yaw', '-8')),
   tilt: Number(opt('--tilt', '10')), depth: Number(opt('--depth', '0.28')), bevel: opt('--bevel'), tracking: opt('--tracking'),
   seed: Number(opt('--seed', '7')), drips: opt('--drips'), color: opt('--color'), bloom: opt('--bloom'), shadow: opt('--shadow', '1') !== '0',
   html: flag('--html'),
 };
-if (!(o.text || o.lines) || !o.font || !PRESETS[o.preset]) {
-  console.error('usage: node text3d.cjs --text "ТЕКСТ" --font font.ttf --preset <' + Object.keys(PRESETS).join('|') + '> --out out.png  (--list)');
+if (!((o.text || o.lines) && o.font) && !o.svg || !PRESETS[o.preset]) {
+  console.error('usage: node text3d.cjs (--text "ТЕКСТ" --font font.ttf | --svg word.svg) --preset <' + Object.keys(PRESETS).join('|') + '> --out out.png  (--list)');
   process.exit(1);
 }
 const [W, H] = o.size.split('x').map(Number);
@@ -66,6 +68,7 @@ const page = `<!doctype html><meta charset="utf-8"><style>html,body{margin:0;bac
 <script type="module">
 import * as THREE from 'three';
 import opentype from 'three/addons/libs/opentype.module.js';
+import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -166,10 +169,10 @@ function envScene(kind) {
 // ---------- text geometry with tracking, per-glyph so drips know where letters are ----------
 // Glyphs come straight from opentype by codepoint. (three's TTFLoader keys glyphs by
 // their first Unicode only, so Cyrillic letters that share a Latin glyph get lost.)
-const buf = await (await fetch('/font')).arrayBuffer();
-const otf = opentype.parse(buf);
-const SIZE = 1, K = SIZE / otf.unitsPerEm;
-const cff = otf.outlinesFormat === 'cff';   // CFF outlines wind the other way
+const buf = O.svg ? null : await (await fetch('/font')).arrayBuffer();
+const otf = O.svg ? null : opentype.parse(buf);
+const SIZE = 1, K = otf ? SIZE / otf.unitsPerEm : 1;
+const cff = otf && otf.outlinesFormat === 'cff';   // CFF outlines wind the other way
 function glyphShapes(glyph) {
   const sp = new THREE.ShapePath();
   for (const c of glyph.path.commands) {
@@ -180,7 +183,7 @@ function glyphShapes(glyph) {
   }
   return sp.toShapes(cff);
 }
-const lines = (O.lines || O.text).split('|');
+const lines = O.svg ? [] : (O.lines || O.text).split('|');
 const group = new THREE.Group();
 const glyphMeta = [];
 const bevel = Number(O.bevel ?? P.bevel);
@@ -207,6 +210,26 @@ lines.forEach((line, li) => {
     x += adv + TRACK * SIZE;
   }
 });
+if (O.svg) {
+  // Prepared lettering (letterforms.py or any SVG): every filled path becomes shapes,
+  // y flipped, scaled so the artwork is ~1 unit tall like a line of type.
+  const data = new SVGLoader().parse(await (await fetch('/svg')).text());
+  const all = [];
+  for (const path of data.paths) for (const sh of SVGLoader.createShapes(path)) all.push(sh);
+  const pts = all.flatMap((sh) => sh.getPoints(4));
+  const ys = pts.map((p) => p.y), xs = pts.map((p) => p.x);
+  const hh = Math.max(...ys) - Math.min(...ys), ww = Math.max(...xs) - Math.min(...xs);
+  const k = 1 / Math.max(hh, ww / 4);
+  const flip = (sh) => { const m = new THREE.Matrix3().set(k, 0, 0, 0, -k, 0, 0, 0, 1);
+    const tr = (curvePts) => curvePts.map((p) => p.clone().applyMatrix3(m));
+    const ns = new THREE.Shape(tr(sh.getPoints(12)));
+    ns.holes = sh.holes.map((h) => new THREE.Path(tr(h.getPoints(12))));
+    return ns; };
+  const shapes = all.map(flip);
+  const geo = new THREE.ExtrudeGeometry(shapes, { ...extrude, curveSegments: 4 });
+  const mesh = new THREE.Mesh(geo); group.add(mesh);
+  glyphMeta.push({ shapes, x: 0, y: 0 });
+}
 const mat = P.mat();
 group.children.forEach((m) => { m.material = mat; m.castShadow = true; });
 if (P.tubes) {
@@ -306,7 +329,7 @@ if (O.shadow && bgSpec !== 'transparent') {
   ground.rotation.x = -Math.PI / 2; ground.position.y = -sz.y / 2 - 0.25; ground.receiveShadow = true; scene.add(ground);
 }
 const camera = new THREE.PerspectiveCamera(28, W / H, 0.1, 200);
-const fitH = Math.max(sz.y * 1.35, (sz.x * 1.18) / (W / H));
+const fitH = Math.max(sz.y * 1.45, (sz.x * 1.2) / (W / H));
 const dist = fitH / 2 / Math.tan(THREE.MathUtils.degToRad(14));
 camera.position.set(0, 0, dist); camera.lookAt(0, 0, 0);
 // Multi-line sky reflections: each line sees the environment from a different
@@ -340,13 +363,15 @@ window.__done = true;
 (async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'text3d-'));
   fs.writeFileSync(path.join(dir, 'index.html'), page);
-  const fontBuf = fs.readFileSync(o.font);
+  const fontBuf = o.font ? fs.readFileSync(o.font) : Buffer.alloc(0);
+  const svgBuf = o.svg ? fs.readFileSync(o.svg) : Buffer.alloc(0);
   const three = path.join(LIB, 'node_modules', 'three');
   const types = { '.js': 'text/javascript', '.html': 'text/html' };
   // ES modules do not load from file://, so serve the page over loopback.
   const server = http.createServer((req, res) => {
     const u = decodeURIComponent(req.url.split('?')[0]);
     if (u === '/font') { res.writeHead(200, { 'content-type': 'application/octet-stream' }); return res.end(fontBuf); }
+    if (u === '/svg') { res.writeHead(200, { 'content-type': 'image/svg+xml' }); return res.end(svgBuf); }
     const file = u.startsWith('/three/') ? path.join(three, u.slice(7)) : path.join(dir, u === '/' ? 'index.html' : u);
     fs.readFile(file, (err, data) => { if (err) { res.writeHead(404); return res.end(); }
       res.writeHead(200, { 'content-type': types[path.extname(file)] || 'application/octet-stream' }); res.end(data); });
@@ -354,11 +379,18 @@ window.__done = true;
   await new Promise((r) => server.on('listening', r));
   const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
   const pg = await browser.newPage({ viewport: { width: W, height: H } });
-  pg.on('pageerror', (e) => console.error('page error:', e.message));
+  let failed = null;
+  pg.on('pageerror', (e) => { failed = e.message; console.error('page error:', e.message); });
   pg.on('console', (m) => m.type() === 'error' && console.error('console:', m.text()));
   const t0 = Date.now();
   await pg.goto(`http://127.0.0.1:${server.address().port}/`);
-  await pg.waitForFunction(() => window.__done === true, null, { timeout: 300000 });
+  // Stop at once on a script error instead of waiting out the timeout.
+  const t1 = Date.now();
+  while (!(await pg.evaluate(() => window.__done === true))) {
+    if (failed) { await browser.close(); server.close(); process.exit(1); }
+    if (Date.now() - t1 > 300000) throw new Error('render timed out');
+    await new Promise((r) => setTimeout(r, 100));
+  }
   const missing = await pg.evaluate(() => window.__missing || []);
   if (missing.length) {
     await browser.close(); server.close();
