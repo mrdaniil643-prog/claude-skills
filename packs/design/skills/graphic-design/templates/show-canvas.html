@@ -35,6 +35,9 @@ const SHOW = {
   // misregistered name with a motion echo, a jittered photo, embroidered-patch emblems.
   // null = the calm print. { thread: "#a8141e", stamp: { text, sub, fx: .88, fy: .06, rot: -11, size: 9 }, patch: true }
   restless: null,
+  rays: null,                    // ink rays behind the cut-out, tattoo-flash halo: { at: [.5, .24] } (centre as fractions of the photo box)
+  border: false,                 // printed double border just inside the cloth edge, fleurs (corner image) in the corners
+  sparkles: [],                  // hand-drawn 4-point stars in empty spots: [[x %, y %, size in u], …]
   side: [],                      // small print running up the left and down the right edge: ["СДВГ · 27.10", "КЛУБ LOONA · 16+"]
   support: "при поддержке",
   photo: "photo.png",
@@ -144,6 +147,16 @@ const SHOW = {
   .emb-layout .photo { left: 19%; width: 62%; top: 12.2%; height: 41.5%; object-position: 50% 0; } .emb-layout .frame { left: 18%; width: 64%; top: 11.2%; height: 43.5%; }
   .emb-layout .banner { left: 12%; width: 76%; top: 55%; padding-top: calc(1 * var(--u)); padding-bottom: calc(.8 * var(--u)); } .emb-layout .emblem { top: 48.5%; width: 21%; }
   .emb-layout .top { font-size: calc(2.9 * var(--u)); }
+  .rays { pointer-events: none; }
+  .rays svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .border { inset: calc(4.6 * var(--u)); border: calc(.28 * var(--u)) solid var(--ink); }
+  .border::after { content: ""; position: absolute; inset: calc(.6 * var(--u)); border: calc(.1 * var(--u)) solid var(--ink); }
+  .border img { position: absolute; width: calc(3.4 * var(--u)); background: var(--cloth); padding: calc(.3 * var(--u)); }
+  .border img:nth-child(1) { left: 0; top: 0; transform: translate(-50%, -50%) rotate(-45deg); }
+  .border img:nth-child(2) { right: 0; top: 0; transform: translate(50%, -50%) rotate(45deg); }
+  .border img:nth-child(3) { right: 0; bottom: 0; transform: translate(50%, 50%) rotate(135deg); }
+  .border img:nth-child(4) { left: 0; bottom: 0; transform: translate(-50%, 50%) rotate(-135deg); }
+  .spark { width: calc(var(--s) * var(--u)); height: calc(var(--s) * var(--u)); transform: translate(-50%, -50%); }
   .side { top: 17%; height: 28%; display: flex; align-items: center; justify-content: space-between; writing-mode: vertical-rl;
           font: 800 calc(1.7 * var(--u)) / 1 var(--wide); letter-spacing: .3em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
   .side.l { left: 10.5%; transform: rotate(180deg); } .side.r { right: 10.5%; }
@@ -307,6 +320,9 @@ if (layout === 'headliner') {
   add(P, `<div class="top">${cityHtml}${S.title ? `<span class="event">${esc(S.title)}</span>` : ''}${age}</div>`);
   // edge print: each item spread along the edge, separated by a small cross
   (S.side || []).slice(0, 2).forEach((t, i) => add(P, `<div class="side ${i ? 'r' : 'l'}">${String(t).split('·').map((x) => `<span>${esc(x.trim())}</span>`).join('<i>✕</i>')}</div>`));
+  if (S.border) add(P, `<div class="border">${S.corner ? [1, 2, 3, 4].map(() => `<img src="${S.corner}" alt="">`).join('') : ''}</div>`);
+  (S.sparkles || []).forEach(([x, y, sz]) => add(P, `<svg class="spark" viewBox="-10 -10 20 20" style="left:${x}%;top:${y}%;--s:${sz || 3}"><path d="M0,-10 C.8,-2 2,-.8 10,0 C2,.8 .8,2 0,10 C-.8,2 -2,.8 -10,0 C-2,-.8 -.8,-2 0,-10Z" fill="#0c0b0a"/></svg>`));
+  const rays = S.rays && S.photo ? add(P, `<div class="photo rays"></div>`) : null;
   if (S.photo && R) add(P, `<img class="photo ghost" src="${S.photo}" alt="">`);
   if (S.photo) add(P, `<img class="photo" src="${S.photo}" alt="">`);
   const fr = add(R && R.thread ? O : P, `<div class="frame"></div>`);   // thread sits on the cloth, pen is printed into it
@@ -346,6 +362,23 @@ if (layout === 'headliner') {
     const inner = em.length === 2 ? Math.min(banner.clientWidth * 0.92, em[1].getBoundingClientRect().left - em[0].getBoundingClientRect().right - 8) : banner.clientWidth * 0.92;
     let fs = parseFloat(getComputedStyle(name).fontSize);
     for (let i = 0; i < 40 && name.getBoundingClientRect().width > inner; i++) { fs *= 0.96; name.style.fontSize = fs + 'px'; }
+    // rays: tapered wedges from the head out past the frame, long and short in turn, slightly uneven like an inked flash
+    if (rays) {
+      const rb = rays.getBoundingClientRect(), w = rb.width, h = rb.height, [ax, ay] = S.rays.at || [.5, .24], cx = w * ax, cy = h * ay;
+      let sd = 5; const rr = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+      const n = S.rays.count || 44, R0 = Math.min(w, h) * (S.rays.inner ?? .2), far = Math.hypot(w, h);
+      const wedges = [];
+      for (let i = 0; i < n; i++) {
+        const a = (i / n) * Math.PI * 2 + (rr() - .5) * .04, half = (i % 2 ? .018 : .03) + rr() * .008;
+        const r1 = i % 2 ? R0 + (far - R0) * (.45 + rr() * .2) : far, p = (ang, r) => `${cx + Math.cos(ang) * r},${cy + Math.sin(ang) * r}`;
+        wedges.push(`<path d="M${p(a - half * .25, R0)} L${p(a - half, r1)} L${p(a + half, r1)} L${p(a + half * .25, R0)} Z"/>`);
+      }
+      // rays stop around the stamp, so it reads as stamped on bare cloth
+      const holes = [...O.querySelectorAll('.stamp:not(.twice)')].map((el) => { const b = el.getBoundingClientRect();
+        return `<ellipse cx="${b.left - rb.left + b.width / 2}" cy="${b.top - rb.top + b.height / 2}" rx="${b.width * .62}" ry="${b.height * .7}" fill="#000"/>`; }).join('');
+      rays.innerHTML = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><filter id="rf"><feGaussianBlur stdDeviation="6"/></filter><mask id="rm"><rect width="${w}" height="${h}" fill="#fff"/><g filter="url(#rf)">${holes}</g></mask></defs>
+        <g fill="#0c0b0a" fill-opacity="${S.rays.opacity ?? .85}" mask="url(#rm)">${wedges.join('')}</g></svg>`;
+    }
     // edge print never runs past its box: shrink it until the column fits
     P.querySelectorAll('.side').forEach((sd) => { let f = parseFloat(getComputedStyle(sd).fontSize);
       for (let i = 0; i < 30 && sd.scrollHeight > sd.clientHeight + 1; i++) { f *= 0.94; sd.style.fontSize = f + 'px'; } });
