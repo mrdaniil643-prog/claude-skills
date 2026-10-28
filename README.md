@@ -14,6 +14,7 @@
 | `security` | `packs/security/skills/` | 4 |
 | `mobile` | `packs/mobile/skills/` | 44 |
 | `3d` | `packs/3d/skills/` | 51 |
+| `slides` | `packs/slides/skills/` | 2 |
 
 `frontend-design` сюда не входит: он подключается в проектах как официальный плагин
 `frontend-design@claude-plugins-official` через `enabledPlugins` в `.claude/settings.json`.
@@ -219,6 +220,17 @@ Three.js, React Three Fiber, шейдеры GLSL, постобработка, We
 | `webgpu-threejs-tsl` | Reference WebGPU APIs, TSL syntax, node materials, WGSL integration, compute shaders, and post-processing in Three.js. |
 
 Источники: `threejs-*`, `shader-programming-glsl`: [sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) (MIT / CC BY 4.0). `r3f-*`: [EnzeD/r3f-skills](https://github.com/EnzeD/r3f-skills) (MIT). `shader-*`, `postfx-*`, `particles-gpu`: [Bbeierle12/Skill-MCP-Claude](https://github.com/Bbeierle12/Skill-MCP-Claude) (MIT). `webgpu-threejs-tsl`, `meshy`: [tdimino/claude-code-minoan](https://github.com/tdimino/claude-code-minoan) (MIT). `gltf-transform`: [rawwerks/VibeCAD](https://github.com/rawwerks/VibeCAD) (MIT). `scenario-blender-*`: [scenario-labs/skills](https://github.com/scenario-labs/skills) (MIT). `meshy-3d-generation`: [meshy-dev/meshy-3d-agent](https://github.com/meshy-dev/meshy-3d-agent) (MIT).
+
+## Презентации (`slides`)
+
+Красивые презентации: HTML-слайды с анимацией и дизайнерскими шаблонами, конвертация PPTX в веб, экспорт в PDF, Slidev для технических докладов.
+
+| Скилл | Описание |
+|---|---|
+| `frontend-slides` | Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. |
+| `slidev` | Create and present web-based slidedecks for developers using Slidev with Markdown, Vue components, code highlighting,… |
+
+Источники: `frontend-slides`: [zarazhangrui/frontend-slides](https://github.com/zarazhangrui/frontend-slides) (MIT), 12 пресетов и 34 bold-шаблона, фиксированная сцена 16:9; для конвертации PPTX нужен `python-pptx`, для PDF Playwright. `slidev`: [slidevjs/slidev](https://github.com/slidevjs/slidev) (MIT), нужен Node.js.
 
 ## Добавить новый скилл
 

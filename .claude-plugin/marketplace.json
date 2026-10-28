@@ -28,6 +28,11 @@
       "name": "3d",
       "source": "./packs/3d",
       "description": "3D on the web and Blender: Three.js, React Three Fiber, GLSL shaders, post-FX, WebGPU, glTF, Meshy."
+    },
+    {
+      "name": "slides",
+      "source": "./packs/slides",
+      "description": "Presentations: animation-rich HTML decks with bold design templates, PPTX-to-web conversion, PDF export, Slidev developer decks."
     }
   ]
 }
